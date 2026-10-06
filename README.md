@@ -28,7 +28,7 @@ GitHub Actions가 6시간마다 데이터를 수집하고, GitHub Pages가 사�
 
 ## 처음 설정하기 (약 15분)
 
-1. **GitHub 저장소 만들기**: github.com에서 New repository를 만듭니다 (예: `bank-career-hub`, Public). 이 폴더의 파일을 전부 업로드합니다 (`.github` 폴더 포함).
+1. **GitHub 저장소 만들기**: github.com에서 New repository를 만듭니다 (예: `hbank`, Public). 이 폴더의 파일을 전부 업로드합니다 (`.github` 폴더 포함).
 2. **API 키 등록 (선택)**: 저장소 **Settings → Secrets and variables → Actions → New repository secret**
    - `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET`: [네이버 개발자센터](https://developers.naver.com/apps/#/register)에서 애플리케이션을 등록할 때 사용 API로 '검색'을 선택하면 발급됩니다.
    - `SARAMIN_ACCESS_KEY`: [사람인 오픈API](https://oapi.saramin.co.kr)에서 신청합니다 (승인까지 며칠 걸릴 수 있음).
@@ -36,7 +36,7 @@ GitHub Actions가 6시간마다 데이터를 수집하고, GitHub Pages가 사�
    - `ECOS_API_KEY`: [한국은행 ECOS 오픈API](https://ecos.bok.or.kr/api/)에서 회원가입 후 '인증키 신청'을 하면 바로 발급됩니다.
 3. **쓰기 권한 켜기**: **Settings → Actions → General → Workflow permissions**에서 *Read and write permissions*를 선택하고 저장합니다.
 4. **6개월치 뉴스 채우기**: **Actions 탭 → 데이터 수집 → Run workflow**에서 *최근 6개월 뉴스 채우기*를 체크하고 실행합니다 (10~20분 소요).
-5. **사이트 공개**: **Settings → Pages → Branch: `main` / 폴더: `/docs`** 로 저장합니다. 1~2분 뒤 `https://<아이디>.github.io/bank-career-hub/`에서 사이트가 열립니다.
+5. **사이트 공개**: **Settings → Pages → Branch: `main` / 폴더: `/docs`** 로 저장합니다. 1~2분 뒤 `https://<아이디>.github.io/hbank/`에서 사이트가 열립니다.
 
 이후에는 6시간마다 자동으로 갱신됩니다.
 

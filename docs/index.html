@@ -244,6 +244,7 @@ const $ = id => document.getElementById(id);
 const DAY = 864e5;
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const ago = days => Date.now() - days * DAY;
+const href = u => /^https?:\/\//i.test(u || "") ? esc(u) : "#";  // http(s) 주소만 링크로 (javascript: 등 차단)
 const BANK = {};
 
 /* 배경색 밝기에 맞춰 글자색(검정/흰색) 자동 결정 */
@@ -432,7 +433,7 @@ function renderEnews(){
   pick.sort((a, b) => b.ts - a.ts);
   $("enewsSub").textContent = pick.length ? `최근 기사 ${MACRO().filter(x => x.ts >= ago(7)).length}건 중` : "";
   $("enews").innerHTML = pick.length
-    ? `<ul class="enews">${pick.map(x => `<li><span class="topic">${esc(x.topic || "경제")}</span><a href="${esc(x.link)}" target="_blank" rel="noopener" title="${esc(x.title)}">${esc(x.title)}</a><span class="src">${esc(x.source)} · ${relTime(x.ts)}</span></li>`).join("")}</ul>`
+    ? `<ul class="enews">${pick.map(x => `<li><span class="topic">${esc(x.topic || "경제")}</span><a href="${href(x.link)}" target="_blank" rel="noopener" title="${esc(x.title)}">${esc(x.title)}</a><span class="src">${esc(x.source)} · ${relTime(x.ts)}</span></li>`).join("")}</ul>`
     : `<div class="empty">아직 수집된 경제 뉴스가 없어요.</div>`;
 }
 function relTime(ts){
@@ -472,8 +473,15 @@ function renderBanks(){
     if (b.group !== g){ html += `<span class="sep" title="${esc(b.group)}"></span>`; g = b.group; }
     html += `<button class="chip" data-b="${b.id}" style="${cvars(b.id)}" aria-pressed="${S.bank===b.id}" title="1주 뉴스 ${cnt[b.id]||0}건 · 진행 중 공고 ${jc[b.id]||0}건"><span class="dot"></span>${esc(b.name)}<span class="n">공고 ${jc[b.id]||0}</span></button>`;
   });
-  $("bankRow").innerHTML = html;
-  $("bankRow").querySelector("[aria-pressed=true]")?.scrollIntoView({block:"nearest", inline:"center"});
+  const row = $("bankRow"), x0 = row.scrollLeft;
+  row.innerHTML = html;
+  row.scrollLeft = x0;
+  // 선택한 은행 버튼을 가로로만 가운데 맞춤 (scrollIntoView는 페이지 전체를 세로로 움직여서 쓰지 않는다)
+  const sel = row.querySelector("[aria-pressed=true]");
+  if (sel){
+    const r = row.getBoundingClientRect(), c = sel.getBoundingClientRect();
+    row.scrollLeft += (c.left + c.width / 2) - (r.left + r.width / 2);
+  }
 }
 
 const fmtDeadline = iso => {
@@ -497,19 +505,19 @@ function renderJobs(){
   const b = BANK[S.bank];
   if (!list.length){
     const auto = !b || (b.jobs || []).length || META.sources?.saramin;
-    $("jobs").innerHTML = `<div class="empty">${auto ? (S.jf === "all" ? "지금 진행 중인 공고가 없어요." : "조건에 맞는 공고가 없어요.") + (S.hidePT && pt ? ` (숨긴 파트타이머·업무지원 공고 ${pt}건은 체크를 풀면 보여요.)` : "") : `${esc(b.name)}은(는) 공고 자동 수집을 지원하지 않아요.`} 아래 사이트에서도 확인해 보세요.</div><div class="jump">${b ? `<a style="${cvars(b.id)}" href="${esc(b.recruit)}" target="_blank" rel="noopener"><b>공식 채용사이트</b><span>${esc(b.name)} ↗</span></a>` : ""}${jumpLinks(b)}</div>`;
+    $("jobs").innerHTML = `<div class="empty">${auto ? (S.jf === "all" ? "지금 진행 중인 공고가 없어요." : "조건에 맞는 공고가 없어요.") + (S.hidePT && pt ? ` (숨긴 파트타이머·업무지원 공고 ${pt}건은 체크를 풀면 보여요.)` : "") : `${esc(b.name)}은(는) 공고 자동 수집을 지원하지 않아요.`} 아래 사이트에서도 확인해 보세요.</div><div class="jump">${b ? `<a style="${cvars(b.id)}" href="${href(b.recruit)}" target="_blank" rel="noopener"><b>공식 채용사이트</b><span>${esc(b.name)} ↗</span></a>` : ""}${jumpLinks(b)}</div>`;
   } else {
     $("jobs").innerHTML = list.slice(0, S.jobShown).map(x => {
       const d = dday(x.deadline);
       const badge = d === null ? `<span class="badge">상시</span>` : `<span class="badge ${d <= 3 ? "urgent" : ""}">${d === 0 ? "D-day" : "D-" + d}</span>`;
       const meta = [x.career, x.job_type, x.location, x.deadline ? fmtDeadline(x.deadline) : ""].filter(Boolean);
-      return `<a class="rec" style="${cvars(x.bank)}" href="${esc(x.link)}" target="_blank" rel="noopener">
+      return `<a class="rec" style="${cvars(x.bank)}" href="${href(x.link)}" target="_blank" rel="noopener">
         <div class="t">${badge}${esc(x.title)}</div>
         <div class="meta">${tag(x.bank)}<span class="via">${esc(x.via || "")}</span> ${meta.map(esc).join(" · ")}</div></a>`;
     }).join("") + (list.length > S.jobShown ? `<button class="more" id="jobMore">공고 더 보기 (${list.length - S.jobShown}건)</button>` : "");
   }
   const banks = META.banks.filter(x => S.bank === "all" || x.id === S.bank);
-  $("links").innerHTML = `<b>공식 채용사이트 바로가기</b>` + banks.map(x => `<a style="${cvars(x.id)}" href="${esc(x.recruit)}" target="_blank" rel="noopener"><span class="dot"></span>${esc(x.name)} ↗</a>`).join("");
+  $("links").innerHTML = `<b>공식 채용사이트 바로가기</b>` + banks.map(x => `<a style="${cvars(x.id)}" href="${href(x.recruit)}" target="_blank" rel="noopener"><span class="dot"></span>${esc(x.name)} ↗</a>`).join("");
 }
 
 function grouped(list, showTag){
@@ -519,7 +527,7 @@ function grouped(list, showTag){
     const d = t.toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"short"});
     if (d !== last){ html += `<div class="day">${d}</div>`; last = d; }
     const lead = x.bank === "macro" ? `<span class="topic">${esc(x.topic || "경제")}</span> ` : (showTag ? tag(x.bank) + " " : "");
-    html += `<div class="news-row"><div class="t">${lead}<a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.title)}</a></div>
+    html += `<div class="news-row"><div class="t">${lead}<a href="${href(x.link)}" target="_blank" rel="noopener">${esc(x.title)}</a></div>
       <span class="src">${esc(x.source)} · ${String(t.getHours()).padStart(2,"0")}:${String(t.getMinutes()).padStart(2,"0")}</span></div>`;
   });
   return html;
@@ -559,6 +567,7 @@ $("kpis").addEventListener("click", e => { const k = e.target.closest("[data-id]
 $("range").addEventListener("click", e => { const b = e.target.closest("[data-r]"); if (b){ S.range = +b.dataset.r; drawChart(); } });
 $("chart").addEventListener("pointermove", chartHover);
 $("chart").addEventListener("pointerleave", hideTip);
+addEventListener("hashchange", () => { readHash(); S.shown = 40; S.jobShown = 15; render(); });  // 공유받은 #bank=… 링크를 열었을 때
 let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => ECON?.series && CH && drawChart(), 150); });
 load();
 </script>

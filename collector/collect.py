@@ -510,6 +510,18 @@ def economy(old: dict) -> dict:
 
 
 # ---------------------------------------------------------------- 병합·저장
+# 은행 뉴스 내용 분류: topics.json 위에서부터 처음 맞는 카테고리 (없으면 etc)
+TOPICS = json.loads((ROOT / "topics.json").read_text(encoding="utf-8"))
+SPAM_RE = re.compile(r"토토|카지노|슬롯|바카라|먹튀|사설\s?사이트")
+
+
+def news_topic(title: str) -> str:
+    for t in TOPICS:
+        if any(w in title for w in t["words"]) and not any(w in title for w in t.get("except", [])):
+            return t["id"]
+    return "etc"
+
+
 def merge_news(old: list[dict], new: list[dict]) -> list[dict]:
     cutoff = NOW - timedelta(days=KEEP_DAYS)
     seen, merged = set(), []
@@ -521,11 +533,14 @@ def merge_news(old: list[dict], new: list[dict]) -> list[dict]:
                 continue
         except ValueError:
             continue
+        if SPAM_RE.search(n["title"]):  # 은행 이름을 끼워 넣은 도박 광고 글
+            continue
         k = (n["bank"], norm_key(n["title"]))
         if k in seen:
             continue
         seen.add(k)
-        n["job"] = is_job_news(n["title"])
+        n["cat"] = news_topic(n["title"])
+        n["job"] = n["cat"] == "job"
         n["econ"] = n["bank"] == "macro" or is_econ_news(n["title"])
         merged.append(n)
     merged.sort(key=lambda x: x["date"], reverse=True)
@@ -594,6 +609,7 @@ def main():
             "alio": bool(os.getenv("DATA_GO_KR_KEY")),
         },
         "banks": banks,
+        "topics": [{"id": t["id"], "name": t["name"]} for t in TOPICS] + [{"id": "etc", "name": "기타"}],
     }
     save_json(DATA / "meta.json", meta)
     log(f"완료: 뉴스 {len(news)}건 (신규 수집 {len(fresh)}건), 채용공고 {len(jobs)}건")

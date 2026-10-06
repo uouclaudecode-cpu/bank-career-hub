@@ -169,6 +169,14 @@ button.kpi:hover{border-color:var(--faint)}
 .day:first-child{margin-top:4px}
 .news-row{display:flex;gap:12px;align-items:baseline;padding:9px 0;border-top:1px solid var(--line-soft)}
 .day + .news-row{border-top:0}
+.cats{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px}
+.cats button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 11px;font-size:13px;color:var(--sub);font-weight:500;display:inline-flex;gap:5px;align-items:baseline}
+.cats button i{font-style:normal;font-size:11.5px;color:var(--faint);font-variant-numeric:tabular-nums}
+.cats button:hover{border-color:var(--faint)}
+.cats button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:700}
+.cats button[aria-pressed=true] i{color:inherit;opacity:.7}
+.cats button:disabled{opacity:.45;cursor:default}
+.ncat{font-size:11.5px;color:var(--faint);margin-right:6px;white-space:nowrap}
 .news-row .t{flex:1;min-width:0}
 .news-row a:hover{color:var(--brand)}
 .more{width:100%;margin-top:12px;border:1px solid var(--line);background:transparent;border-radius:10px;padding:9px;font-size:13.5px;color:var(--sub);font-weight:500}
@@ -257,9 +265,9 @@ footer b{color:var(--sub)}
         <div class="seg" id="period"><button data-p="7">1주</button><button data-p="30">1개월</button><button data-p="183">6개월</button></div>
       </div>
       <div class="tools">
-        <div class="seg" id="cat"><button data-c="all">전체</button><button data-c="job">채용</button></div>
         <input class="search" id="q" type="search" placeholder="제목 검색 (예: 디지털, 실적)">
       </div>
+      <div class="cats" id="cat" role="group" aria-label="뉴스 카테고리"></div>
       <div id="news"></div>
     </section>
   </div>
@@ -306,7 +314,7 @@ function readHash(){
   const h = new URLSearchParams(location.hash.slice(1));
   if (h.get("bank")) S.bank = h.get("bank");
   if ([7,30,183].includes(+h.get("p"))) S.period = +h.get("p");
-  if (["all","job"].includes(h.get("c"))) S.cat = h.get("c");
+  if (/^[a-z]+$/.test(h.get("c") || "")) S.cat = h.get("c");
 }
 const writeHash = () => history.replaceState(null, "", `#bank=${S.bank}&p=${S.period}&c=${S.cat}`);
 
@@ -514,7 +522,7 @@ const NEW_RE = /신입|신규직원|공채|공개채용|인턴|채용형|하반�
 
 function renderBanks(){
   const week = ago(7), cnt = {};
-  NEWS.forEach(n => { if (n.ts >= week && !n.job) cnt[n.bank] = (cnt[n.bank]||0) + 1; });
+  NEWS.forEach(n => { if (n.ts >= week) cnt[n.bank] = (cnt[n.bank]||0) + 1; });
   const jc = {}; JOBS.forEach(j => { if (!(S.hidePT && PT_RE.test(j.title))) jc[j.bank] = (jc[j.bank]||0) + 1; });
   let html = `<button class="chip" data-b="all" aria-pressed="${S.bank==="all"}">전체</button>`, g = null;
   META.banks.forEach(b => {
@@ -577,17 +585,29 @@ function grouped(list, showTag){
     const t = new Date(x.ts);
     const d = t.toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"short"});
     if (d !== last){ html += `<div class="day">${d}</div>`; last = d; }
-    const lead = x.bank === "macro" ? `<span class="topic">${esc(x.topic || "경제")}</span> ` : (showTag ? tag(x.bank) + " " : "");
+    const lead = x.bank === "macro" ? `<span class="topic">${esc(x.topic || "경제")}</span> ` : (showTag ? tag(x.bank) + " " : "") + (S.cat === "all" ? `<span class="ncat">${esc(catName(catOf(x)))}</span>` : "");
     html += `<div class="news-row"><div class="t">${lead}<a href="${href(x.link)}" target="_blank" rel="noopener">${esc(x.title)}</a></div>
       <span class="src">${esc(x.source)} · ${String(t.getHours()).padStart(2,"0")}:${String(t.getMinutes()).padStart(2,"0")}</span></div>`;
   });
   return html;
 }
 
+/* 은행 뉴스 내용 카테고리 (수집기가 topics.json 규칙으로 분류해 n.cat에 넣는다) */
+const DEFAULT_TOPICS = [["job","채용"],["issue","사건·사고"],["biz","실적·경영"],["rate","금리·대출"],["digital","디지털"],["product","상품·서비스"],["partner","제휴·협약"],["esg","사회공헌"],["etc","기타"]].map(([id, name]) => ({id, name}));
+const topics = () => META.topics?.length ? META.topics : DEFAULT_TOPICS;
+const catOf = x => x.cat || (x.job ? "job" : "etc");
+const catName = id => topics().find(t => t.id === id)?.name || "";
+
 function renderNews(){
   const q = S.q.trim().toLowerCase();
-  const list = NEWS.filter(x => x.bank !== "macro" && inBank(x) && x.ts >= ago(S.period)
-    && (S.cat === "job" ? x.job : !x.job) && (!q || x.title.toLowerCase().includes(q)));
+  const base = NEWS.filter(x => x.bank !== "macro" && inBank(x) && x.ts >= ago(S.period) && (!q || x.title.toLowerCase().includes(q)));
+  const cnt = {}; base.forEach(x => { const c = catOf(x); cnt[c] = (cnt[c] || 0) + 1; });
+  if (S.cat !== "all" && !topics().some(t => t.id === S.cat)) S.cat = "all";
+  $("cat").innerHTML = [{id:"all", name:"전체"}, ...topics()].map(t => {
+    const n = t.id === "all" ? base.length : cnt[t.id] || 0;
+    return `<button type="button" data-c="${t.id}" aria-pressed="${S.cat === t.id}"${n || S.cat === t.id ? "" : " disabled"}>${esc(t.name)}<i>${n.toLocaleString()}</i></button>`;
+  }).join("");
+  const list = S.cat === "all" ? base : base.filter(x => catOf(x) === S.cat);
   $("newsCount").textContent = `${list.length.toLocaleString()}건`;
   $("news").innerHTML = list.length
     ? grouped(list.slice(0, S.shown), S.bank === "all") + (list.length > S.shown ? `<button class="more" id="more">더 보기 (${(list.length - S.shown).toLocaleString()}건 남음)</button>` : "")

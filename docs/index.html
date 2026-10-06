@@ -2,15 +2,39 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>H bank · 은행 취업 허브</title>
-<meta name="description" content="은행 채용공고 D-day, 은행별 뉴스, 국내 경제지표를 한 화면에서. 6시간마다 자동 갱신.">
-<meta property="og:title" content="H bank · 은행 취업 허브">
-<meta property="og:description" content="은행 채용공고 D-day, 은행별 뉴스, 국내 경제지표를 한 화면에서">
+<meta name="description" content="은행 채용공고 D-day, 은행별 뉴스, 경제지표를 한 화면에서. 16개 은행 · 6시간마다 자동 갱신.">
+<link rel="canonical" href="https://uouclaudecode-cpu.github.io/hbank/">
+
+<!-- 카톡·메신저·SNS 링크 미리보기 카드 (이미지 주소는 절대 경로여야 한다) -->
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="H bank">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://uouclaudecode-cpu.github.io/hbank/">
+<meta property="og:title" content="H bank · 은행 취업 허브">
+<meta property="og:description" content="은행 채용공고 D-day, 은행별 뉴스, 경제지표를 한 화면에서. 16개 은행 · 6시간마다 자동 갱신">
+<meta property="og:image" content="https://uouclaudecode-cpu.github.io/hbank/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="H bank - 은행 취업 준비, 한 화면에서 끝">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="H bank · 은행 취업 허브">
+<meta name="twitter:description" content="은행 채용공고 D-day, 은행별 뉴스, 경제지표를 한 화면에서">
+<meta name="twitter:image" content="https://uouclaudecode-cpu.github.io/hbank/og.jpg">
+
+<!-- 앱 설치 (PWA) -->
+<link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0e1014" media="(prefers-color-scheme: dark)">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230b5cff'/%3E%3Ctext x='32' y='45' font-family='Arial,sans-serif' font-size='38' font-weight='700' fill='white' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="H bank">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 :root{
@@ -36,7 +60,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Vari
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:6px}
-.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
 .num{font-variant-numeric:tabular-nums}
 
 /* ---------- 헤더 ---------- */
@@ -47,6 +71,16 @@ button{font:inherit;color:inherit;cursor:pointer}
 .brand p{margin:1px 0 0;color:var(--faint);font-size:13px}
 .pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--sub);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
 .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:#22b573}
+.top-side{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.install{border:0;background:var(--brand);color:#fff;font-weight:700;font-size:13px;border-radius:999px;padding:6px 14px 6px 11px;display:inline-flex;gap:6px;align-items:center;box-shadow:0 2px 8px rgba(11,92,255,.25)}
+.install svg{width:15px;height:15px}
+.install[hidden]{display:none}
+.tip-sheet{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));max-width:440px;margin:0 auto;z-index:30;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:18px;box-shadow:0 16px 48px rgba(0,0,0,.22);padding:16px 16px 16px 18px;display:flex;gap:12px;align-items:flex-start}
+.tip-sheet[hidden]{display:none}
+.tip-sheet img{width:44px;height:44px;border-radius:11px;flex:none}
+.tip-sheet b{display:block;font-size:15px;margin-bottom:2px}
+.tip-sheet p{margin:0;font-size:13.5px;color:var(--sub);line-height:1.5}
+.tip-sheet .x{margin-left:auto;border:0;background:var(--calm-soft);border-radius:50%;width:28px;height:28px;flex:none;color:var(--sub);font-size:12px}
 
 /* ---------- 섹션 공통 ---------- */
 .sec-title{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 0 10px;flex-wrap:wrap}
@@ -217,10 +251,13 @@ footer b{color:var(--sub)}
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <span class="logo" aria-hidden="true">H</span>
+      <img class="logo" src="icons/icon-192.png" alt="" width="40" height="40">
       <div><h1>H bank</h1><p>은행 채용공고 · 뉴스 · 경제지표를 한 화면에</p></div>
     </div>
-    <span class="pill" id="updated">불러오는 중…</span>
+    <div class="top-side">
+      <span class="pill" id="updated">불러오는 중…</span>
+      <button class="install" id="installBtn" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>앱 설치</button>
+    </div>
   </header>
 
   <section class="econ" id="econ">
@@ -290,6 +327,12 @@ footer b{color:var(--sub)}
   <span><b>H bank</b> · 뉴스는 제목과 링크만 보여 주며 저작권은 각 언론사에 있어요. 경제지표 출처: 한국은행 ECOS</span>
   <span>채용공고는 공식 홈페이지에서 다시 확인하세요 · 은행 색상은 근사치예요</span>
 </footer></div>
+
+<div class="tip-sheet" id="installTip" role="dialog" aria-labelledby="tipTitle" hidden>
+  <img src="icons/icon-192.png" alt="">
+  <div><b id="tipTitle">홈 화면에 H bank 추가하기</b><p id="tipText"></p></div>
+  <button class="x" id="tipClose" type="button" aria-label="닫기">✕</button>
+</div>
 
 <script>
 const S = {bank:"all", period:7, cat:"all", jf:"all", hidePT:true, q:"", shown:40, jobShown:15, chart:"rates", range:365};
@@ -640,6 +683,24 @@ $("chart").addEventListener("pointermove", chartHover);
 $("chart").addEventListener("pointerleave", hideTip);
 addEventListener("hashchange", () => { readHash(); S.shown = 40; S.jobShown = 15; render(); });  // 공유받은 #bank=… 링크를 열었을 때
 let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => ECON?.series && CH && drawChart(), 150); });
+/* ================= 앱 설치 (PWA) ================= */
+const UA = navigator.userAgent;
+const isStandalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const isIOS = /iphone|ipad|ipod/i.test(UA) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const inApp = /KAKAOTALK|NAVER\(inapp|Instagram|FBAN|FBAV|Line\/|everytimeApp/i.test(UA);  // 메신저·SNS 안의 브라우저는 설치 불가
+let installEvt = null;
+const showTip = html => { $("tipText").innerHTML = html; $("installTip").hidden = false; };
+addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; $("installBtn").hidden = false; });
+addEventListener("appinstalled", () => { installEvt = null; $("installBtn").hidden = true; $("installTip").hidden = true; });
+if (!isStandalone && (isIOS || inApp)) $("installBtn").hidden = false;
+$("installBtn").addEventListener("click", async () => {
+  if (installEvt){ installEvt.prompt(); await installEvt.userChoice.catch(() => {}); installEvt = null; $("installBtn").hidden = true; return; }
+  if (inApp) showTip("메신저 안에서는 설치할 수 없어요. 메뉴(⋮ 또는 ⋯)에서 <b style='display:inline'>다른 브라우저로 열기</b>를 누른 뒤 다시 ‘앱 설치’를 눌러 주세요.");
+  else if (isIOS) showTip("Safari 아래쪽 <b style='display:inline'>공유 버튼(□↑)</b>을 누르고 <b style='display:inline'>홈 화면에 추가</b>를 선택하세요.");
+});
+$("tipClose").addEventListener("click", () => { $("installTip").hidden = true; });
+if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+
 load();
 </script>
 </body>

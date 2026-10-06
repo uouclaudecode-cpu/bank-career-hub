@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "H bank · 은행 취업 허브",
+  "short_name": "H bank",
+  "description": "은행 채용공고 D-day, 은행별 뉴스, 경제지표를 한 화면에서",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f6f8",
+  "theme_color": "#0b5cff",
+  "categories": ["business", "finance", "education"],
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

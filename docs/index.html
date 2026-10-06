@@ -510,7 +510,7 @@ const dday = iso => {
   return Math.round((d - t) / DAY);
 };
 const PT_RE = /파트\s?타이머|PT\s?\(|\(P\)|아르바이트|업무지원|인재\s?Pool|재채용|퇴직직원|기동인력/i;
-const NEW_RE = /신입|공채|공개채용|인턴|채용형|하반기|상반기|행원/;
+const NEW_RE = /신입|신규직원|공채|공개채용|인턴|채용형|하반기|상반기|행원/;
 
 function renderBanks(){
   const week = ago(7), cnt = {};
@@ -547,7 +547,7 @@ function renderJobs(){
   const pt = base.filter(j => PT_RE.test(j.title)).length;
   let list = S.hidePT ? base.filter(j => !PT_RE.test(j.title)) : base;
   if (S.jf === "soon") list = list.filter(j => { const d = dday(j.deadline); return d !== null && d <= 7; });
-  if (S.jf === "new") list = list.filter(j => NEW_RE.test(j.title));
+  if (S.jf === "new") list = list.filter(j => NEW_RE.test(j.title) || j.career === "신입");
   $("jobCount").textContent = `${list.length}건`;
   $("ptCount").textContent = pt ? `(${pt}건)` : "";
   const b = BANK[S.bank];

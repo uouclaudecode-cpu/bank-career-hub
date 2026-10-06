@@ -3,7 +3,7 @@
   {"id": "shinhan", "name": "신한은행", "group": "시중은행", "aliases": ["신한은행"], "saramin": "신한은행", "recruit": "https://shinhan.recruiter.co.kr/career/jobs", "jobs": [{"type": "jobflex", "host": "shinhan.recruiter.co.kr"}], "color": "#0046FF"},
   {"id": "hana", "name": "하나은행", "group": "시중은행", "aliases": ["하나은행"], "saramin": "하나은행", "recruit": "https://hanabank.recruiter.co.kr/career/home", "jobs": [{"type": "jobflex", "host": "hanabank.recruiter.co.kr"}], "color": "#008485"},
   {"id": "woori", "name": "우리은행", "group": "시중은행", "aliases": ["우리은행"], "saramin": "우리은행", "recruit": "https://recruit.incruit.com/wooribank/job/", "jobs": [{"type": "incruit", "slug": "wooribank"}], "color": "#0067AC"},
-  {"id": "nh", "name": "NH농협은행", "group": "시중은행", "aliases": ["농협은행", "NH농협은행"], "saramin": "농협은행", "recruit": "https://recruit.incruit.com/nonghyup/job/", "jobs": [{"type": "incruit", "slug": "nonghyup"}], "color": "#00A651"},
+  {"id": "nh", "name": "NH농협은행", "group": "시중은행", "aliases": ["농협은행", "NH농협은행"], "saramin": "농협은행", "recruit": "https://nhbank.incruit.com/main/index.asp", "jobs": [{"type": "nhbank", "url": "https://nhbank.incruit.com/main/index.asp"}, {"type": "incruit", "slug": "nonghyup"}], "color": "#00A651"},
   {"id": "sc", "name": "SC제일은행", "group": "시중은행", "aliases": ["SC제일은행"], "saramin": "SC제일은행", "recruit": "https://www.standardchartered.co.kr", "jobs": [], "color": "#38D200"},
   {"id": "citi", "name": "한국씨티은행", "group": "시중은행", "aliases": ["씨티은행"], "saramin": "씨티은행", "recruit": "https://www.citibank.co.kr", "jobs": [], "color": "#003B70"},
   {"id": "im", "name": "iM뱅크", "group": "시중은행", "aliases": ["iM뱅크", "대구은행"], "saramin": "아이엠뱅크", "recruit": "https://www.imbank.co.kr", "jobs": [], "color": "#00B2A9"},

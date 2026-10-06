@@ -291,6 +291,39 @@ def jobs_incruit(bank: dict, slug: str) -> list[dict]:
     return out
 
 
+NH_CTA_RE = re.compile(r'<a href="((?:https?:)?//[^"]*viewhire\.asp\?projectid=\d+)"[^>]*>(.*?)</a>', re.S)
+NH_START_RE = re.compile(r"(\d{4})\.\s*(\d{1,2})\.\s*(\d{1,2})")
+NH_END_RE = re.compile(r"~\s*(?:(\d{4})\.\s*)?(\d{1,2})\.\s*(\d{1,2})\.?(?:\s*(\d{1,2}):(\d{2}))?")
+
+
+def jobs_nhbank(bank: dict, url: str) -> list[dict]:
+    """NH농협은행 채용 홈페이지(nhbank.incruit.com): 5급·6급 신규직원 공채가 여기에만 올라온다.
+    첫 화면의 '공고 버튼'(nh-visual__cta)을 읽는다. 마감된 공고는 링크 대신 alert라서 자동으로 빠진다."""
+    r = session.get(url, timeout=20)
+    r.raise_for_status()
+    html_ = r.content.decode("euc-kr", errors="replace")
+    out = []
+    for link, inner in NH_CTA_RE.findall(html_):
+        tag_ = re.search(r'cta-tag">(.*?)<', inner, re.S)
+        tit = re.search(r'cta-tit">(.*?)<', inner, re.S)
+        date = re.search(r'cta-date">(.*?)<', inner, re.S)
+        year = re.search(r"(\d{4})년", inner)
+        if not tit:
+            continue
+        title = " ".join(x for x in [f"{year.group(1)}년" if year else "", clean(tag_.group(1)) if tag_ else "",
+                                     clean(tit.group(1))] if x)
+        period = clean(date.group(1)) if date else ""
+        start = deadline = None
+        if (s := NH_START_RE.search(period)):
+            start = datetime(int(s[1]), int(s[2]), int(s[3]), 0, 0, tzinfo=KST).isoformat()
+        if (e := NH_END_RE.search(period)):
+            y = int(e[1] or (s[1] if s else NOW.year))
+            deadline = datetime(y, int(e[2]), int(e[3]), int(e[4] or 23), int(e[5] or 59), tzinfo=KST).isoformat()
+        out.append(job(bank, title, link if link.startswith("http") else "https:" + link, start, deadline,
+                       "공식 채용사이트", career="신입", job_type="정규직"))
+    return out
+
+
 def jobs_kakaobank(bank: dict) -> list[dict]:
     out, page = [], 1
     while page <= 10:
@@ -380,6 +413,7 @@ def jobs_alio(bank: dict, inst: str) -> list[dict]:
 
 JOB_SOURCES = {"jobflex": lambda b, s: jobs_jobflex(b, s["host"]),
                "incruit": lambda b, s: jobs_incruit(b, s["slug"]),
+               "nhbank": lambda b, s: jobs_nhbank(b, s["url"]),
                "kakaobank": lambda b, s: jobs_kakaobank(b),
                "toss": lambda b, s: jobs_toss(b, s["company"]),
                "alio": lambda b, s: jobs_alio(b, s["inst"])}

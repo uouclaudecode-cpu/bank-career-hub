@@ -517,7 +517,7 @@ const dday = iso => {
   const d = new Date(iso), t = new Date(); t.setHours(0,0,0,0); d.setHours(0,0,0,0);
   return Math.round((d - t) / DAY);
 };
-const PT_RE = /파트\s?타이머|PT\s?\(|\(P\)|아르바이트|업무지원|인재\s?Pool|재채용|퇴직직원|기동인력/i;
+const PT_RE = /파트\s?타이머|피크\s?타이머|PT\s?\(|\(P\)|아르바이트|업무지원|인재\s?Pool|재채용|퇴직직원|기동인력/i;
 const NEW_RE = /신입|신규직원|공채|공개채용|인턴|채용형|하반기|상반기|행원/;
 
 function renderBanks(){

@@ -210,6 +210,33 @@ button.kpi:hover{border-color:var(--faint)}
 .cats button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:700}
 .cats button[aria-pressed=true] i{color:inherit;opacity:.7}
 .cats button:disabled{opacity:.45;cursor:default}
+/* 은행 뉴스: 10개씩 옆으로 넘기는 페이지 */
+.pager-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:6px 0 2px}
+.pager-head h3{margin:0;font-size:14.5px;font-weight:700;display:flex;align-items:baseline;gap:8px}
+.pager-head h3 small{font-size:12px;color:var(--faint);font-weight:500}
+.pager-ctl{display:flex;align-items:center;gap:6px;flex:none}
+.pager-ctl span{font-size:12.5px;color:var(--sub);font-variant-numeric:tabular-nums;min-width:52px;text-align:center}
+.pager-ctl button{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;color:var(--ink);padding:0}
+.pager-ctl button:hover:not(:disabled){border-color:var(--faint)}
+.pager-ctl button:disabled{opacity:.35;cursor:default}
+.pager-ctl svg{width:14px;height:14px}
+.track{display:grid;grid-auto-flow:column;grid-auto-columns:100%;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;align-items:start;outline:none}
+.track::-webkit-scrollbar{display:none}
+.npage{scroll-snap-align:start;min-width:0;list-style:none;margin:0;padding:0}
+.npage .ph{height:420px}
+.ni{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;padding:11px 0;border-top:1px solid var(--line-soft)}
+.ni:first-child{border-top:0}
+.ni .rk{width:22px;text-align:center;font-size:15px;font-weight:800;color:var(--faint);font-variant-numeric:tabular-nums;line-height:1.5}
+.npage.top .ni .rk{color:var(--brand)}
+.npage.top .ni:nth-child(n+4) .rk{color:var(--sub)}
+.ni a{font-weight:600;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ni a:hover{color:var(--brand)}
+.ni .meta{margin-top:4px}
+.rel{font-size:11.5px;font-weight:700;color:var(--brand);background:var(--brand-soft);border-radius:6px;padding:0 6px}
+.swipe-hint{font-size:12px;color:var(--faint);text-align:center;margin-top:8px}
+@media (max-width:520px){
+  .ni{gap:10px}
+}
 .ncat{font-size:11.5px;color:var(--faint);margin-right:6px;white-space:nowrap}
 .news-row .t{flex:1;min-width:0}
 .news-row a:hover{color:var(--brand)}
@@ -305,6 +332,14 @@ footer b{color:var(--sub)}
         <input class="search" id="q" type="search" placeholder="제목 검색 (예: 디지털, 실적)">
       </div>
       <div class="cats" id="cat" role="group" aria-label="뉴스 카테고리"></div>
+      <div class="pager-head">
+        <h3 id="pgTitle">주요 뉴스</h3>
+        <div class="pager-ctl">
+          <button type="button" id="pgPrev" aria-label="이전 10개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <span id="pgNum">1 / 1</span>
+          <button type="button" id="pgNext" aria-label="다음 10개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
       <div id="news"></div>
     </section>
   </div>
@@ -641,20 +676,125 @@ const topics = () => META.topics?.length ? META.topics : DEFAULT_TOPICS;
 const catOf = x => x.cat || (x.job ? "job" : "etc");
 const catName = id => topics().find(t => t.id === id)?.name || "";
 
+/* 같은 사건을 다룬 기사 묶기: 제목에서 은행 이름·말머리를 빼고 두 글자 조각이 절반 이상 겹치면 같은 소식.
+   후보는 4일 안에 나온 기사 중 흔하지 않은 단어를 공유하는 묶음만 비교한다 (6개월치도 2초 안). */
+const NEWS_PAGE = 10;
+const STOPW = /단독|속보|종합|포토|영상|인터뷰|기자|금융家|금융단신|더밸류 브리핑|게시판/g;
+let BANK_NAMES = null;
+const normTitle = t => {
+  let s = t.replace(/\[[^\]]*\]|\([^)]*\)/g, " ").replace(STOPW, " ");
+  for (const n of BANK_NAMES) s = s.split(n).join(" ");
+  return s.replace(/[^가-힣a-zA-Z0-9]+/g, "");
+};
+const bigrams = s => { const g = new Set(); for (let i = 0; i < s.length - 1; i++) g.add(s.slice(i, i + 2)); return g; };
+function clusterNews(items){   // items: 최신순
+  BANK_NAMES ||= META.banks.flatMap(b => [b.name, ...(b.aliases || [])]).sort((a, b) => b.length - a.length);
+  const nameSet = new Set(BANK_NAMES), WIN = 4 * DAY, df = new Map(), groups = [], index = new Map();
+  for (const x of items){
+    x._w ||= [...new Set((x.title.replace(STOPW, " ").match(/[가-힣a-zA-Z0-9]{2,}/g) || []).filter(w => !nameSet.has(w)))];
+    x._g ||= bigrams(normTitle(x.title));
+    x._w.forEach(w => df.set(w, (df.get(w) || 0) + 1));
+  }
+  const maxDf = Math.max(30, items.length * .01);
+  for (const x of items){
+    const ws = x._w.filter(w => df.get(w) <= maxDf), cand = new Set();
+    for (const w of ws){
+      const arr = index.get(w); if (!arr) continue;
+      for (let k = arr.length - 1; k >= 0; k--){ if (groups[arr[k]].head.ts - x.ts > WIN) break; cand.add(arr[k]); }
+    }
+    let best = -1, bs = 0;
+    for (const i of cand){
+      const hg = groups[i].head._g; let inter = 0; x._g.forEach(v => { if (hg.has(v)) inter++; });
+      const sc = inter / Math.max(1, Math.min(x._g.size, hg.size));
+      if (sc > bs){ bs = sc; best = i; }
+    }
+    if (bs >= .5) groups[best].items.push(x);
+    else { const i = groups.push({head: x, items: [x]}) - 1; ws.forEach(w => { if (!index.has(w)) index.set(w, []); index.get(w).push(i); }); }
+  }
+  const half = S.period * 24 / 3;   // 기간의 1/3마다 최근성 점수 절반
+  for (const g of groups){
+    g.src = new Set(g.items.map(x => x.source)).size;
+    g.cat = catOf(g.head);
+    g.score = g.src * Math.pow(.5, (Date.now() - g.head.ts) / 36e5 / half);
+  }
+  return groups;
+}
+let NCACHE = {key: "", groups: []};
+const newsGroups = () => {
+  const key = S.bank + "|" + S.period;
+  if (NCACHE.key !== key){
+    const items = NEWS.filter(x => x.bank !== "macro" && inBank(x) && x.ts >= ago(S.period)).sort((a, b) => b.ts - a.ts);
+    NCACHE = {key, groups: clusterNews(items)};
+  }
+  return NCACHE.groups;
+};
+
+let PAGES = [], PG = 0;
 function renderNews(){
   const q = S.q.trim().toLowerCase();
-  const base = NEWS.filter(x => x.bank !== "macro" && inBank(x) && x.ts >= ago(S.period) && (!q || x.title.toLowerCase().includes(q)));
-  const cnt = {}; base.forEach(x => { const c = catOf(x); cnt[c] = (cnt[c] || 0) + 1; });
+  let groups = newsGroups();
+  if (q) groups = groups.filter(g => g.items.some(x => x.title.toLowerCase().includes(q)));
+  const cnt = {}; groups.forEach(g => { cnt[g.cat] = (cnt[g.cat] || 0) + 1; });
   if (S.cat !== "all" && !topics().some(t => t.id === S.cat)) S.cat = "all";
   $("cat").innerHTML = [{id:"all", name:"전체"}, ...topics()].map(t => {
-    const n = t.id === "all" ? base.length : cnt[t.id] || 0;
+    const n = t.id === "all" ? groups.length : cnt[t.id] || 0;
     return `<button type="button" data-c="${t.id}" aria-pressed="${S.cat === t.id}"${n || S.cat === t.id ? "" : " disabled"}>${esc(t.name)}<i>${n.toLocaleString()}</i></button>`;
   }).join("");
-  const list = S.cat === "all" ? base : base.filter(x => catOf(x) === S.cat);
-  $("newsCount").textContent = `${list.length.toLocaleString()}건`;
-  $("news").innerHTML = list.length
-    ? grouped(list.slice(0, S.shown), S.bank === "all") + (list.length > S.shown ? `<button class="more" id="more">더 보기 (${(list.length - S.shown).toLocaleString()}건 남음)</button>` : "")
+  const list = S.cat === "all" ? groups : groups.filter(g => g.cat === S.cat);
+  const articles = list.reduce((s, g) => s + g.items.length, 0);
+  $("newsCount").textContent = `소식 ${list.length.toLocaleString()}개`;
+  $("newsCount").title = `기사 ${articles.toLocaleString()}건을 같은 소식끼리 묶었어요`;
+
+  // 1쪽: 많은 언론사가 다룬 최근 소식 10개 / 2쪽부터: 나머지를 최신순으로 10개씩
+  const top = [...list].sort((a, b) => b.score - a.score).slice(0, NEWS_PAGE);
+  const topSet = new Set(top), rest = list.filter(g => !topSet.has(g));
+  PAGES = [top];
+  for (let i = 0; i < rest.length; i += NEWS_PAGE) PAGES.push(rest.slice(i, i + NEWS_PAGE));
+  if (!list.length){ PAGES = []; }
+  PG = 0;
+  $("news").innerHTML = PAGES.length
+    ? `<div class="track" id="track" tabindex="0" aria-label="은행 뉴스 목록, 옆으로 넘겨 더 보기">${PAGES.map((_, i) => `<ol class="npage${i ? "" : " top"}" data-pg="${i}" start="${i * NEWS_PAGE + 1}"><li class="ph"></li></ol>`).join("")}</div>`
+      + (PAGES.length > 1 ? `<div class="swipe-hint" id="swipeHint">옆으로 넘기면 최신 뉴스가 10개씩 이어져요 →</div>` : "")
     : `<div class="empty">조건에 맞는 기사가 없어요.</div>`;
+  fillPages(0); updatePager();
+}
+
+function newsItem(g, rank){
+  const x = g.head, t = new Date(x.ts);
+  const when = Date.now() - x.ts < DAY ? relTime(x.ts) : `${t.getMonth() + 1}.${t.getDate()}`;
+  const sources = [...new Set(g.items.map(y => y.source))];
+  const bits = [
+    S.bank === "all" ? `<span class="bk" style="${cvars(x.bank)}">${esc(BANK[x.bank]?.name || x.bank)}</span>` : "",
+    S.cat === "all" ? `<span>${esc(catName(g.cat))}</span>` : "",
+    `<span>${esc(x.source)} · ${when}</span>`,
+    g.items.length > 1 ? `<span class="rel" title="${esc(sources.slice(0, 12).join(", "))}">관련 기사 ${g.items.length}</span>` : "",
+  ].filter(Boolean).join("");
+  return `<li class="ni"><span class="rk">${rank}</span><div><a href="${href(x.link)}" target="_blank" rel="noopener" title="${esc(x.title)}">${esc(x.title)}</a><div class="meta">${bits}</div></div></li>`;
+}
+// 화면에 보이는 쪽과 양옆 쪽만 그린다 (6개월치 수천 개를 한 번에 그리지 않도록)
+function fillPages(c){
+  document.querySelectorAll("#track .npage").forEach(ol => {
+    const i = +ol.dataset.pg;
+    if (Math.abs(i - c) <= 1 && !ol.dataset.done){
+      ol.innerHTML = PAGES[i].map((g, k) => newsItem(g, i * NEWS_PAGE + k + 1)).join("");
+      ol.dataset.done = "1";
+    }
+  });
+}
+function updatePager(){
+  const n = PAGES.length;
+  $("pgNum").textContent = n ? `${PG + 1} / ${n}` : "0 / 0";
+  $("pgPrev").disabled = PG <= 0; $("pgNext").disabled = PG >= n - 1;
+  $("pgTitle").innerHTML = PG === 0
+    ? `주요 뉴스 <small>여러 언론이 다룬 최근 소식</small>`
+    : `최신 뉴스 <small>${(PG - 1) * NEWS_PAGE + NEWS_PAGE + 1}–${Math.min(PG * NEWS_PAGE + NEWS_PAGE, PAGES.reduce((s, p) => s + p.length, 0))}번째</small>`;
+}
+function goPage(i){
+  const tr = $("track"); if (!tr) return;
+  i = Math.max(0, Math.min(PAGES.length - 1, i));
+  PG = i; fillPages(i); updatePager();
+  const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+  tr.scrollTo({left: tr.children[i].offsetLeft - tr.children[0].offsetLeft, behavior: smooth ? "smooth" : "auto"});
 }
 
 function render(){
@@ -670,7 +810,19 @@ $("jobs").addEventListener("click", e => { if (e.target.id === "jobMore"){ S.job
 $("period").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if (b){ S.period = +b.dataset.p; S.shown = 40; render(); } });
 $("cat").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (b){ S.cat = b.dataset.c; S.shown = 40; render(); } });
 $("q").addEventListener("input", e => { S.q = e.target.value; S.shown = 40; renderNews(); });
-$("news").addEventListener("click", e => { if (e.target.id === "more"){ S.shown += 40; renderNews(); } });
+$("pgPrev").addEventListener("click", () => goPage(PG - 1));
+$("pgNext").addEventListener("click", () => goPage(PG + 1));
+$("news").addEventListener("scroll", e => {
+  const tr = e.target; if (tr.id !== "track") return;
+  const w = tr.children[1] ? tr.children[1].offsetLeft - tr.children[0].offsetLeft : tr.clientWidth;
+  const i = Math.round(tr.scrollLeft / w);
+  if (i !== PG){ PG = i; fillPages(i); updatePager(); const hint = $("swipeHint"); if (hint) hint.remove(); }
+}, true);
+$("news").addEventListener("keydown", e => {
+  if (e.target.id !== "track") return;
+  if (e.key === "ArrowRight"){ e.preventDefault(); goPage(PG + 1); }
+  if (e.key === "ArrowLeft"){ e.preventDefault(); goPage(PG - 1); }
+});
 $("enewsAll").addEventListener("click", openModal);
 $("mClose").addEventListener("click", closeModal);
 $("modal").addEventListener("click", e => { if (e.target.id === "modal") closeModal(); });

@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-06T13:57:19.157932+09:00",
+ "updated": "2026-10-06T14:04:03.353208+09:00",
  "sources": {
   "google_news": true,
   "naver": false,
@@ -278,6 +278,44 @@
     }
    ],
    "color": "#2B2B9A"
+  }
+ ],
+ "topics": [
+  {
+   "id": "job",
+   "name": "채용"
+  },
+  {
+   "id": "issue",
+   "name": "사건·사고"
+  },
+  {
+   "id": "biz",
+   "name": "실적·경영"
+  },
+  {
+   "id": "rate",
+   "name": "금리·대출"
+  },
+  {
+   "id": "digital",
+   "name": "디지털"
+  },
+  {
+   "id": "product",
+   "name": "상품·서비스"
+  },
+  {
+   "id": "partner",
+   "name": "제휴·협약"
+  },
+  {
+   "id": "esg",
+   "name": "사회공헌"
+  },
+  {
+   "id": "etc",
+   "name": "기타"
   }
  ]
 }

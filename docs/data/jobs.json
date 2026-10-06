@@ -163,6 +163,26 @@
   "via": "공식 채용사이트"
  },
  {
+  "bank": "nh",
+  "title": "2026년 [금융·테크] 6급 신규직원 채용",
+  "link": "https://nhbank.incruit.com/hire/viewhire.asp?projectid=103",
+  "posted": "2026-10-02T00:00:00+09:00",
+  "deadline": "2026-10-12T17:00:00+09:00",
+  "via": "공식 채용사이트",
+  "career": "신입",
+  "job_type": "정규직"
+ },
+ {
+  "bank": "nh",
+  "title": "2026년 [보훈] 6급 신규직원 채용",
+  "link": "https://nhbank.incruit.com/hire/viewhire.asp?projectid=104",
+  "posted": "2026-10-02T00:00:00+09:00",
+  "deadline": "2026-10-12T17:00:00+09:00",
+  "via": "공식 채용사이트",
+  "career": "신입",
+  "job_type": "정규직"
+ },
+ {
   "bank": "kakao",
   "title": "FDS 전기통신금융사기 모니터링 담당자 - 야간 (계약직)",
   "link": "https://kakaobank.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=267331",

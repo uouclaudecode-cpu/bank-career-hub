@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-06T12:22:24.744552+09:00",
+ "updated": "2026-10-06T13:57:19.157932+09:00",
  "sources": {
   "google_news": true,
   "naver": false,
@@ -86,8 +86,12 @@
     "NH농협은행"
    ],
    "saramin": "농협은행",
-   "recruit": "https://recruit.incruit.com/nonghyup/job/",
+   "recruit": "https://nhbank.incruit.com/main/index.asp",
    "jobs": [
+    {
+     "type": "nhbank",
+     "url": "https://nhbank.incruit.com/main/index.asp"
+    },
     {
      "type": "incruit",
      "slug": "nonghyup"

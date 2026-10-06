@@ -33,6 +33,7 @@ jobs:
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
           SARAMIN_ACCESS_KEY: ${{ secrets.SARAMIN_ACCESS_KEY }}
           ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}          
         run: python collector/collect.py ${{ inputs.backfill && '--backfill' || '' }}
       - name: 변경사항 커밋
         run: |

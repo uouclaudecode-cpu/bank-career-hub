@@ -542,6 +542,14 @@
  },
  {
   "bank": "kb",
+  "title": "(흑석동) KB국민은행 \"영업점 텔러(파트타이머)\" 채용 공고_강남영업추진그룹",
+  "link": "https://recruit.incruit.com/kbstar/job/2608100023",
+  "posted": "2026-10-06T00:00:00+09:00",
+  "deadline": "2026-12-31T23:59:00+09:00",
+  "via": "공식 채용사이트"
+ },
+ {
+  "bank": "kb",
   "title": "(선릉역종합금융센터) KB국민은행 \"영업점 텔러(파트타이머)\" 채용 공고_강남영업추진그룹",
   "link": "https://recruit.incruit.com/kbstar/job/2608100020",
   "posted": "2026-10-06T00:00:00+09:00",
@@ -1025,6 +1033,15 @@
  },
  {
   "bank": "toss",
+  "title": "CA Operations Manager",
+  "link": "https://toss.im/career/job-detail?gh_jid=4651099003",
+  "posted": null,
+  "deadline": null,
+  "via": "공식 채용사이트",
+  "job_type": "정규직"
+ },
+ {
+  "bank": "toss",
   "title": "AIOps Platform Engineer",
   "link": "https://toss.im/career/job-detail?gh_jid=7702581003",
   "posted": null,
@@ -1070,12 +1087,12 @@
  },
  {
   "bank": "toss",
-  "title": "CA Operations Manager (예금압류&추심)",
-  "link": "https://toss.im/career/job-detail?gh_jid=4651099003",
+  "title": "Card Operations Specialist",
+  "link": "https://toss.im/career/job-detail?gh_jid=7478795003",
   "posted": null,
   "deadline": null,
   "via": "공식 채용사이트",
-  "job_type": "정규직"
+  "job_type": "계약직"
  },
  {
   "bank": "toss",
@@ -1333,6 +1350,15 @@
   "bank": "toss",
   "title": "Security Audit Team Leader (정보보호 자체감사자)",
   "link": "https://toss.im/career/job-detail?gh_jid=7725867003",
+  "posted": null,
+  "deadline": null,
+  "via": "공식 채용사이트",
+  "job_type": "정규직"
+ },
+ {
+  "bank": "toss",
+  "title": "Security Policy Team Leader",
+  "link": "https://toss.im/career/job-detail?gh_jid=8014310003",
   "posted": null,
   "deadline": null,
   "via": "공식 채용사이트",

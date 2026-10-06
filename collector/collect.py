@@ -8,6 +8,7 @@
   NAVER_CLIENT_ID / NAVER_CLIENT_SECRET   네이버 검색 API (뉴스)
   SARAMIN_ACCESS_KEY                      사람인 오픈API (채용공고)
   ECOS_API_KEY                            한국은행 ECOS 오픈API (경제지표)
+  DATA_GO_KR_KEY                          공공데이터포털 '공공기관 채용정보' API (잡알리오: 기업·산업·수출입은행)
 
 결과물: docs/data/news.json, jobs.json, econ.json, meta.json
 뉴스는 매번 기존 파일에 누적 저장되고, 183일이 지난 기사는 자동 삭제된다.
@@ -102,7 +103,7 @@ def mentions(bank: dict, text: str) -> bool:
 
 
 # ---------------------------------------------------------------- 뉴스: 구글 뉴스 RSS (키 불필요)
-def google_news(bank: dict, extra: str, query: str | None = None) -> list[dict]:
+def google_news(bank: dict, extra: str, query: str | None = None, topic: str = "") -> list[dict]:
     q = (query or " OR ".join(f'"{a}"' for a in bank["aliases"])) + " " + extra
     url = "https://news.google.com/rss/search?" + urllib.parse.urlencode(
         {"q": q, "hl": "ko", "gl": "KR", "ceid": "KR:ko"})
@@ -126,7 +127,7 @@ def google_news(bank: dict, extra: str, query: str | None = None) -> list[dict]:
             dt = email.utils.parsedate_to_datetime(it.findtext("pubDate", "")).astimezone(KST)
         except Exception:  # noqa: BLE001
             continue
-        out.append({"bank": bank["id"], "title": title, "source": source,
+        out.append({"bank": bank["id"], "title": title, "source": source, "topic": topic,
                     "link": it.findtext("link", ""), "date": dt.isoformat(), "via": "google"})
     return out
 
@@ -205,9 +206,166 @@ def saramin_jobs(bank: dict) -> list[dict]:
             "career": (pos.get("experience-level") or {}).get("name", ""),
             "job_type": (pos.get("job-type") or {}).get("name", ""),
             "location": clean((pos.get("location") or {}).get("name", "")).replace(",", " · "),
-            "via": "saramin",
+            "via": "사람인",
         })
     return out
+
+
+# ---------------------------------------------------------------- 채용공고: 은행 공식 채용사이트 (키 불필요)
+DT_RE = re.compile(r"(\d{4})[.\-/]?(\d{2})[.\-/]?(\d{2})(?:[ T]+(\d{1,2}):(\d{2}))?")
+
+
+def parse_dt(s: str | None) -> str | None:
+    """'2026-10-14T14:00:59' / '2026.10.14 14:00 (접수마감)' / '20261014' → ISO(KST). 시각이 없으면 23:59"""
+    m = DT_RE.search(s or "")
+    if not m:
+        return None
+    y, mo, d, hh, mm = m.groups()
+    try:
+        return datetime(int(y), int(mo), int(d), int(hh or 23), int(mm or 59), tzinfo=KST).isoformat()
+    except ValueError:
+        return None
+
+
+def job(bank, title, link, start=None, deadline=None, via="", **extra):
+    return {"bank": bank["id"], "title": clean(title), "link": link,
+            "posted": start, "deadline": deadline, "via": via, **extra}
+
+
+def jobs_jobflex(bank: dict, host: str) -> list[dict]:
+    """recruiter.co.kr(잡플렉스) 기반 채용사이트: 신한·하나·부산·경남·케이뱅크 등"""
+    out, page = [], 1
+    while page <= 5:
+        r = session.post("https://api-recruiter.recruiter.co.kr/position/v1/jobflex",
+                         headers={"Content-Type": "application/json", "prefix": host,
+                                  "Origin": f"https://{host}", "Referer": f"https://{host}/career/jobs"},
+                         json={"pageableRq": {"page": page, "size": 50, "sort": ["JOBFLEX_SORT"]},
+                               "filter": {"keyword": "", "tagSnList": [], "jobGroupSnList": [], "careerTypeList": [],
+                                          "regionSnList": [], "submissionStatusList": [], "openStatusList": [],
+                                          "resumeLanguageTypeList": []}},
+                         timeout=20)
+        r.raise_for_status()
+        js = r.json()
+        for p in js.get("list", []):
+            tags = [t.get("tagName", "") for t in p.get("tagList") or []]
+            out.append(job(bank, p["title"], f"https://{host}/career/jobs/{p['positionSn']}",
+                           parse_dt(p.get("startDateTime")), parse_dt(p.get("endDateTime")), "공식 채용사이트",
+                           career={"NEW": "신입", "CAREER": "경력", "NONE": "경력무관"}.get(p.get("careerType"), ""),
+                           job_type=" · ".join(tags)))
+        if page >= (js.get("pagination") or {}).get("totalPages", 1):
+            break
+        page += 1
+    return out
+
+
+INCRUIT_RE = re.compile(r'href="(?:https?:)?//recruit\.incruit\.com/([\w-]+)/job/(\d+)"[^>]*>\s*'
+                        r'<strong class="title">(.*?)</strong>.*?<em>(.*?)</em>', re.S)
+
+
+def jobs_incruit(bank: dict, slug: str) -> list[dict]:
+    """인크루트 채용사이트: 국민·우리·농협·산업은행"""
+    r = session.get(f"https://recruit.incruit.com/{slug}/job/", timeout=20)
+    r.raise_for_status()
+    html_ = r.content.decode("euc-kr", errors="replace")
+    out = []
+    for s, jid, title, period in INCRUIT_RE.findall(html_):
+        a, _, b = clean(period).partition("~")
+        out.append(job(bank, title, f"https://recruit.incruit.com/{s}/job/{jid}",
+                       parse_dt(a.strip()), parse_dt(b.strip()), "공식 채용사이트"))
+    return out
+
+
+def jobs_kakaobank(bank: dict) -> list[dict]:
+    out, page = [], 1
+    while page <= 10:
+        r = session.post("https://recruit.kakaobank.com/api/recruits",
+                         headers={"Content-Type": "application/json", "Referer": "https://recruit.kakaobank.com/jobs"},
+                         json={"pageNumber": page, "pageSize": 50}, timeout=20)
+        r.raise_for_status()
+        js = r.json()
+        for p in js.get("list", []):
+            url = p.get("recruitNoticeUrl") or ""
+            out.append(job(bank, p["recruitNoticeName"], url if url.startswith("http") else "https://" + url,
+                           parse_dt(p.get("receiveStartDatetime")), parse_dt(p.get("receiveEndDatetime")),
+                           "공식 채용사이트", job_type=p.get("recruitClassName", "")))
+        if page >= (js.get("paging") or {}).get("totalPages", 1):
+            break
+        page += 1
+    return out
+
+
+def jobs_toss(bank: dict, company: str) -> list[dict]:
+    r = session.get("https://api-public.toss.im/api/v3/ipd-eggnog/career/job-groups", timeout=40)
+    r.raise_for_status()
+    out = []
+    for g in r.json().get("success", []):
+        pj = g.get("primary_job") or {}
+        meta = {m.get("name", ""): m.get("value") for m in pj.get("metadata") or []}
+        if not any(v == company for k, v in meta.items() if "자회사" in k):
+            continue
+        out.append(job(bank, g.get("title", ""), pj.get("absolute_url", "https://toss.im/career/jobs"),
+                       None, None, "공식 채용사이트", job_type=meta.get("Employment_Type") or ""))
+    return out
+
+
+_ALIO_CACHE: list | None = None
+
+
+def jobs_alio(bank: dict, inst: str) -> list[dict]:
+    """잡알리오(공공기관 채용정보) - 공공데이터포털 API. 기업·산업·수출입은행"""
+    global _ALIO_CACHE
+    key = os.getenv("DATA_GO_KR_KEY")
+    if not key:
+        return []
+    if _ALIO_CACHE is None:
+        _ALIO_CACHE, page = [], 1
+        while page <= 20:
+            r = session.get("https://apis.data.go.kr/1051000/recruitment/list",
+                            params={"serviceKey": key, "resultType": "json", "ongoingYn": "Y",
+                                    "numOfRows": 100, "pageNo": page}, timeout=30)
+            r.raise_for_status()
+            js = r.json()
+            if str(js.get("resultCode")) not in ("0", "200", "00"):
+                raise RuntimeError(js.get("resultMsg") or js)
+            rows = [x.get("item", x) for x in js.get("result") or []]
+            _ALIO_CACHE += rows
+            if len(rows) < 100 or len(_ALIO_CACHE) >= int(js.get("totalCount") or 0):
+                break
+            page += 1
+        log(f"  [alio] 진행 중 공공기관 공고 {len(_ALIO_CACHE)}건")
+    out = []
+    for p in _ALIO_CACHE:
+        if inst not in (p.get("instNm") or ""):
+            continue
+        src = p.get("srcUrl") or ""
+        link = src if src.startswith("http") else f"https://job.alio.go.kr/recruitview.do?idx={p.get('recrutPblntSn')}"
+        out.append(job(bank, p.get("recrutPbancTtl", ""), link, parse_dt(p.get("pbancBgngYmd")),
+                       parse_dt(p.get("pbancEndYmd")), "잡알리오",
+                       career=p.get("recrutSeNm") or "", job_type=p.get("hireTypeNmLst") or "",
+                       location=p.get("workRgnNmLst") or ""))
+    return out
+
+
+JOB_SOURCES = {"jobflex": lambda b, s: jobs_jobflex(b, s["host"]),
+               "incruit": lambda b, s: jobs_incruit(b, s["slug"]),
+               "kakaobank": lambda b, s: jobs_kakaobank(b),
+               "toss": lambda b, s: jobs_toss(b, s["company"]),
+               "alio": lambda b, s: jobs_alio(b, s["inst"])}
+
+
+def bank_jobs(bank: dict) -> tuple[list[dict], bool]:
+    """(공고 목록, 성공 여부)"""
+    out, ok = [], True
+    for src in bank.get("jobs", []):
+        try:
+            got = JOB_SOURCES[src["type"]](bank, src)
+            log(f"  [{src['type']}] {bank['name']}: {len(got)}건")
+            out += got
+        except Exception as e:  # noqa: BLE001
+            ok = False
+            log(f"  [{src['type']}] {bank['name']} 실패: {e}")
+    out += saramin_jobs(bank)
+    return out, ok
 
 
 # ---------------------------------------------------------------- 경제지표: 한국은행 ECOS (선택)
@@ -289,6 +447,7 @@ def main():
     banks = json.loads((ROOT / "banks.json").read_text(encoding="utf-8"))
     news_path, jobs_path = DATA / "news.json", DATA / "jobs.json"
     old_news = load_json(news_path, [])
+    old_jobs = load_json(jobs_path, [])
 
     fresh: list[dict] = []
     jobs: list[dict] = []
@@ -305,13 +464,16 @@ def main():
             fresh += google_news(b, "when:7d")
             fresh += google_news(b, "채용 when:30d")  # 채용 기사는 따로 한 번 더
         fresh += naver_news(b, pages=10 if args.backfill else 2)
-        jobs += saramin_jobs(b)
+        got, ok = bank_jobs(b)
+        if not ok:  # 수집 실패한 은행은 이전 공고를 유지
+            got += [j for j in old_jobs if j["bank"] == b["id"]]
+        jobs += got
         time.sleep(0.3)
 
     # 거시경제 뉴스
     log("· 경제(거시)")
     for q in MACRO["queries"]:
-        fresh += google_news(MACRO, "when:30d" if args.backfill else "when:7d", query=f'"{q}"')
+        fresh += google_news(MACRO, "when:30d" if args.backfill else "when:7d", query=f'"{q}"', topic=q)
         time.sleep(0.3)
     fresh += naver_news(MACRO, pages=1)
 
@@ -319,14 +481,12 @@ def main():
     save_json(news_path, news)
 
     # 채용공고: 마감되지 않은 것만. 사람인 키가 없으면 기존 파일 유지
-    if os.getenv("SARAMIN_ACCESS_KEY"):
-        today = NOW.isoformat()
-        jobs = [j for j in jobs if not j["deadline"] or j["deadline"] >= today]
-        uniq = {j["link"]: j for j in jobs}
-        jobs = sorted(uniq.values(), key=lambda j: j["deadline"] or "9999")
-        save_json(jobs_path, jobs)
-    elif not jobs_path.exists():
-        save_json(jobs_path, [])
+    # 채용공고: 마감 전(또는 상시) 공고만, 링크 기준 중복 제거, 마감 임박 순
+    today = NOW.isoformat()
+    jobs = [j for j in jobs if j.get("title") and (not j.get("deadline") or j["deadline"] >= today)]
+    uniq = {j["link"]: j for j in jobs}
+    jobs = sorted(uniq.values(), key=lambda j: (j.get("deadline") or "9999", j["bank"]))
+    save_json(jobs_path, jobs)
 
     econ = economy(load_json(DATA / "econ.json", {}))
     save_json(DATA / "econ.json", econ)
@@ -338,6 +498,7 @@ def main():
             "naver": bool(os.getenv("NAVER_CLIENT_ID")),
             "saramin": bool(os.getenv("SARAMIN_ACCESS_KEY")),
             "ecos": bool(os.getenv("ECOS_API_KEY")),
+            "alio": bool(os.getenv("DATA_GO_KR_KEY")),
         },
         "banks": banks,
     }

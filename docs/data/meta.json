@@ -1,10 +1,11 @@
 {
- "updated": "2026-10-06T11:03:44.604189+09:00",
+ "updated": "2026-10-06T12:22:24.744552+09:00",
  "sources": {
   "google_news": true,
   "naver": false,
   "saramin": false,
-  "ecos": true
+  "ecos": true,
+  "alio": true
  },
  "banks": [
   {
@@ -16,7 +17,13 @@
     "KB국민은행"
    ],
    "saramin": "국민은행",
-   "recruit": "https://kbstar.incruit.com",
+   "recruit": "https://recruit.incruit.com/kbstar/job/",
+   "jobs": [
+    {
+     "type": "incruit",
+     "slug": "kbstar"
+    }
+   ],
    "color": "#FFB500"
   },
   {
@@ -27,7 +34,13 @@
     "신한은행"
    ],
    "saramin": "신한은행",
-   "recruit": "https://shinhan.recruiter.co.kr/career/home",
+   "recruit": "https://shinhan.recruiter.co.kr/career/jobs",
+   "jobs": [
+    {
+     "type": "jobflex",
+     "host": "shinhan.recruiter.co.kr"
+    }
+   ],
    "color": "#0046FF"
   },
   {
@@ -39,6 +52,12 @@
    ],
    "saramin": "하나은행",
    "recruit": "https://hanabank.recruiter.co.kr/career/home",
+   "jobs": [
+    {
+     "type": "jobflex",
+     "host": "hanabank.recruiter.co.kr"
+    }
+   ],
    "color": "#008485"
   },
   {
@@ -49,7 +68,13 @@
     "우리은행"
    ],
    "saramin": "우리은행",
-   "recruit": "https://wooribank.careerlink.kr/jobs",
+   "recruit": "https://recruit.incruit.com/wooribank/job/",
+   "jobs": [
+    {
+     "type": "incruit",
+     "slug": "wooribank"
+    }
+   ],
    "color": "#0067AC"
   },
   {
@@ -61,7 +86,13 @@
     "NH농협은행"
    ],
    "saramin": "농협은행",
-   "recruit": "https://www.nhbank.com/nhmn/KO_NHMN_07.do",
+   "recruit": "https://recruit.incruit.com/nonghyup/job/",
+   "jobs": [
+    {
+     "type": "incruit",
+     "slug": "nonghyup"
+    }
+   ],
    "color": "#00A651"
   },
   {
@@ -73,6 +104,7 @@
    ],
    "saramin": "SC제일은행",
    "recruit": "https://www.standardchartered.co.kr",
+   "jobs": [],
    "color": "#38D200"
   },
   {
@@ -84,6 +116,7 @@
    ],
    "saramin": "씨티은행",
    "recruit": "https://www.citibank.co.kr",
+   "jobs": [],
    "color": "#003B70"
   },
   {
@@ -96,6 +129,7 @@
    ],
    "saramin": "아이엠뱅크",
    "recruit": "https://www.imbank.co.kr",
+   "jobs": [],
    "color": "#00B2A9"
   },
   {
@@ -107,7 +141,13 @@
     "IBK기업은행"
    ],
    "saramin": "기업은행",
-   "recruit": "https://www.ibk.co.kr",
+   "recruit": "https://job.alio.go.kr/recruit.do",
+   "jobs": [
+    {
+     "type": "alio",
+     "inst": "기업은행"
+    }
+   ],
    "color": "#1E5EBF"
   },
   {
@@ -119,7 +159,17 @@
     "KDB산업은행"
    ],
    "saramin": "산업은행",
-   "recruit": "https://www.kdb.co.kr",
+   "recruit": "https://recruit.incruit.com/kdb/job/",
+   "jobs": [
+    {
+     "type": "incruit",
+     "slug": "kdb"
+    },
+    {
+     "type": "alio",
+     "inst": "산업은행"
+    }
+   ],
    "color": "#1D3C8C"
   },
   {
@@ -130,7 +180,13 @@
     "수출입은행"
    ],
    "saramin": "수출입은행",
-   "recruit": "https://www.koreaexim.go.kr",
+   "recruit": "https://job.alio.go.kr/recruit.do",
+   "jobs": [
+    {
+     "type": "alio",
+     "inst": "수출입은행"
+    }
+   ],
    "color": "#2D6E9E"
   },
   {
@@ -142,7 +198,13 @@
     "BNK부산은행"
    ],
    "saramin": "부산은행",
-   "recruit": "https://www.busanbank.co.kr",
+   "recruit": "https://busanbank.recruiter.co.kr/career/home",
+   "jobs": [
+    {
+     "type": "jobflex",
+     "host": "busanbank.recruiter.co.kr"
+    }
+   ],
    "color": "#E60012"
   },
   {
@@ -154,7 +216,13 @@
     "BNK경남은행"
    ],
    "saramin": "경남은행",
-   "recruit": "https://www.knbank.co.kr",
+   "recruit": "https://knbank.recruiter.co.kr/career/home",
+   "jobs": [
+    {
+     "type": "jobflex",
+     "host": "knbank.recruiter.co.kr"
+    }
+   ],
    "color": "#B8172B"
   },
   {
@@ -165,7 +233,12 @@
     "카카오뱅크"
    ],
    "saramin": "카카오뱅크",
-   "recruit": "https://recruit.kakaobank.com",
+   "recruit": "https://recruit.kakaobank.com/jobs",
+   "jobs": [
+    {
+     "type": "kakaobank"
+    }
+   ],
    "color": "#FFE300"
   },
   {
@@ -176,7 +249,13 @@
     "토스뱅크"
    ],
    "saramin": "토스뱅크",
-   "recruit": "https://toss.im/career",
+   "recruit": "https://toss.im/career/jobs",
+   "jobs": [
+    {
+     "type": "toss",
+     "company": "토스뱅크"
+    }
+   ],
    "color": "#0064FF"
   },
   {
@@ -187,7 +266,13 @@
     "케이뱅크"
    ],
    "saramin": "케이뱅크",
-   "recruit": "https://www.kbanknow.com",
+   "recruit": "https://kbank.recruiter.co.kr/career/home",
+   "jobs": [
+    {
+     "type": "jobflex",
+     "host": "kbank.recruiter.co.kr"
+    }
+   ],
    "color": "#2B2B9A"
   }
  ]

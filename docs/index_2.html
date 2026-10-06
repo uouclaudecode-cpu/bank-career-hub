@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>은행 취업 허브</title>
+<meta name="description" content="은행별 채용 정보, 뉴스, 국내 경제지표를 한 곳에서">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#fff; --ink:#15181d; --sub:#5b6472; --faint:#8a93a1;
+  --line:#e4e7ec; --grid:#eef0f3; --accent:#1f5eff; --accent-soft:#e8efff;
+  --up:#d6336c; --down:#1c7ed6;           /* 한국식: 상승 빨강, 하락 파랑 */
+  --warn:#d9480f; --warn-soft:#fff1e8; --ok:#2b8a3e; --ok-soft:#e9f7ec;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;  /* 차트 계열색 (검증된 팔레트) */
+  --radius:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#0f1115; --panel:#171a20; --ink:#e9ecf1; --sub:#a3abb8; --faint:#77808e;
+    --line:#2a2f38; --grid:#22262e; --accent:#7aa2ff; --accent-soft:#1d2840;
+    --up:#ff6b8f; --down:#5aa7ff;
+    --warn:#ff8a50; --warn-soft:#3a2216; --ok:#69c37b; --ok-soft:#18301e;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.55}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+.num{font-variant-numeric:tabular-nums}
+
+header{padding:28px 0 14px}
+header h1{margin:0;font-size:24px;letter-spacing:-.02em}
+header p{margin:4px 0 0;color:var(--sub);font-size:14px}
+
+/* ---------- 경제 지표 ---------- */
+.econ{margin-bottom:18px}
+.sec-title{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:6px 0 10px;flex-wrap:wrap}
+.sec-title h2{margin:0;font-size:17px}
+.sec-title small{color:var(--faint);font-size:12px}
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px 10px;text-align:left;display:block;width:100%}
+button.kpi:hover{border-color:var(--faint)}
+.kpi[aria-pressed=true]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.kpi .k{font-size:13px;color:var(--sub)}
+.kpi .v{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-top:2px}
+.kpi .v small{font-size:13px;font-weight:500;color:var(--sub);margin-left:2px}
+.kpi .d{font-size:12px;color:var(--faint)}
+.up{color:var(--up)} .down{color:var(--down)}
+.kpi svg{display:block;width:100%;height:30px;margin-top:6px}
+.spark{fill:none;stroke:var(--sub);stroke-width:1.5}
+.spark-end{fill:var(--ink)}
+
+.chart-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-top:10px;position:relative}
+.chart-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.chart-head h3{margin:0;font-size:15px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--sub);margin:8px 0 2px}
+.legend i{display:inline-block;width:14px;height:2px;border-radius:1px;vertical-align:middle;margin-right:5px}
+#chart{width:100%;height:240px;display:block;touch-action:pan-y}
+#chart text{font-size:11px;fill:var(--faint);font-family:inherit}
+#chart .gl{stroke:var(--grid);stroke-width:1}
+#chart .ln{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+#chart .lbl{font-size:12px;font-weight:700}
+#chart .xh{stroke:var(--faint);stroke-width:1;stroke-dasharray:3 3}
+.tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:130px;display:none;z-index:3}
+.tip .dt{color:var(--faint);margin-bottom:4px}
+.tip .row{display:flex;align-items:center;gap:6px;justify-content:space-between}
+.tip .row span{color:var(--sub);display:flex;align-items:center;gap:5px}
+.tip .row i{display:inline-block;width:10px;height:2px;border-radius:1px}
+.tip .row b{font-variant-numeric:tabular-nums}
+.econ-empty{background:var(--panel);border:1px dashed var(--line);border-radius:var(--radius);padding:16px;color:var(--sub);font-size:14px}
+
+/* ---------- 은행 선택 ---------- */
+.banks{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--line)}
+.banks .row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.banks .row::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px 6px 10px;font-size:14px;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.chip .dot{width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.chip .n{color:var(--faint);font-size:12px}
+.chip[aria-pressed=true]{background:var(--c,var(--ink));color:var(--ct,var(--bg));border-color:var(--c,var(--ink))}
+.chip[aria-pressed=true] .dot{background:var(--ct)}
+.chip[aria-pressed=true] .n{color:inherit;opacity:.75}
+.sep{flex:none;width:1px;background:var(--line);margin:4px 4px}
+
+/* ---------- 본문 ---------- */
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:18px;align-items:start;padding:18px 0 48px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.head h2{margin:0;font-size:17px;display:flex;align-items:baseline;gap:8px}
+.head h2 small{color:var(--faint);font-weight:400;font-size:13px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex:none}
+.seg button{border:0;background:transparent;padding:5px 12px;font-size:13px}
+.seg button + button{border-left:1px solid var(--line)}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.search{flex:1;min-width:140px;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 10px;font:inherit;font-size:14px;color:var(--ink)}
+
+.tag{display:inline-block;font-size:11.5px;font-weight:700;border-radius:5px;padding:1px 7px;background:var(--c);color:var(--ct);vertical-align:1px;white-space:nowrap}
+.tag.macro{background:var(--line);color:var(--sub)}
+.kind{font-size:11.5px;color:var(--faint);border:1px solid var(--line);border-radius:5px;padding:0 5px;margin-left:4px;vertical-align:1px}
+
+.rec{display:block;padding:11px 0 11px 12px;border-top:1px solid var(--line);position:relative}
+.rec::before{content:"";position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:2px;background:var(--c)}
+.rec:first-child{border-top:0}
+.rec .t{font-weight:500}
+.rec:hover .t{color:var(--accent)}
+.rec.news .t{font-weight:400}
+.meta{color:var(--sub);font-size:13px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:3px}
+.badge{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:1px 7px;margin-right:6px;vertical-align:1px;background:var(--ok-soft);color:var(--ok)}
+.badge.urgent{background:var(--warn-soft);color:var(--warn)}
+.jump{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:2px 0 6px}
+.jump a{border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;font-size:13px}
+.jump a b{font-size:14px}
+.jump a span{color:var(--sub)}
+.jump a:hover{border-color:var(--accent)}
+.divider{font-size:12px;font-weight:700;color:var(--faint);margin:14px 0 2px}
+.links{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.links b{width:100%;font-size:13px;color:var(--sub);font-weight:500}
+.links a{border:1px solid var(--line);border-radius:999px;padding:4px 10px 4px 8px;font-size:13px;display:flex;align-items:center;gap:6px}
+.links a .dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.links a:hover{border-color:var(--c)}
+
+.day{font-size:12px;font-weight:700;color:var(--faint);margin:16px 0 2px}
+.news-row{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.day + .news-row{border-top:0}
+.news-row .t{flex:1;min-width:0}
+.news-row a:hover{color:var(--accent);text-decoration:underline}
+.news-row .src{color:var(--faint);font-size:12px;white-space:nowrap}
+.more{width:100%;margin-top:12px;border:1px solid var(--line);background:transparent;border-radius:8px;padding:8px}
+.empty{color:var(--sub);font-size:14px;padding:12px 0}
+.empty code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:13px}
+footer{color:var(--faint);font-size:12px;padding:0 0 32px}
+
+@media (max-width:1000px){ .kpis{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (max-width:860px){ .grid{grid-template-columns:1fr} }
+@media (max-width:520px){
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .news-row{flex-direction:column;gap:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>은행 취업 허브</h1>
+    <p id="updated">데이터를 불러오는 중…</p>
+  </header>
+
+  <section class="econ" id="econ">
+    <div class="sec-title"><h2>국내 경제 지표</h2><small id="econSrc"></small></div>
+    <div class="kpis" id="kpis"></div>
+    <div class="chart-card" id="chartCard">
+      <div class="chart-head">
+        <h3 id="chartTitle">금리 추이</h3>
+        <div class="seg" id="range"><button data-r="365">1년</button><button data-r="1095">3년</button></div>
+      </div>
+      <div class="legend" id="legend"></div>
+      <svg id="chart" role="img" aria-label="경제 지표 추이 차트"></svg>
+      <div class="tip" id="tip"></div>
+    </div>
+  </section>
+</div>
+
+<nav class="banks"><div class="wrap"><div class="row" id="bankRow"></div></div></nav>
+
+<main class="wrap">
+  <div class="grid">
+    <section class="card">
+      <div class="head">
+        <h2>채용 <small id="recCount"></small></h2>
+        <div class="seg" id="recKind"><button data-k="all">전체</button><button data-k="post">공고</button><button data-k="news">소식</button></div>
+      </div>
+      <div id="rec"></div>
+      <div class="links" id="links"></div>
+    </section>
+
+    <section class="card">
+      <div class="head">
+        <h2>뉴스 <small id="newsCount"></small></h2>
+        <div class="seg" id="period"><button data-p="7">1주</button><button data-p="30">1개월</button><button data-p="183">6개월</button></div>
+      </div>
+      <div class="tools">
+        <div class="seg" id="cat"><button data-c="all">전체</button><button data-c="job">채용</button><button data-c="econ">경제</button></div>
+        <input class="search" id="q" type="search" placeholder="제목에서 찾기 (예: 디지털, 실적, 금리)">
+      </div>
+      <div id="news"></div>
+    </section>
+  </div>
+</main>
+<div class="wrap"><footer>뉴스 제목과 링크만 모아 보여줍니다. 기사 저작권은 각 언론사에 있습니다. 경제지표 출처: 한국은행 경제통계시스템(ECOS). 채용공고는 반드시 은행 공식 홈페이지에서 다시 확인하세요. 은행 색상은 각 은행 대표색을 참고한 근사치입니다.</footer></div>
+
+<script>
+const S = {bank:"all", period:7, cat:"all", rec:"all", q:"", shown:40, recShown:10, chart:"rates", range:365};
+let META = {banks:[]}, NEWS = [], JOBS = [], ECON = null;
+const $ = id => document.getElementById(id);
+const DAY = 864e5;
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ago = days => Date.now() - days * DAY;
+const BANK = {};
+
+/* 배경색 밝기에 맞춰 글자색(검정/흰색) 자동 결정 */
+function textOn(hex){
+  const n = parseInt(hex.slice(1), 16), c = [n >> 16, n >> 8 & 255, n & 255].map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; });
+  const L = .2126 * c[0] + .7152 * c[1] + .0722 * c[2];
+  return L > .35 ? "#111" : "#fff";
+}
+const cvars = id => { const b = BANK[id]; return b ? `--c:${b.color};--ct:${textOn(b.color)}` : ""; };
+const tag = id => id === "macro" ? `<span class="tag macro">경제</span>` : `<span class="tag" style="${cvars(id)}">${esc(BANK[id]?.name || id)}</span>`;
+
+function readHash(){
+  const h = new URLSearchParams(location.hash.slice(1));
+  if (h.get("bank")) S.bank = h.get("bank");
+  if ([7,30,183].includes(+h.get("p"))) S.period = +h.get("p");
+  if (["all","job","econ"].includes(h.get("c"))) S.cat = h.get("c");
+}
+const writeHash = () => history.replaceState(null, "", `#bank=${S.bank}&p=${S.period}&c=${S.cat}`);
+
+async function load(){
+  const get = f => fetch(`data/${f}?v=${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
+  [META, NEWS, JOBS, ECON] = await Promise.all([get("meta.json"), get("news.json"), get("jobs.json"), get("econ.json")]);
+  META ||= {banks:[]}; NEWS ||= []; JOBS ||= [];
+  META.banks.forEach(b => BANK[b.id] = b);
+  NEWS.forEach(n => n.ts = Date.parse(n.date));
+  $("updated").textContent = META.updated
+    ? `마지막 업데이트 ${new Date(META.updated).toLocaleString("ko-KR",{dateStyle:"medium",timeStyle:"short"})} · 6시간마다 자동 갱신`
+    : "아직 수집된 데이터가 없습니다. README의 ‘처음 설정하기’를 따라 수집을 실행하세요.";
+  readHash(); renderEcon(); render();
+}
+
+/* ================= 경제 지표 ================= */
+const FMT = {
+  "%":  v => v.toFixed(2), "원": v => v.toLocaleString("ko-KR",{maximumFractionDigits:1}), "pt": v => v.toLocaleString("ko-KR",{maximumFractionDigits:2}),
+};
+const fmt = (v, u) => (FMT[u] || (x => x))(v);
+const CHARTS = {
+  rates: {title:"금리 추이", ids:["base","ktb3","cd91"], colors:["var(--s1)","var(--s2)","var(--s3)"], step:{base:true}, unit:"%"},
+  usdkrw:{title:"원/달러 환율", ids:["usdkrw"], colors:["var(--s1)"], unit:"원"},
+  kospi: {title:"코스피", ids:["kospi"], colors:["var(--s1)"], unit:"pt"},
+  cpi:   {title:"소비자물가 상승률 (전년동월비)", ids:["cpi"], colors:["var(--s1)"], unit:"%"},
+};
+const KPI_CHART = {base:"rates", ktb3:"rates", cd91:"rates", usdkrw:"usdkrw", kospi:"kospi", cpi:"cpi"};
+
+function valueAt(points, t){ // t 시점(또는 그 이전) 값
+  let v = null;
+  for (const [d, x] of points){ if (Date.parse(d) <= t) v = x; else break; }
+  return v;
+}
+
+function renderEcon(){
+  const ser = ECON?.series || {};
+  const order = (ECON?.order || Object.keys(ser)).filter(id => ser[id]?.points?.length);
+  if (!order.length){
+    $("kpis").innerHTML = ""; $("chartCard").style.display = "none";
+    $("kpis").outerHTML = `<div class="econ-empty">경제지표가 아직 없어요. 한국은행 ECOS 오픈API 키를 <code>ECOS_API_KEY</code>로 등록하면 기준금리·국고채·CD·환율·코스피·물가가 표시됩니다. (README 참고)</div>`;
+    return;
+  }
+  const last = Math.max(...order.map(id => Date.parse(ser[id].points.at(-1)[0])));
+  $("econSrc").textContent = `한국은행 ECOS · ${new Date(last).toLocaleDateString("ko-KR")} 기준`;
+  $("kpis").innerHTML = order.map(id => {
+    const s = ser[id], pts = s.points, [d, v] = pts.at(-1);
+    const monthly = s.freq === "M";
+    const prev = monthly ? pts.at(-2)?.[1] : valueAt(pts, Date.parse(d) - 30 * DAY);
+    const diff = prev == null ? null : v - prev;
+    const unitDiff = s.unit === "%" ? "%p" : s.unit;
+    const cls = !diff ? "" : diff > 0 ? "up" : "down";
+    const arrow = !diff ? "–" : diff > 0 ? "▲" : "▼";
+    const dTxt = diff == null ? "" : Math.abs(diff) < 1e-9 ? `변동 없음 · ${monthly ? "전월 대비" : "1개월 전 대비"}` : `<span class="${cls}">${arrow} ${fmt(Math.abs(diff), s.unit)}${unitDiff}</span> ${monthly ? "전월 대비" : "1개월 전 대비"}`;
+    return `<button class="kpi" data-id="${id}" aria-pressed="${KPI_CHART[id] === S.chart}">
+      <div class="k">${esc(s.name)}</div>
+      <div class="v num">${fmt(v, s.unit)}<small>${s.unit}</small></div>
+      <div class="d num">${dTxt}</div>${sparkline(pts, monthly ? 24 : 365)}</button>`;
+  }).join("");
+  drawChart();
+}
+
+function sparkline(pts, n){
+  const cut = pts[0] && pts.at(-1) ? Date.parse(pts.at(-1)[0]) - (n > 30 ? 365 : 730) * DAY : 0;
+  const p = pts.filter(([d]) => Date.parse(d) >= cut);
+  if (p.length < 2) return "";
+  const W = 120, H = 30, ys = p.map(x => x[1]), lo = Math.min(...ys), hi = Math.max(...ys), r = hi - lo || 1;
+  const xy = p.map(([, y], i) => [i / (p.length - 1) * (W - 4) + 1, H - 3 - (y - lo) / r * (H - 6)]);
+  const [ex, ey] = xy.at(-1);
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><polyline class="spark" vector-effect="non-scaling-stroke" points="${xy.map(a => a.map(v => v.toFixed(1)).join(",")).join(" ")}"/><circle class="spark-end" cx="${ex}" cy="${ey}" r="2"/></svg>`;
+}
+
+function niceTicks(lo, hi, n = 4){
+  const span = hi - lo || 1, raw = span / n, mag = 10 ** Math.floor(Math.log10(raw));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw);
+  const t = []; for (let v = Math.floor(lo / step) * step; v <= hi + step * .001; v += step) t.push(+v.toFixed(6));
+  return t;
+}
+
+let CH = null; // 현재 차트 상태 (툴팁용)
+function drawChart(){
+  const cfg = CHARTS[S.chart], ser = ECON.series;
+  const ids = cfg.ids.filter(id => ser[id]);
+  document.querySelectorAll("#range button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.r === S.range));
+  $("chartTitle").textContent = cfg.title;
+  $("legend").innerHTML = ids.length > 1 ? ids.map((id, i) => `<span><i style="background:${cfg.colors[i]}"></i>${esc(ser[id].name)}</span>`).join("") : "";
+  const svg = $("chart"), W = svg.clientWidth || 800, H = 240, wide = W > 560, m = {l:46, r:ids.length > 1 && wide ? 104 : 12, t:10, b:24};
+  const end = Math.max(...ids.map(id => Date.parse(ser[id].points.at(-1)[0]))), start = end - S.range * DAY;
+  const data = ids.map(id => ser[id].points.map(([d, v]) => [Date.parse(d), v]).filter(([t]) => t >= start));
+  const all = data.flat().map(p => p[1]);
+  if (!all.length){ svg.innerHTML = ""; return; }
+  let lo = Math.min(...all), hi = Math.max(...all); const pad = (hi - lo) * .12 || Math.abs(hi) * .05 || 1; lo -= pad; hi += pad;
+  const ticks = niceTicks(lo, hi); lo = Math.min(lo, ticks[0]); hi = Math.max(hi, ticks.at(-1));
+  const X = t => m.l + (t - start) / (end - start) * (W - m.l - m.r);
+  const Y = v => m.t + (1 - (v - lo) / (hi - lo)) * (H - m.t - m.b);
+  let g = "";
+  ticks.forEach(v => { if (v < lo || v > hi) return; g += `<line class="gl" x1="${m.l}" x2="${W - m.r}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${m.l - 6}" y="${Y(v) + 4}" text-anchor="end">${fmt(v, cfg.unit)}</text>`; });
+  // x축: 월 단위 눈금
+  const months = (S.range > 400 ? 6 : 2) * (wide ? 1 : 2), d0 = new Date(start); d0.setDate(1); d0.setMonth(d0.getMonth() + 1);
+  for (let d = new Date(d0); d.getTime() <= end; d.setMonth(d.getMonth() + months)){
+    const x = X(d.getTime()); if (x < m.l + 10 || x > W - m.r - 10) continue;
+    g += `<text x="${x}" y="${H - 6}" text-anchor="middle">${d.getMonth() === 0 || S.range > 400 ? String(d.getFullYear()).slice(2) + "." : ""}${d.getMonth() + 1}월</text>`;
+  }
+  const labels = [];
+  data.forEach((pts, i) => {
+    if (!pts.length) return;
+    let dpath = "";
+    pts.forEach(([t, v], k) => {
+      if (!k){ dpath += `M${X(t).toFixed(1)},${Y(v).toFixed(1)}`; return; }
+      if (cfg.step?.[ids[i]]) dpath += `H${X(t).toFixed(1)}`;
+      dpath += `L${X(t).toFixed(1)},${Y(v).toFixed(1)}`;
+    });
+    if (cfg.step?.[ids[i]]) dpath += `H${X(end).toFixed(1)}`;
+    g += `<path class="ln" d="${dpath}" stroke="${cfg.colors[i]}"/>`;
+    const [lt, lv] = pts.at(-1);
+    labels.push({y:Y(lv), x:X(lt), txt:ids.length > 1 ? `${ser[ids[i]].name.replace(" ", "")} ${fmt(lv, cfg.unit)}` : "", color:cfg.colors[i]});
+  });
+  // 끝 라벨 겹침 방지
+  labels.sort((a, b) => a.y - b.y).forEach((l, k, arr) => { if (k && l.y - arr[k - 1].y < 14) l.y = arr[k - 1].y + 14; });
+  labels.forEach(l => { if (l.txt && wide) g += `<text class="lbl" x="${W - m.r + 6}" y="${l.y + 4}" style="fill:${l.color}">${esc(l.txt)}</text>`; });
+  g += `<line class="xh" id="xh" y1="${m.t}" y2="${H - m.b}" style="display:none"/><g id="dots"></g>`;
+  g += `<rect x="${m.l}" y="0" width="${W - m.l - m.r}" height="${H}" fill="transparent" id="hit"/>`;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = g;
+  CH = {cfg, ids, data, X, Y, start, end, m, W, H};
+}
+
+function chartHover(e){
+  if (!CH) return;
+  const svg = $("chart"), r = svg.getBoundingClientRect(), px = e.clientX - r.left;
+  const {cfg, ids, data, X, Y, start, end, m, W} = CH;
+  if (px < m.l || px > W - m.r){ hideTip(); return; }
+  const t = start + (px - m.l) / (W - m.l - m.r) * (end - start);
+  // 가장 가까운 실제 데이터 날짜로 스냅 (첫 계열 기준)
+  const base = data.find(p => p.length) || [];
+  let snap = base[0]?.[0]; for (const [tt] of base){ if (Math.abs(tt - t) < Math.abs(snap - t)) snap = tt; }
+  const x = X(snap), xh = $("xh");
+  xh.setAttribute("x1", x); xh.setAttribute("x2", x); xh.style.display = "";
+  const tip = $("tip"); tip.replaceChildren();
+  const dt = document.createElement("div"); dt.className = "dt"; dt.textContent = new Date(snap).toLocaleDateString("ko-KR"); tip.append(dt);
+  let dots = "";
+  ids.forEach((id, i) => {
+    const v = valueAt(data[i].map(([tt, vv]) => [new Date(tt).toISOString(), vv]), snap + 1);
+    if (v == null) return;
+    dots += `<circle cx="${x}" cy="${Y(v)}" r="4" fill="${cfg.colors[i]}" stroke="var(--panel)" stroke-width="2"/>`;
+    const row = document.createElement("div"); row.className = "row";
+    const name = document.createElement("span"), key = document.createElement("i"); key.style.background = cfg.colors[i];
+    name.append(key, ECON.series[id].name);
+    const val = document.createElement("b"); val.textContent = fmt(v, cfg.unit) + cfg.unit;
+    row.append(name, val); tip.append(row);
+  });
+  $("dots").innerHTML = dots;
+  tip.style.display = "block";
+  const card = $("chartCard").getBoundingClientRect(), tw = tip.offsetWidth;
+  let left = r.left - card.left + x + 12; if (left + tw > card.width - 8) left = r.left - card.left + x - tw - 12;
+  tip.style.left = left + "px"; tip.style.top = (r.top - card.top + 8) + "px";
+}
+function hideTip(){ $("tip").style.display = "none"; const xh = $("xh"); if (xh) xh.style.display = "none"; const d = $("dots"); if (d) d.innerHTML = ""; }
+
+/* ================= 은행·채용·뉴스 ================= */
+const inBank = x => S.bank === "all" || x.bank === S.bank;
+const dday = iso => {
+  if (!iso) return null;
+  const d = new Date(iso), t = new Date(); t.setHours(0,0,0,0); d.setHours(0,0,0,0);
+  return Math.round((d - t) / DAY);
+};
+
+function renderBanks(){
+  const week = ago(7), cnt = {};
+  NEWS.forEach(n => { if (n.ts >= week) cnt[n.bank] = (cnt[n.bank]||0) + 1; });
+  let html = `<button class="chip" data-b="all" aria-pressed="${S.bank==="all"}">전체</button>`, g = null;
+  META.banks.forEach(b => {
+    if (b.group !== g){ html += `<span class="sep" title="${esc(b.group)}"></span>`; g = b.group; }
+    html += `<button class="chip" data-b="${b.id}" style="${cvars(b.id)}" aria-pressed="${S.bank===b.id}"><span class="dot"></span>${esc(b.name)}<span class="n">${cnt[b.id]||0}</span></button>`;
+  });
+  $("bankRow").innerHTML = html;
+  $("bankRow").querySelector("[aria-pressed=true]")?.scrollIntoView({block:"nearest", inline:"center"});
+}
+
+function renderRec(){
+  const posts = S.rec === "news" ? [] : JOBS.filter(inBank);
+  const news = S.rec === "post" ? [] : NEWS.filter(x => inBank(x) && x.bank !== "macro" && x.job && x.ts >= ago(30));
+  $("recCount").textContent = `공고 ${JOBS.filter(inBank).length} · 소식 ${NEWS.filter(x => inBank(x) && x.bank !== "macro" && x.job && x.ts >= ago(30)).length}`;
+  let html = "";
+  if (posts.length){
+    html += posts.map(x => {
+      const d = dday(x.deadline);
+      const badge = d === null ? `<span class="badge">${esc(x.close_type || "상시")}</span>` : `<span class="badge ${d <= 3 ? "urgent" : ""}">${d === 0 ? "D-day" : "D-" + d}</span>`;
+      const meta = [x.career, x.job_type, x.location, x.deadline ? `~${new Date(x.deadline).toLocaleDateString("ko-KR",{month:"long",day:"numeric"})} 마감` : ""].filter(Boolean);
+      return `<a class="rec" style="${cvars(x.bank)}" href="${esc(x.link)}" target="_blank" rel="noopener">
+        <div class="t">${badge}${esc(x.title)}</div>
+        <div class="meta">${tag(x.bank)}<span class="kind">공고</span> ${meta.map(esc).join(" · ")}</div></a>`;
+    }).join("");
+  } else if (S.rec !== "news"){
+    const b = BANK[S.bank], kw = encodeURIComponent(b ? b.saramin : "은행 신입행원");
+    html += `<div class="empty">${b ? `${esc(b.name)}의 ` : ""}진행 중인 공고를 아래에서 바로 확인해 보세요.</div>
+      <div class="jump">
+        <a href="https://www.saramin.co.kr/zf_user/search/recruit?searchword=${kw}" target="_blank" rel="noopener"><b>사람인</b><span>${b ? "공고 검색" : "은행 공고 검색"} ↗</span></a>
+        <a href="https://www.jobkorea.co.kr/Search/?stext=${kw}" target="_blank" rel="noopener"><b>잡코리아</b><span>${b ? "공고 검색" : "은행 공고 검색"} ↗</span></a>
+        ${b ? `<a style="${cvars(b.id)}" href="${esc(b.recruit)}" target="_blank" rel="noopener"><b>공식 홈페이지</b><span>${esc(b.name)} ↗</span></a>` : ""}
+      </div>`;
+  }
+  if (news.length){
+    if (S.rec === "all") html += `<div class="divider">최근 30일 채용 소식</div>`;
+    html += news.slice(0, S.recShown).map(x => `<a class="rec news" style="${cvars(x.bank)}" href="${esc(x.link)}" target="_blank" rel="noopener">
+        <div class="t">${esc(x.title)}</div>
+        <div class="meta">${tag(x.bank)}<span class="kind">기사</span> ${esc(x.source)} · ${new Date(x.ts).toLocaleDateString("ko-KR",{month:"long",day:"numeric"})}</div></a>`).join("")
+      + (news.length > S.recShown ? `<button class="more" id="recMore">채용 소식 더 보기 (${news.length - S.recShown}건)</button>` : "");
+  } else if (S.rec !== "post"){
+    html += `<div class="empty">최근 30일 동안 채용 관련 기사가 없어요.</div>`;
+  }
+  $("rec").innerHTML = html;
+  const list = META.banks.filter(b => S.bank === "all" || b.id === S.bank);
+  $("links").innerHTML = `<b>공식 채용 홈페이지</b>` + list.map(b => `<a style="${cvars(b.id)}" href="${esc(b.recruit)}" target="_blank" rel="noopener"><span class="dot"></span>${esc(b.name)} ↗</a>`).join("");
+}
+
+function grouped(list){
+  let html = "", last = "";
+  list.forEach(x => {
+    const t = new Date(x.ts);
+    const d = t.toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"short"});
+    if (d !== last){ html += `<div class="day">${d}</div>`; last = d; }
+    html += `<div class="news-row"><div class="t">${S.bank === "all" || x.bank === "macro" ? tag(x.bank) + " " : ""}<a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.title)}</a></div>
+      <span class="src">${esc(x.source)} · ${String(t.getHours()).padStart(2,"0")}:${String(t.getMinutes()).padStart(2,"0")}</span></div>`;
+  });
+  return html;
+}
+
+function renderNews(){
+  const q = S.q.trim().toLowerCase();
+  // 거시경제 기사는 '경제' 카테고리이거나 전체 은행을 볼 때만 섞는다
+  const scope = x => x.bank === "macro" ? (S.cat === "econ" || S.bank === "all") : inBank(x);
+  const list = NEWS.filter(x => scope(x) && x.ts >= ago(S.period)
+    && (S.cat === "all" || x[S.cat]) && (!q || x.title.toLowerCase().includes(q)));
+  $("newsCount").textContent = `${list.length.toLocaleString()}건`;
+  $("news").innerHTML = list.length
+    ? grouped(list.slice(0, S.shown)) + (list.length > S.shown ? `<button class="more" id="more">더 보기 (${(list.length - S.shown).toLocaleString()}건 남음)</button>` : "")
+    : `<div class="empty">조건에 맞는 기사가 없어요.</div>`;
+}
+
+function render(){
+  const press = (sel, attr, val) => document.querySelectorAll(sel).forEach(b => b.setAttribute("aria-pressed", String(b.dataset[attr]) === String(val)));
+  press("#period button", "p", S.period); press("#cat button", "c", S.cat); press("#recKind button", "k", S.rec);
+  renderBanks(); renderRec(); renderNews(); writeHash();
+}
+
+$("bankRow").addEventListener("click", e => { const b = e.target.closest("[data-b]"); if (b){ S.bank = b.dataset.b; S.shown = 40; S.recShown = 10; render(); } });
+$("rec").addEventListener("click", e => { if (e.target.id === "recMore"){ S.recShown += 20; renderRec(); } });
+$("period").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if (b){ S.period = +b.dataset.p; S.shown = 40; render(); } });
+$("cat").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (b){ S.cat = b.dataset.c; S.shown = 40; render(); } });
+$("recKind").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (b){ S.rec = b.dataset.k; S.recShown = 10; render(); } });
+$("q").addEventListener("input", e => { S.q = e.target.value; S.shown = 40; renderNews(); });
+$("news").addEventListener("click", e => { if (e.target.id === "more"){ S.shown += 40; renderNews(); } });
+$("kpis").addEventListener("click", e => { const k = e.target.closest("[data-id]"); if (k){ S.chart = KPI_CHART[k.dataset.id]; renderEcon(); } });
+$("range").addEventListener("click", e => { const b = e.target.closest("[data-r]"); if (b){ S.range = +b.dataset.r; drawChart(); } });
+$("chart").addEventListener("pointermove", chartHover);
+$("chart").addEventListener("pointerleave", hideTip);
+let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => ECON?.series && CH && drawChart(), 150); });
+load();
+</script>
+</body>
+</html>

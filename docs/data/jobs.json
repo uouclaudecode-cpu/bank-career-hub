@@ -116,6 +116,16 @@
   "job_type": "Server"
  },
  {
+  "bank": "im",
+  "title": "[iM뱅크] 2026년 지원직원(영업지원) 채용",
+  "link": "https://im.recruiter.co.kr/career/jobs/130381",
+  "posted": "2026-10-02T19:00:00+09:00",
+  "deadline": "2026-10-11T18:00:00+09:00",
+  "via": "공식 채용사이트",
+  "career": "신입",
+  "job_type": "신입"
+ },
+ {
   "bank": "busan",
   "title": "BNK부산은행 방송센터 운영자 및 아나운서 채용 공고",
   "link": "https://busanbank.recruiter.co.kr/career/jobs/129679",
@@ -438,6 +448,56 @@
   "posted": "2026-09-30T00:00:00+09:00",
   "deadline": "2026-11-28T23:59:00+09:00",
   "via": "공식 채용사이트"
+ },
+ {
+  "bank": "im",
+  "title": "[iM뱅크] AI DevOps 채용",
+  "link": "https://im.recruiter.co.kr/career/jobs/124907",
+  "posted": "2026-08-12T09:00:00+09:00",
+  "deadline": "2026-12-31T18:00:00+09:00",
+  "via": "공식 채용사이트",
+  "career": "경력",
+  "job_type": "경력"
+ },
+ {
+  "bank": "im",
+  "title": "[iM뱅크] 보험계리사 채용",
+  "link": "https://im.recruiter.co.kr/career/jobs/125063",
+  "posted": "2026-08-13T00:00:00+09:00",
+  "deadline": "2026-12-31T18:00:00+09:00",
+  "via": "공식 채용사이트",
+  "career": "경력",
+  "job_type": "경력"
+ },
+ {
+  "bank": "im",
+  "title": "[iM뱅크] 감정평가사 채용",
+  "link": "https://im.recruiter.co.kr/career/jobs/125064",
+  "posted": "2026-08-13T00:00:00+09:00",
+  "deadline": "2026-12-31T18:00:00+09:00",
+  "via": "공식 채용사이트",
+  "career": "경력",
+  "job_type": "경력"
+ },
+ {
+  "bank": "im",
+  "title": "[iM뱅크] 안드로이드 개발자 채용",
+  "link": "https://im.recruiter.co.kr/career/jobs/125065",
+  "posted": "2026-08-13T00:00:00+09:00",
+  "deadline": "2026-12-31T18:00:00+09:00",
+  "via": "공식 채용사이트",
+  "career": "경력",
+  "job_type": "경력"
+ },
+ {
+  "bank": "im",
+  "title": "[iM뱅크] 여신감리역 채용",
+  "link": "https://im.recruiter.co.kr/career/jobs/129387",
+  "posted": "2026-09-22T18:00:00+09:00",
+  "deadline": "2026-12-31T23:00:00+09:00",
+  "via": "공식 채용사이트",
+  "career": "경력",
+  "job_type": "경력"
  },
  {
   "bank": "kakao",
@@ -807,6 +867,16 @@
   "via": "공식 채용사이트",
   "career": "경력",
   "job_type": "금융 · 보험"
+ },
+ {
+  "bank": "im",
+  "title": "[iM뱅크] 2026년 피크타이머 상시 채용",
+  "link": "https://im.recruiter.co.kr/career/jobs/118552",
+  "posted": "2026-06-15T17:00:00+09:00",
+  "deadline": null,
+  "via": "공식 채용사이트",
+  "career": "경력",
+  "job_type": "피크타이머"
  },
  {
   "bank": "kyongnam",

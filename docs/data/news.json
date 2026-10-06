@@ -1,6 +1,42 @@
 [
  {
   "bank": "kakao",
+  "title": "금융사 해킹한 IP, 카카오뱅크·케이뱅크·토스뱅크에도 접근 시도",
+  "source": "국제신문",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQMVNyb2dHUjNRSDRpRDRGYmxUWUZ0RHdvY0xUaFExRGlSOWF6Mk9lcmxQQlVoeGd4d0F5TmhXSHZMamlyajE2N1pYd1o4cDZlbWZoeWd3Y3lCUlRLUVdKc1J0U1JPMU53UkQtdzFrSWtqUTN1ZHJnWUhPeHk5MDRaby00OXBhUEFpZ0dsSXVBTzdSSG8?oc=5",
+  "date": "2026-10-06T13:59:00+09:00",
+  "via": "google",
+  "cat": "issue",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "toss",
+  "title": "금융사 해킹한 IP, 카카오뱅크·케이뱅크·토스뱅크에도 접근 시도",
+  "source": "국제신문",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQMVNyb2dHUjNRSDRpRDRGYmxUWUZ0RHdvY0xUaFExRGlSOWF6Mk9lcmxQQlVoeGd4d0F5TmhXSHZMamlyajE2N1pYd1o4cDZlbWZoeWd3Y3lCUlRLUVdKc1J0U1JPMU53UkQtdzFrSWtqUTN1ZHJnWUhPeHk5MDRaby00OXBhUEFpZ0dsSXVBTzdSSG8?oc=5",
+  "date": "2026-10-06T13:59:00+09:00",
+  "via": "google",
+  "cat": "issue",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "kbank",
+  "title": "금융사 해킹한 IP, 카카오뱅크·케이뱅크·토스뱅크에도 접근 시도",
+  "source": "kookje.co.kr",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQMVNyb2dHUjNRSDRpRDRGYmxUWUZ0RHdvY0xUaFExRGlSOWF6Mk9lcmxQQlVoeGd4d0F5TmhXSHZMamlyajE2N1pYd1o4cDZlbWZoeWd3Y3lCUlRLUVdKc1J0U1JPMU53UkQtdzFrSWtqUTN1ZHJnWUhPeHk5MDRaby00OXBhUEFpZ0dsSXVBTzdSSG8?oc=5",
+  "date": "2026-10-06T13:59:00+09:00",
+  "via": "google",
+  "cat": "issue",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "kakao",
   "title": "카카오뱅크, 해외계좌송금 보내기·받기 수수료 면제 혜택 확대",
   "source": "매일일보",
   "topic": "",
@@ -109,6 +145,30 @@
  },
  {
   "bank": "kbank",
+  "title": "AI 해킹 공격 막은 토스뱅크…케이뱅크·카카오뱅크도 접속 시도",
+  "source": "뉴시스",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTE1CSjdGWlRJd2otNDdrQkh3Um5HdzNoOC03R1RmS0lkWFpKZm1lY0RPcldaYV8wNUhoSDNGSDYyM2xXMkRqa2RuVzloNElCb3AxQWlOQjFabzNPNDJPc2RBSEhoNWU3NTdaZnB1T2dWeDdIdUxiVDI5NdIBeEFVX3lxTE1CSjdGWlRJd2otNDdrQkh3Um5HdzNoOC03R1RmS0lkWFpKZm1lY0RPcldaYV8wNUhoSDNGSDYyM2xXMkRqa2RuVzloNElCb3AxQWlOQjFabzNPNDJPc2RBSEhoNWU3NTdaZnB1T2dWeDdIdUxiVDI5NQ?oc=5",
+  "date": "2026-10-06T12:10:28+09:00",
+  "via": "google",
+  "cat": "issue",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "kakao",
+  "title": "AI 해킹 공격 막은 토스뱅크…케이뱅크·카카오뱅크도 접속 시도",
+  "source": "뉴시스",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTE1CSjdGWlRJd2otNDdrQkh3Um5HdzNoOC03R1RmS0lkWFpKZm1lY0RPcldaYV8wNUhoSDNGSDYyM2xXMkRqa2RuVzloNElCb3AxQWlOQjFabzNPNDJPc2RBSEhoNWU3NTdaZnB1T2dWeDdIdUxiVDI5NdIBeEFVX3lxTE1CSjdGWlRJd2otNDdrQkh3Um5HdzNoOC03R1RmS0lkWFpKZm1lY0RPcldaYV8wNUhoSDNGSDYyM2xXMkRqa2RuVzloNElCb3AxQWlOQjFabzNPNDJPc2RBSEhoNWU3NTdaZnB1T2dWeDdIdUxiVDI5NQ?oc=5",
+  "date": "2026-10-06T12:10:28+09:00",
+  "via": "google",
+  "cat": "issue",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "toss",
   "title": "AI 해킹 공격 막은 토스뱅크…케이뱅크·카카오뱅크도 접속 시도",
   "source": "뉴시스",
   "topic": "",
@@ -274,6 +334,18 @@
   "job": false,
   "econ": false,
   "cat": "issue"
+ },
+ {
+  "bank": "kb",
+  "title": "KB국민은행, 네이버페이·한국정보통신·이지샵과 손잡고 소상공인 돕는다",
+  "source": "테크월드",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE4xbkpVeldjS2JBeGdacnFCZHZ1S1cyN3ktd2NIMXhUa0NlMVVFU0xZNmJSem9jel9wU1pXSnlzV1BZRzl0cEFmLVBwM3dJOUh3Wk9RaGg1bDg0NGZzNUk0UjFScmI5OHBx?oc=5",
+  "date": "2026-10-06T11:30:00+09:00",
+  "via": "google",
+  "cat": "partner",
+  "job": false,
+  "econ": false
  },
  {
   "bank": "hana",
@@ -2734,6 +2806,18 @@
   "job": false,
   "econ": false,
   "cat": "issue"
+ },
+ {
+  "bank": "macro",
+  "title": "AMRO, 한국 성장률 올렸지만…AI 둔화 땐 한중일 2.5%",
+  "source": "이포커스",
+  "topic": "경제성장률",
+  "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE00VG1GejNCZUhiQ2RvNkwzeGk3am1UNGRUTkhURTF6dlV6aEFZaUVpZTJqYmVaREVkWEtLb2E4QVRSUHlQb3BURE1Pb2oweVJlc1RIM0hTdE5Zdkwtb2UxTEpIeHBNR1J2cF9FTzZn?oc=5",
+  "date": "2026-10-06T00:21:58+09:00",
+  "via": "google",
+  "cat": "biz",
+  "job": false,
+  "econ": true
  },
  {
   "bank": "macro",
@@ -7692,6 +7776,18 @@
   "cat": "rate"
  },
  {
+  "bank": "macro",
+  "title": "한은 “10월 소비자물가 3% 안팎 전망…상승 압력 여전”",
+  "source": "매일경제",
+  "topic": "소비자물가",
+  "link": "https://news.google.com/rss/articles/CBMiVEFVX3lxTFA3Vkk2SXQ4WVBnUmEzTzVUNUhMWW8yRTJ1RUhRdV9Mb0dBN3Jpa1lIWFMxcTYzbmdKbHJuVFJicVJMUTJ3YVJFUXYyV1VfQWt5ZlZVMw?oc=5",
+  "date": "2026-10-03T09:41:46+09:00",
+  "via": "google",
+  "cat": "biz",
+  "job": false,
+  "econ": true
+ },
+ {
   "bank": "ibk",
   "title": "영화 ‘암살자(들)’ 논란에 기업은행 투자도 도마 [김윤주의 금은동]",
   "source": "이코노미스트",
@@ -8265,6 +8361,18 @@
   "job": false,
   "econ": false,
   "cat": "issue"
+ },
+ {
+  "bank": "macro",
+  "title": "환율, 강달러에 1366원 터치 후 수출업체 매도에 1340원대로 By EBN",
+  "source": "Investing.com 한국어",
+  "topic": "원달러 환율",
+  "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1KcXR3SndibkVVTkRhd1JHeEZSX19HdlNlUVl3bGYtX3ZDVXd1S1lFVFFrVEVnTWRha3NuNmRiTnRXWmRnOHZNV0taOHJqbzctaDRnMHN1OEc4el9zZG5JM19CcEVPOFYxOUVIenYteDI?oc=5",
+  "date": "2026-10-02T21:42:00+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": true
  },
  {
   "bank": "macro",
@@ -14195,6 +14303,18 @@
   "job": false,
   "econ": true,
   "cat": "etc"
+ },
+ {
+  "bank": "macro",
+  "title": "9월 소비자물가 전년비 2.9%↑…한 달 만에 다시 2%대",
+  "source": "마켓인",
+  "topic": "소비자물가",
+  "link": "https://news.google.com/rss/articles/CBMic0FVX3lxTE5fLUg0MVlNTVZaMTE4a2g3M0R3WW0tTUpZWWxtOUFrOXJXQjMxSTRaNWhwRzhIbk1XTElxanlleWFsUzM5QkNYeUlEWEk1QVNNaGtZb1M4Y3E0djBETHRLbm9NYll0WVB3eDJGZ3BSeXEycjg?oc=5",
+  "date": "2026-10-02T08:00:03+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": true
  },
  {
   "bank": "macro",

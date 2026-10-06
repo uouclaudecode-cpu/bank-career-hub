@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-06T14:04:03.353208+09:00",
+ "updated": "2026-10-06T14:10:56.025650+09:00",
  "sources": {
   "google_news": true,
   "naver": false,
@@ -132,8 +132,13 @@
     "대구은행"
    ],
    "saramin": "아이엠뱅크",
-   "recruit": "https://www.imbank.co.kr",
-   "jobs": [],
+   "recruit": "https://im.recruiter.co.kr/career/home",
+   "jobs": [
+    {
+     "type": "jobflex",
+     "host": "im.recruiter.co.kr"
+    }
+   ],
    "color": "#00B2A9"
   },
   {

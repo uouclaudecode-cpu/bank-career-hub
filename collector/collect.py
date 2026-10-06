@@ -64,8 +64,24 @@ session = requests.Session()
 session.headers.update(UA)
 
 
+SECRET_ENVS = ["NAVER_CLIENT_ID", "NAVER_CLIENT_SECRET", "SARAMIN_ACCESS_KEY", "ECOS_API_KEY", "DATA_GO_KR_KEY"]
+
+
+def _secrets() -> list[str]:
+    """로그에서 가릴 값: 키 원문과 URL 인코딩된 형태 (오류 메시지에 요청 주소가 찍힐 수 있다)"""
+    vals = set()
+    for name in SECRET_ENVS:
+        v = os.getenv(name)
+        if v:
+            vals |= {v, urllib.parse.quote(v, safe=""), urllib.parse.quote_plus(v)}
+    return sorted(vals, key=len, reverse=True)
+
+
 def log(*a):
-    print(*a, file=sys.stderr, flush=True)
+    msg = " ".join(str(x) for x in a)
+    for s in _secrets():
+        msg = msg.replace(s, "***")
+    print(msg, file=sys.stderr, flush=True)
 
 
 def load_json(path: Path, default):
@@ -303,8 +319,14 @@ def jobs_toss(bank: dict, company: str) -> list[dict]:
         meta = {m.get("name", ""): m.get("value") for m in pj.get("metadata") or []}
         if not any(v == company for k, v in meta.items() if "자회사" in k):
             continue
+        if any(v is True for k, v in meta.items() if "미노출" in k):  # 커리어 페이지에 숨긴 공고
+            continue
+        # 대부분 상시 채용이라 마감일이 없고, 일부만 '클로징 일자'(+ 시각)가 있다
+        close_d = next((v for k, v in meta.items() if "클로징 일자" in k and v), None)
+        close_t = next((v for k, v in meta.items() if "클로징 시각" in k and v), None)
+        deadline = parse_dt(f"{close_d} {close_t}" if close_d and close_t else close_d) if close_d else None
         out.append(job(bank, g.get("title", ""), pj.get("absolute_url", "https://toss.im/career/jobs"),
-                       None, None, "공식 채용사이트", job_type=meta.get("Employment_Type") or ""))
+                       None, deadline, "공식 채용사이트", job_type=meta.get("Employment_Type") or ""))
     return out
 
 
@@ -318,20 +340,30 @@ def jobs_alio(bank: dict, inst: str) -> list[dict]:
     if not key:
         return []
     if _ALIO_CACHE is None:
-        _ALIO_CACHE, page = [], 1
+        # 중간에 실패하면 캐시를 채우지 않는다 (다음 은행에서 일부만 받은 목록을 쓰지 않도록)
+        rows_all, page = [], 1
         while page <= 20:
             r = session.get("https://apis.data.go.kr/1051000/recruitment/list",
                             params={"serviceKey": key, "resultType": "json", "ongoingYn": "Y",
                                     "numOfRows": 100, "pageNo": page}, timeout=30)
             r.raise_for_status()
-            js = r.json()
+            try:
+                js = r.json()
+            except ValueError:  # 키 오류 등은 JSON 대신 XML/문자열로 온다
+                raise RuntimeError(f"JSON이 아닌 응답: {r.text[:200]}") from None
+            if page == 1:
+                sample = (js.get("result") or [{}])[0]
+                sample = sample.get("item", sample) if isinstance(sample, dict) else {}
+                log(f"  [alio] resultCode={js.get('resultCode')} totalCount={js.get('totalCount')} "
+                    f"날짜 예시: {sample.get('pbancBgngYmd')} ~ {sample.get('pbancEndYmd')}")
             if str(js.get("resultCode")) not in ("0", "200", "00"):
                 raise RuntimeError(js.get("resultMsg") or js)
             rows = [x.get("item", x) for x in js.get("result") or []]
-            _ALIO_CACHE += rows
-            if len(rows) < 100 or len(_ALIO_CACHE) >= int(js.get("totalCount") or 0):
+            rows_all += rows
+            if len(rows) < 100 or len(rows_all) >= int(js.get("totalCount") or 0):
                 break
             page += 1
+        _ALIO_CACHE = rows_all
         log(f"  [alio] 진행 중 공공기관 공고 {len(_ALIO_CACHE)}건")
     out = []
     for p in _ALIO_CACHE:
@@ -353,19 +385,41 @@ JOB_SOURCES = {"jobflex": lambda b, s: jobs_jobflex(b, s["host"]),
                "alio": lambda b, s: jobs_alio(b, s["inst"])}
 
 
+REPORT: list[tuple[str, str, str]] = []  # (은행, 수집처, 결과) → Actions 실행 요약 표
+
+
 def bank_jobs(bank: dict) -> tuple[list[dict], bool]:
     """(공고 목록, 성공 여부)"""
     out, ok = [], True
     for src in bank.get("jobs", []):
+        if src["type"] == "alio" and not os.getenv("DATA_GO_KR_KEY"):
+            REPORT.append((bank["name"], "alio", "키 없음 (건너뜀)"))
+            continue
         try:
             got = JOB_SOURCES[src["type"]](bank, src)
             log(f"  [{src['type']}] {bank['name']}: {len(got)}건")
+            REPORT.append((bank["name"], src["type"], f"{len(got)}건"))
             out += got
         except Exception as e:  # noqa: BLE001
             ok = False
             log(f"  [{src['type']}] {bank['name']} 실패: {e}")
+            REPORT.append((bank["name"], src["type"], "실패 (이전 공고 유지)"))
+    if not bank.get("jobs"):
+        REPORT.append((bank["name"], "-", "자동 수집처 없음"))
     out += saramin_jobs(bank)
     return out, ok
+
+
+def write_summary(lines: list[str]):
+    """GitHub Actions 실행 화면의 Summary에 표로 남긴다 (로컬 실행에서는 아무것도 안 함)"""
+    path = os.getenv("GITHUB_STEP_SUMMARY")
+    if not path:
+        return
+    text = "\n".join(lines)
+    for s in _secrets():
+        text = text.replace(s, "***")
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(text + "\n")
 
 
 # ---------------------------------------------------------------- 경제지표: 한국은행 ECOS (선택)
@@ -409,8 +463,13 @@ def economy(old: dict) -> dict:
             if pts:
                 series[sid] = {"name": name, "unit": unit, "freq": cycle, "points": pts}
                 log(f"  [ecos] {name}: {len(pts)}개, 최근 {pts[-1]}")
+                REPORT.append(("경제지표", f"ecos {name}", f"{len(pts)}개, 최근 {pts[-1][0]} = {pts[-1][1]}"))
+            else:
+                log(f"  [ecos] {name}: 값 없음 (항목 코드 {item} 확인 필요, 기존 값 유지)")
+                REPORT.append(("경제지표", f"ecos {name}", "값 없음 (기존 값 유지)"))
         except Exception as e:  # noqa: BLE001
             log(f"  [ecos] {name} 실패 (기존 값 유지): {e}")
+            REPORT.append(("경제지표", f"ecos {name}", "실패 (기존 값 유지)"))
         time.sleep(0.2)
     return {"updated": NOW.isoformat(), "series": series,
             "order": [i[0] for i in INDICATORS]}
@@ -503,7 +562,23 @@ def main():
         "banks": banks,
     }
     save_json(DATA / "meta.json", meta)
-    log(f"완료: 뉴스 {len(news)}건 (신규 수집 {len(fresh)}건), 채용공고 {len(load_json(jobs_path, []))}건")
+    log(f"완료: 뉴스 {len(news)}건 (신규 수집 {len(fresh)}건), 채용공고 {len(jobs)}건")
+
+    per_bank = {}
+    for j in jobs:
+        per_bank[j["bank"]] = per_bank.get(j["bank"], 0) + 1
+    write_summary([
+        f"## 수집 결과 ({NOW:%Y-%m-%d %H:%M} KST)",
+        f"- 뉴스 {len(news)}건 누적 (이번 신규 {len(fresh)}건)",
+        f"- 진행 중 채용공고 {len(jobs)}건 · 사용한 키: "
+        + (", ".join(k for k, v in meta["sources"].items() if v) or "없음"),
+        "",
+        "| 은행 | 수집처 | 결과 | 저장된 공고 |",
+        "| --- | --- | --- | --- |",
+        *[f"| {b} | {s} | {r} | "
+          + (str(per_bank.get(next((x['id'] for x in banks if x['name'] == b), ''), 0)) if b != "경제지표" else "")
+          + " |" for b, s, r in REPORT],
+    ])
 
 
 if __name__ == "__main__":

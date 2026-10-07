@@ -292,6 +292,16 @@
   "via": "공식 채용사이트"
  },
  {
+  "bank": "busan",
+  "title": "BNK부산은행 개인대출센터 사무지원 계약직 대규모 채용",
+  "link": "https://busanbank.recruiter.co.kr/career/jobs/130493",
+  "posted": "2026-10-07T09:00:00+09:00",
+  "deadline": "2026-10-19T23:59:00+09:00",
+  "via": "공식 채용사이트",
+  "career": "",
+  "job_type": "경영기획 · 지원"
+ },
+ {
   "bank": "exim",
   "title": "한국수출입은행 2026년 하반기 전문직행원(신입) 채용",
   "link": "http://koreaexim.incruit.com/",
@@ -890,6 +900,15 @@
  },
  {
   "bank": "toss",
+  "title": "CA Operations Manager",
+  "link": "https://toss.im/career/job-detail?gh_jid=4651099003",
+  "posted": null,
+  "deadline": null,
+  "via": "공식 채용사이트",
+  "job_type": "정규직"
+ },
+ {
+  "bank": "toss",
   "title": "Compliance Manager",
   "link": "https://toss.im/career/job-detail?gh_jid=4167754003",
   "posted": null,
@@ -1000,15 +1019,6 @@
   "bank": "toss",
   "title": "Validation Manager",
   "link": "https://toss.im/career/job-detail?gh_jid=7725883003",
-  "posted": null,
-  "deadline": null,
-  "via": "공식 채용사이트",
-  "job_type": "정규직"
- },
- {
-  "bank": "toss",
-  "title": "CA Operations Manager",
-  "link": "https://toss.im/career/job-detail?gh_jid=4651099003",
   "posted": null,
   "deadline": null,
   "via": "공식 채용사이트",

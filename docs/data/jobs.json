@@ -222,6 +222,14 @@
   "location": "서울"
  },
  {
+  "bank": "woori",
+  "title": "우리은행 BIZ어드바이저(퇴직인력) 채용공고",
+  "link": "https://recruit.incruit.com/wooribank/job/2610070012",
+  "posted": "2026-10-07T00:00:00+09:00",
+  "deadline": "2026-10-13T23:59:00+09:00",
+  "via": "공식 채용사이트"
+ },
+ {
   "bank": "shinhan",
   "title": "[신한은행] 퇴직연금솔루션부 퇴직연금 마케팅 및 보험계리사 채용",
   "link": "https://shinhan.recruiter.co.kr/career/jobs/129990",
@@ -368,10 +376,46 @@
  },
  {
   "bank": "kakao",
+  "title": "재무리스크 시스템 개발자 (계약직)",
+  "link": "https://kakaobank.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=263314",
+  "posted": "2026-08-14T00:00:00+09:00",
+  "deadline": "2026-10-23T23:59:00+09:00",
+  "via": "공식 채용사이트",
+  "job_type": "Core Banking"
+ },
+ {
+  "bank": "kakao",
+  "title": "전기통신금융사기 업무 지원 담당자 (계약직)",
+  "link": "https://kakaobank.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=263333",
+  "posted": "2026-08-14T00:00:00+09:00",
+  "deadline": "2026-10-27T23:59:00+09:00",
+  "via": "공식 채용사이트",
+  "job_type": "Compliance"
+ },
+ {
+  "bank": "kakao",
   "title": "사업 기획 및 제휴 담당자 - B2B 뱅킹솔루션",
   "link": "https://kakaobank.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=257133",
   "posted": "2026-06-16T00:00:00+09:00",
   "deadline": "2026-10-27T23:59:00+09:00",
+  "via": "공식 채용사이트",
+  "job_type": "Service & Biz"
+ },
+ {
+  "bank": "kakao",
+  "title": "쿠버네티스(Kubernetes) 엔지니어",
+  "link": "https://kakaobank.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=268717",
+  "posted": "2026-10-07T00:00:00+09:00",
+  "deadline": "2026-10-28T23:59:00+09:00",
+  "via": "공식 채용사이트",
+  "job_type": "Engineering"
+ },
+ {
+  "bank": "kakao",
+  "title": "전자금융/수신 업무 운영 담당자 (계약직)",
+  "link": "https://kakaobank.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=261032",
+  "posted": "2026-07-23T00:00:00+09:00",
+  "deadline": "2026-10-28T23:59:00+09:00",
   "via": "공식 채용사이트",
   "job_type": "Service & Biz"
  },
@@ -432,6 +476,14 @@
   "link": "https://recruit.incruit.com/kbstar/job/2609280005",
   "posted": "2026-09-28T00:00:00+09:00",
   "deadline": "2026-11-26T23:59:00+09:00",
+  "via": "공식 채용사이트"
+ },
+ {
+  "bank": "kb",
+  "title": "[수도권] KB국민은행 PT(스마트 어드바이저) 긴급채용(가좌동점)",
+  "link": "https://recruit.incruit.com/kbstar/job/2610070020",
+  "posted": "2026-10-07T00:00:00+09:00",
+  "deadline": "2026-11-27T23:59:00+09:00",
   "via": "공식 채용사이트"
  },
  {

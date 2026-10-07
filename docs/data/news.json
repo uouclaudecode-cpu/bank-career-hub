@@ -1,5 +1,161 @@
 [
  {
+  "bank": "macro",
+  "title": "비트와이즈 CEO \"주식토큰, 향후 2~3년 금융시장 최대 발전 중 하나\"",
+  "source": "블루밍비트",
+  "topic": "금융시장",
+  "link": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE5tLUU4c0pTSHpHQzllY2pINGlvNDZCTnRXamVYRDVFVVhEeGxZSUpMTmlJSzNHVmZZcktUMUFsTVJEZVdXWjBPTUh3VGtXNlVn?oc=5",
+  "date": "2026-10-08T02:33:07+09:00",
+  "via": "google",
+  "cat": "biz",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "macro",
+  "title": "[오늘의 경제뉴스] AI 해킹의 진짜 위험...금융시장 동시 마비 '금융패닉'",
+  "source": "뉴스버스",
+  "topic": "금융시장",
+  "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTE9UOWw0OWZGS1EyQzBmOTR0NEtzOGl2cm5IaWdsN2xwcjJhZXVyMmhWZGM4bUxreTVJX3BRSkI0OTZ2R2xmTUd5eGZvVTFWdUpVX1BQTkR6QkxvVFhoTElBU1ZWcmRuVEZOZmc?oc=5",
+  "date": "2026-10-08T01:06:43+09:00",
+  "via": "google",
+  "cat": "issue",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "macro",
+  "title": "한국경제평론가협회, ‘한국경제와 부동산 정책 어디로 가나’ 세미나 개최",
+  "source": "세계일보",
+  "topic": "가계부채",
+  "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE0tbS1mOS1rVDlfMV83cEFDQktKMkV6VDBUV2drU0xTVU9FQmhHa3l2RjZfeS1felVacFRVcmZJc084WjctSEtORURiUHlPNGp6NmVNcnlRczHSAVRBVV95cUxPQ2JGWWtjNjF0alJXdGNKaGlrQVh4ZDdpRnFIdm9jMWVHczd2d3BZZDQySXJCR3YtX3ZHcGRwT1plVGlsTThTN0FCQWQ1Z182ZnlNYUs?oc=5",
+  "date": "2026-10-07T23:48:24+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "exim",
+  "title": "한국수출입은행·한국은행, '해킹 시도 급증'…미국·네덜란드 등 해외발 공격 집중",
+  "source": "https://www.ppss.kr/",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE5qbHUzTHJWTGNlRWJBb3BOZnVuOUxjWDQtVE93ckRTRTJsNkRGY182bXhENDVjS3JIcDFzRUx1eWxEM1pQdEM2b3d4UmdUR2kyTmFWUGdtSzBzTlhlZTVYQ05fZW0?oc=5",
+  "date": "2026-10-07T23:16:29+09:00",
+  "via": "google",
+  "cat": "issue",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "woori",
+  "title": "우리은행, K-택소노미 녹색여신 약정…한국남부발전 친환경 사업 지원",
+  "source": "국제뉴스",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE44NGNJLXVMaDdXci1hVUYwaURsNjZuR1VlVGc0RzRTUi0zX3pNdTg0TnBiVFMySGJ5aDBMMUdkQUxzQzJMdW9RcWt2V1hRWmVONHBvMkw0RHVrNlByanhDTlBzUFJjTG15YWlSSDBB?oc=5",
+  "date": "2026-10-07T22:52:20+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "macro",
+  "title": "RBI, 이란 전쟁발 인플레이션·루피화 약세 속 기준금리 25bp 인상해 5.50% - 뉴스 및 통계",
+  "source": "IndexBox",
+  "topic": "기준금리",
+  "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxONEZVaXVlcjEzV0ZvRFFmT3JzaUxrSUpfTnpqMWRrX3hkbjZ0YV9sUGRyTDcwY1RmaWxua2ZEcWVFTUhoMFpLZjFPQ0RrSjhIY0M0Vjl1aVkxT3NDTTZDQ3hKR0ptWlRnY0Q0S2RyTnV6RUw4bzBSbktqREIwY1hKX1MxM2hPN3hJdjk5cnhHdll2WDBBOWlkYnRlQlZ2ejdYVjl3dERuU0QtQW1r?oc=5",
+  "date": "2026-10-07T22:40:38+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "exim",
+  "title": "한국수출입은행 해킹 시도 '폭증'…이종욱 의원 \"중앙은행 등 금융기관 겨냥 사이버 공격 급증\"",
+  "source": "CWN",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE9EX2wxcEZfRFlNU3hzUXJrQjBiLU5iaXRiR1VOTGpLdnB3dVoydU1JU20zeUUtbVJyS2NkeXlkbC1sa0dFZFBJeDVsbTFtLWYwNl9VR29WX29ub3R6SFJma3hB?oc=5",
+  "date": "2026-10-07T22:16:07+09:00",
+  "via": "google",
+  "cat": "issue",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "im",
+  "title": "iM뱅크, 창립 59주년 개최…“하이브리드 뱅크 역할에 힘쓸 것”",
+  "source": "비즈월드",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTE9iUWtERHhlZ196dm1rME5DZzk5LXlXM01TUm5lcjFyTkFlNDloUDMtTl9qazk2T0hqOEJsV3FzUDZUYW96NmVhd0NpdkNaNE9wLWlfMTRoNTAyeHRMR2s1endyOU91elVGcHc?oc=5",
+  "date": "2026-10-07T22:16:00+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "macro",
+  "title": "인도, 3년 8개월 만에 금리 인상…기준금리 5.5%",
+  "source": "서울경제",
+  "topic": "기준금리",
+  "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE1qcEljcENndDNtMkFXMG5udUJIYkhCT205RENPRng1UDRaR19yYU1mbHhiRi0wSUJvWm1rd1FXSFdEeTNaQUkzZlJLcXRUX1JSSnfSAVNBVV95cUxOOUZnTzB0NENSNld6UFJua3lqQnlIcmh5MzdpSnVKekYwbGZZOXJWN0FMVldYMlZObExhaTFLak1BclFXbVpVYjY1STNhakRFT1pCRQ?oc=5",
+  "date": "2026-10-07T22:07:59+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "macro",
+  "title": "인도중앙은행, 3년8개월만 첫 기준금리 인상…\"인플레 대응\"",
+  "source": "연합뉴스",
+  "topic": "기준금리",
+  "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE1tS1lGbGhkN0JUUmIwMmVXSjZ3X0JHUHJCWkczT2piWkROczMyamF5Y3FuN3BUN0dsUjh2clBqdlB5VTBsU0wzTUF2ZFFsMEFmVlYwQ2Qtajl0cHlSdlBhSdIBYEFVX3lxTE1tS1lGbGhkN0JUUmIwMmVXSjZ3X0JHUHJCWkczT2piWkROczMyamF5Y3FuN3BUN0dsUjh2clBqdlB5VTBsU0wzTUF2ZFFsMEFmVlYwQ2Qtajl0cHlSdlBhSQ?oc=5",
+  "date": "2026-10-07T21:51:03+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "hana",
+  "title": "3주 새 0.4%p 뛰었다… 하나은행 예금금리 연 3.6%",
+  "source": "금강일보",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTFAzVlBXTmlwYUVDazVvZE5GOFl0aHJUM3JZT0NXbUdOYUxSR0p4S241OWNtNTlqSHNfYTB4X0pCaDEwM0U0Y0lSdldKLW14WHBnZmh1Y1A0MkZWV1l5ZkI4Z243dzk4S1JITHc?oc=5",
+  "date": "2026-10-07T21:20:00+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "nh",
+  "title": "NH농협은행, 자산변동 먼저 알려준다…‘안심 알림’ BM특허 취득",
+  "source": "더퍼블릭",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMib0FVX3lxTE04OGd2Z1R3bUxJR0xldHZOMDA2bW1kWko1LVY2UzgtZXVJSno0ZWR5OHpTRVo2eXF6QnRyX2VIU05OWTJqTGNNS2cxaWpheUk4a2ZHZGlUNVRGSC02bkxsMnVfYjVTTV81a1hrcjdfQdIBb0FVX3lxTE04OGd2Z1R3bUxJR0xldHZOMDA2bW1kWko1LVY2UzgtZXVJSno0ZWR5OHpTRVo2eXF6QnRyX2VIU05OWTJqTGNNS2cxaWpheUk4a2ZHZGlUNVRGSC02bkxsMnVfYjVTTV81a1hrcjdfQQ?oc=5",
+  "date": "2026-10-07T20:59:21+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "macro",
+  "title": "한은 금융시장국장에 이대건·국제국장에 김신영…후속 부서장 인사",
+  "source": "ER 이코노믹리뷰",
+  "topic": "금융시장",
+  "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE4tSTdyMFZoa080YU9oaExWM2ZOX1FlRkE5bkt0WXN1LVY4VVdKem96SS04QUNqQjZSSkZSWE9hc2c5SDkyR1VZNlVISW43UjQ2Y09zUDFIVnpkeUxDN3I2a255QkxUMTJ3LTBDOA?oc=5",
+  "date": "2026-10-07T20:46:40+09:00",
+  "via": "google",
+  "cat": "biz",
+  "job": false,
+  "econ": true
+ },
+ {
   "bank": "im",
   "title": "iM뱅크 창립 59주년 기념식",
   "source": "경북도민일보",
@@ -12,6 +168,30 @@
   "econ": false
  },
  {
+  "bank": "toss",
+  "title": "토스뱅크, ‘채팅 한 번’에 분실신고까지…AI 금융상담 본격화",
+  "source": "시사캐스트",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5HSVBjaGlCMGhCeVpkckdFbXJuZldWZkZ2eURiT2V6cmZaOXNzVFRIRVRUMkdHalB4czJhQnY1aXZLSVBUWXJCRzZEbjJHZUV3bUpCN2NzZGVrMjNmTU1aTjVoUGMyeUM2?oc=5",
+  "date": "2026-10-07T20:11:56+09:00",
+  "via": "google",
+  "cat": "digital",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "kyongnam",
+  "title": "1천만원 보이스피싱 피해 예방 경남은행 울산 화봉동지점에 감사장",
+  "source": "울산신문",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE1BTmlEREp4cTU5YkFsUjJEdWpLcWFQNk5McFFMM19CdW9wbHUxOGlRYXRJU0I2U2lqbklYU05lQW4xS2hIbHRqUGtnaXhyV1FzaTBEbkdPUE9VZWxkdy1fNVljU3pvaldFVU5sd0dB0gFyQVVfeXFMT1hJY1M4NG9WY203LUN4WExYanBxeDQ0MFBGVGhyNlJWVkQ2bmFqMDZZNXdLM0JJX2ZvMUwtamsyMW1PVEhndE8zVTZBaF9BbDRkVEdIY18za1dyNnByQURBcjVVeldpUFRPWTRzMmFCNFpR?oc=5",
+  "date": "2026-10-07T20:10:00+09:00",
+  "via": "google",
+  "cat": "biz",
+  "job": false,
+  "econ": false
+ },
+ {
   "bank": "macro",
   "title": "한은, 국제담당 부총재보 최영주 금융시장국장…경제연구원장엔 윤경수 국제국장 내정",
   "source": "녹색경제신문",
@@ -20,6 +200,18 @@
   "date": "2026-10-07T20:09:30+09:00",
   "via": "google",
   "cat": "etc",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "exim",
+  "title": "수출입은행 8배·한은 4.5배 공격 폭증…국가 금융망 해킹 비상 : 기업·산업",
+  "source": "재경일보",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE04SERVYUVhQmVyc0ZNTXN3d2FMX3VUbGVXdTM2cDRXTkl4Y2xIMHhlRWFwUC1pUy1ZSlFKV2l6OS1FdzBIS3pFZXBidw?oc=5",
+  "date": "2026-10-07T20:04:00+09:00",
+  "via": "google",
+  "cat": "issue",
   "job": false,
   "econ": true
  },
@@ -60,6 +252,18 @@
   "econ": false
  },
  {
+  "bank": "nh",
+  "title": "NH농협은행, 비대면 주담대 금리도 인하…변동형 상·하단 0.1%p↓",
+  "source": "경기일보",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9HQWdaTHJZRk9TWXdNRUZ6YUNqNGtmeVF2R3dnT3FmSDA5clhjN1hmd014VVJUMlBCNnNKUVlzVGVzYnExUDd5VktTLW41QTFoT3p5VVdDZi1pVGM?oc=5",
+  "date": "2026-10-07T19:43:14+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": true
+ },
+ {
   "bank": "exim",
   "title": "수출입은행 해킹 시도 283건…한국은행도 올해 136건 탐지",
   "source": "스페셜타임스",
@@ -70,6 +274,30 @@
   "cat": "etc",
   "job": false,
   "econ": true
+ },
+ {
+  "bank": "toss",
+  "title": "[인뱅 디지털자산 전략] ②토스뱅크, 블록체인 통한 은행 인프라 고도화",
+  "source": "한국금융경제신문",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9mUXVNVUdLeU5ZSGJ2TjN6UkdaWHpZeGR4empCUjFEaW1pbTdnOWNQa1JvOW5vc21BbzNqelNMOWp5Uy1qaHhkck40VV9mLTFNM2VXMGVvMzFnZGJRek9feUQ4TDEyX0hPc25qStIBcEFVX3lxTE5IMm5nRWlFbGdteHBDYU84d0VfN09OQVlua3c4WTNYNW5PUFVOTjUyYy1oNnVwWC1WSXQySzlhc0hrSEd5dFZDZGVyQlNLR25OVzJuREFEUktwc182VlRybmJTSTRVRnBVR1dxWmlzOVg?oc=5",
+  "date": "2026-10-07T19:36:55+09:00",
+  "via": "google",
+  "cat": "digital",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "ibk",
+  "title": "IBK기업은행, 중소기업 AI 전환 지원…도입부터 현장 적용까지",
+  "source": "뉴시안",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTE1oamhpOVhlZDVnZFQ4TnNNbC00RU85MlQyNE1INmMzSVg1bkJKem9WZFlXZmNTRk9seFZGZldkNWtCS3g1Q2pJQkkwS1JiLThWUnJlRUw1WUpkamtRa3I4Ym4wOUk0M2FyRGfSAW5BVV95cUxQSk9kQzdaS3JoemdTQ3JTQWw2eno5ZWQtNGpnbVppUk1sX2hpWEpmMnFQcWw4Vy1ja2VucldpT2dSaC1OTXBYZERQRFY5Ym9ybTZLTmQ5c285OHhVOUZCX3o3THRYXzF6Zm1zVUdxUQ?oc=5",
+  "date": "2026-10-07T19:32:43+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": false
  },
  {
   "bank": "im",
@@ -132,6 +360,18 @@
   "econ": false
  },
  {
+  "bank": "kdb",
+  "title": "[국감이슈] \"통합 LCC 본사 부산 유치하라\"… 野 의원들, 대한항공·산업은행에 '맹공'",
+  "source": "인더스트리뉴스",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE1Pb3RwUzVDOWROTmQ5NHB6WXRDSVpaMGlaQnYyMHFLaGpWTUNXc0RDS1NoX1ZuekxoeEFfVl9LdGwyN2hseko3d2FZazhUakFRdEdhNUttSXRITHgyaHNiZkYxWXRjN3I1VHJiakxIZHlZUQ?oc=5",
+  "date": "2026-10-07T18:32:53+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": false
+ },
+ {
   "bank": "im",
   "title": "iM뱅크 창립 59주년 기념식…강정훈 “하이브리드뱅크 향해 매진”",
   "source": "인더뉴스",
@@ -164,6 +404,18 @@
   "date": "2026-10-07T18:28:05+09:00",
   "via": "google",
   "cat": "etc",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "im",
+  "title": "iM뱅크 `2026 펀드 가입 고객` 경품 이벤트",
+  "source": "경상투데이",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5DaWZTYjQyOXFNVHZzVXR4cmt0eGg0eVFmV2Foc2g3UTBoN09uSjBIdklpRDNIb29sNlU4dmFEMUlIVDViYmtDS3hpdDRJUGtUdGExRTNtMWxrd2RqaVZOYVl2eXRuZkU?oc=5",
+  "date": "2026-10-07T18:27:39+09:00",
+  "via": "google",
+  "cat": "product",
   "job": false,
   "econ": false
  },
@@ -202,6 +454,18 @@
   "cat": "etc",
   "job": false,
   "econ": true
+ },
+ {
+  "bank": "ibk",
+  "title": "기업은행, 중소기업 AI 전환 지원 확대…컨설팅에 실전 교육 연계",
+  "source": "ER 이코노믹리뷰",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9hVjZacE5fd0ZCWnEzd25NQTFmb3hhMnpHeGtwWThQbnlUMWRoRGxINWRvdHVuRFIxSjF4MHJyWTZiWXI0clNsZHZHcmJrdVBCQ3RXdG5mcUhzNmZub29Xb0tYSlFXNVNfQ0lsdA?oc=5",
+  "date": "2026-10-07T18:23:14+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": false
  },
  {
   "bank": "hana",
@@ -300,6 +564,30 @@
   "econ": true
  },
  {
+  "bank": "hana",
+  "title": "하나은행, 한국바둑리그 새 후원사 선정",
+  "source": "한국경제",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9ZUGpqQldpaGNGQWFQT0p6Sk1HUFhWVl9tdjB4ZzhYU3NQZW1mVUk4a2drUEFqTTZ2a3ppYllxSVRnMDJhS1pGMmVwRURfTmRlWno4TXlqY2wwUQ?oc=5",
+  "date": "2026-10-07T17:58:44+09:00",
+  "via": "google",
+  "cat": "biz",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "macro",
+  "title": "정지 화면만으로 파악할 수 있는 싱글 포커스 구성 요소",
+  "source": "Calgary Roughnecks",
+  "topic": "원달러 환율",
+  "link": "https://news.google.com/rss/articles/CBMiswNBVV95cUxNLTZ4WjZ4NXd3UFd6QjRLTE9hLWE3YzI3TV9Ja05MdGRZcWFZcTZxcksyQ3lVaEpscE9JTllXUHBHeVpjWDdvZkVfX3dtdmhEY2F2ZkxIOC1yc2dGWnJIcHRSbDh2NFVLbUNLemVTdndRbF81RUluQmczOTE2eTI4MFFDZ0VjbUsxZVJJWXZoLVJFQkNxd3RJRXFqVXQtUXhJZUZlN21td2pQcUljeXI0SWRlMnRYZWVpeDkwNEF1QnRqX1F3TTluM3laUS1Yd3RZR05GRlJLQnRLbEY2NS1RQlYyXzFoeDQ2TlFXRmlvRGdLZWl5SkVwRVV5dXFJODRpWURnempHaUVySmg3Z3hMUUpJOEVvMWZic3JYREdHRXRWbDR1dHlxZUU0cVFqckpIMGM4dXhZaGU2VkcxYnAwRG02SGFUODF0XzJ2NUk5MDZBd1RfRzQtRDd3TEF0MlFGUV9JeEYwa3lkc0NCUkJSemlmb210VGdJUFdnTm9fTHlNMGVkNDdFbV9QLS1UNkVwNGg1QWp4YWROMDV1blVfRjBGanVqZkxrQ2ttd0tkYXF4Y0k?oc=5",
+  "date": "2026-10-07T17:58:24+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": true
+ },
+ {
   "bank": "woori",
   "title": "우리은행, 남부발전 'K-택소노미' 사업에 자금 빌려준다",
   "source": "뉴스;트리",
@@ -308,6 +596,18 @@
   "date": "2026-10-07T17:57:44+09:00",
   "via": "google",
   "cat": "rate",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "kdb",
+  "title": "\"글로벌 진출 전략 공유\"…산업은행, '플라이아시아 스페셜' 개최",
+  "source": "중앙이코노미뉴스",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE92dkQzZEhpRWdGV1BuT3g3eEhTNHk2dmdEQmJZRkpEQ2x2dTlpU3hnM3JjWVVsek80VktIUDRtMDl5VU1jZ01XSEt3MFpwR2V4R3dYNU9WYWFfb0RNVG9zbExpMlVxYkp2SV90dFRjOXNqZw?oc=5",
+  "date": "2026-10-07T17:56:25+09:00",
+  "via": "google",
+  "cat": "etc",
   "job": false,
   "econ": false
  },
@@ -504,6 +804,18 @@
   "econ": false
  },
  {
+  "bank": "toss",
+  "title": "[뱅크 NOW] NH농협금융지주·케이뱅크·토스뱅크",
+  "source": "위키리크스한국",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5qY0JsUEtUd2RWMjR3WjJOdERIaEtrMzc2Z0Z2WnBnQk1CdGRqSC03dzRGMG1mSEtlM185S2RDWHNMc01QZVF0VmxIOUZJVXhxalVnSS0wZng1cXZPLUlEMjY5MkVIa3pDcDNLbVdKd1g?oc=5",
+  "date": "2026-10-07T17:37:02+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": false
+ },
+ {
   "bank": "im",
   "title": "'창립 59년' iM뱅크…강정훈 행장, 기념사서 정보보호 강조",
   "source": "미디어펜",
@@ -540,6 +852,18 @@
   "econ": false
  },
  {
+  "bank": "busan",
+  "title": "원금 최대 720만원…BNK부산은행, '청년 기쁨두배통장' 출시",
+  "source": "CNB뉴스",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTE9aUWphNGNKYWxIaGNRQUZIdnU1UFBWZnlsQW1FRmpreWIzU095T2VpdTJjb24wOUFVaFlJRTZGSXA2WkVLTmNlVlVES2Zhb0otYlpSRGYwTmJnVENDN21GV18xM2VKWFMzcVg0?oc=5",
+  "date": "2026-10-07T17:32:57+09:00",
+  "via": "google",
+  "cat": "product",
+  "job": false,
+  "econ": false
+ },
+ {
   "bank": "macro",
   "title": "한국은행 국제금융·협력 담당 부총재보에 최영주, 금융시장국장 지내",
   "source": "비즈니스포스트",
@@ -553,6 +877,42 @@
  },
  {
   "bank": "macro",
+  "title": "한국은행 국제금융·협력 부총재보에 최영주 임명, 금융시장국장 지내",
+  "source": "비즈니스포스트",
+  "topic": "금융시장",
+  "link": "https://news.google.com/rss/articles/CBMic0FVX3lxTE1Pd1MxaWxLRF9BZXpRM0ExdG5XMy1kaWs2NEFxbU5VajkwYlZILVFZNVFHdExHVzRUSWY4cU9xU0lvbUY4VDhZS0RRanY0bjd3VHB6dDZfWGpxR1dZb1p4ck04cnM1Tjk3ZTZMRmNVLWF4emc?oc=5",
+  "date": "2026-10-07T17:31:51+09:00",
+  "via": "google",
+  "cat": "partner",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "kb",
+  "title": "은행권, 상반기 민원 30.5% 증가…KB국민은행 민원 가장 많았다",
+  "source": "데일리e뉴스",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMib0FVX3lxTE80OFRuUlZYdDN5dTg5Q1FHcEhvd2ZkdnZiTFVYUW9HUWpScFZnTUkxam1NLW0wTTNpLVF2STlPbEFmV0RYM05GZU1jT3RtWUx1bDFWS25heEczdUpYMUNUWm1fQXBRcy02Tk5JdEZLMA?oc=5",
+  "date": "2026-10-07T17:31:00+09:00",
+  "via": "google",
+  "cat": "issue",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "toss",
+  "title": "토스뱅크 송금 오류…보유 잔액 모두 이체한 후에도 '또' 송금 가능",
+  "source": "전자신문",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiTkFVX3lxTFB3OElsaTNYVTk0dGZobmNZVUp5dnRSSjlWNTJpam14VnBabTNIMElWZmRUNnZod05sSzRDTWhhbUNoRHMtb3laMS1oLTlOQQ?oc=5",
+  "date": "2026-10-07T17:29:32+09:00",
+  "via": "google",
+  "cat": "issue",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "macro",
   "title": "한국은행, 이대건 금융시장국장·김신영 국제국장 임명 |",
   "source": "연합인포맥스",
   "topic": "금융시장",
@@ -560,6 +920,18 @@
   "date": "2026-10-07T17:28:15+09:00",
   "via": "google",
   "cat": "etc",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "nh",
+  "title": "NH농협은행, 주담대 변동금리 0.1%p 하향...대면 이어 비대면도 인하",
+  "source": "포인트경제",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTE9zRDN3RlJRNFYxSWZDenpnbUFmV2pzRGtuTjJlUVNzSUFab2NSOXZKUGFKRVNHdjZaUHZJQXhaQzI3UVdjbUIzU3dCRmpIWmpUaTR6dzl0ZnIzbUFUQ2QxVE9vVHhJRVBvR1E?oc=5",
+  "date": "2026-10-07T17:27:23+09:00",
+  "via": "google",
+  "cat": "rate",
   "job": false,
   "econ": true
  },
@@ -852,6 +1224,18 @@
   "econ": false
  },
  {
+  "bank": "ibk",
+  "title": "기업은행, 중소기업 AI 전환 지원…진단부터 현장 안착까지",
+  "source": "이코노미스트",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE1yOS1Mcm9SR2NkSXlON1NaNXBtMW45eHVWRkh2Rk9IYlJpLTc5UWZsM01fNEZ4S20xWHBhUzVHRWJGcWVQVlh2eXF5ekhUcHdkNXZzR1V5Z2l0dnVZQXpDX3Vn?oc=5",
+  "date": "2026-10-07T16:51:00+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": false
+ },
+ {
   "bank": "im",
   "title": "‘지방은행 1호’에서 전국구 은행으로…iM뱅크 창립 59주년",
   "source": "경북매일",
@@ -972,6 +1356,18 @@
   "econ": false
  },
  {
+  "bank": "busan",
+  "title": "BNK부산은행, '부산청년 기쁨두배통장'으로 청년 자립 지원",
+  "source": "뉴스락",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5WajZ0VHRSQTZlelMzTjh0TDZEeHY2b3FXZjUzZDExc2oxTE8zN0JyUUdwZ25JbUFlSVZXVVlRNUpYaU9STkZsV1lnblJhbXUzOU5hNVRweTZXQU5NMk41RlNNVmJjVGtZSTluQw?oc=5",
+  "date": "2026-10-07T16:42:01+09:00",
+  "via": "google",
+  "cat": "product",
+  "job": false,
+  "econ": false
+ },
+ {
   "bank": "ibk",
   "title": "IBK기업은행 기술평가서 312건 허위 의혹…관련 대출 1572억원",
   "source": "ER 이코노믹리뷰",
@@ -1010,6 +1406,18 @@
  {
   "bank": "hana",
   "title": "하나은행 '한국바둑리그' 새로운 타이틀스폰서로, 팬 중심 리그 운영 지원",
+  "source": "비즈니스포스트",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMic0FVX3lxTE45VWIzV25EMXg1czNSbWRlVEU5X2tzeVUwdWxrRTNHMDBMYXZROEVRUGZ1UkVNbEJMN0NjanRRZHdMMzUyMHR4cUhPRXp3OVBraFBreGZLc2ZfZ2FXaWZzNTJmZ25fUlNjRS1sbWRkZHloaDA?oc=5",
+  "date": "2026-10-07T16:36:51+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "hana",
+  "title": "하나은행 '한국바둑리그' 새 타이틀스폰서로, 이호성 \"팬 중심 리그 운영 지원\"",
   "source": "비즈니스포스트",
   "topic": "",
   "link": "https://news.google.com/rss/articles/CBMic0FVX3lxTE45VWIzV25EMXg1czNSbWRlVEU5X2tzeVUwdWxrRTNHMDBMYXZROEVRUGZ1UkVNbEJMN0NjanRRZHdMMzUyMHR4cUhPRXp3OVBraFBreGZLc2ZfZ2FXaWZzNTJmZ25fUlNjRS1sbWRkZHloaDA?oc=5",
@@ -1068,6 +1476,18 @@
   "econ": true
  },
  {
+  "bank": "woori",
+  "title": "우리은행, 남부발전과 K-택소노미 기반 녹색여신 약정 체결",
+  "source": "파이낸셜신문",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTE8xc1BmdlFQd19yRGVTeFlDb2lqaVA1aDM1RW1Fbkx4TG9jOUxFTkdGci04aTdPWUw0UkxOS2pZdEx6NHhuSlRFM1lkRTY3dFk5bURPT1lnbV82aV9ZSFFCXzliOUJuckI1bHQ4?oc=5",
+  "date": "2026-10-07T16:31:23+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": false
+ },
+ {
   "bank": "im",
   "title": "[금융권 소식] BNK부산은행ㆍiM뱅크(10.7)",
   "source": "위클리오늘",
@@ -1112,6 +1532,18 @@
   "date": "2026-10-07T16:28:43+09:00",
   "via": "google",
   "cat": "etc",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "ibk",
+  "title": "IBK기업은행, 중소기업 AI 전환(AX) 지원 체계 가동…진단부터 실전 교육까지",
+  "source": "포인트경제",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTE9TY1JNV3IzVmt2REFPSDUxNzRsVk4yM3VJRzNJVHhsdGpuYlJyZG4tc3hMaE9CSDNPWHhQV2FLMHlVUWZkQVBmR2J3alVJTE1uMGFYOWUxcUh0RHMwWnZQdE5uN1M1M3FiV1E?oc=5",
+  "date": "2026-10-07T16:27:44+09:00",
+  "via": "google",
+  "cat": "rate",
   "job": false,
   "econ": false
  },
@@ -1368,12 +1800,36 @@
   "econ": true
  },
  {
+  "bank": "ibk",
+  "title": "기업은행, 중소기업 AI 전환 지원 확대…컨설팅·실전캠프 연계",
+  "source": "이투데이",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiVEFVX3lxTFA5T0x2RGtLUHhkQUNQbmdnbVA0X2tFaGNrX0tuVFZtMHExUklFVGdRcFQtbDZKTmMzNW5GNS1pZnl5QW5hcWZMcUVOc3RwWEx4VEgzbQ?oc=5",
+  "date": "2026-10-07T16:09:00+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": false
+ },
+ {
   "bank": "woori",
   "title": "우리은행, 남부발전 친환경 사업에 녹색여신 지원",
   "source": "인더스트리뉴스",
   "topic": "",
   "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE9Ibkltd0NkNmxzQW1hV0VzX2J2OWR5cHhzc052aGhILW05UmkzbmIzNFJzOEFqdDZLaG1QTGNQSk1xZ2hxWlZuX3VZNGR6Zk1BeGFqRlE5bFhqNnM2eEhWbmlqbjN0d1B6Zl9maHhSMTU2QQ?oc=5",
   "date": "2026-10-07T16:08:56+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "woori",
+  "title": "우리은행, 한국남부발전과 손잡고 '녹색 프로젝트' 자금 지원",
+  "source": "시장경제신문",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5QNFFVZU5DZ2FqU3ZzZFgwSzVUSmtET3A4dHYxRGxUZFBuQlI4aTkzNUNlenlQT3V6NmZNRnNqUHA3U24weEVkMXRoQ3NWZlpDMENKR3RPejQ4ODlPd0tKeEo3WEx5ZVVuQnZDclhqZUw?oc=5",
+  "date": "2026-10-07T16:07:10+09:00",
   "via": "google",
   "cat": "rate",
   "job": false,
@@ -1448,6 +1904,18 @@
   "date": "2026-10-07T15:59:36+09:00",
   "via": "google",
   "cat": "etc",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "macro",
+  "title": "[환율마감] 강세 관성⋯원ㆍ달러 한달만 최저, 장중 1340원 하회",
+  "source": "이투데이",
+  "topic": "원달러 환율",
+  "link": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE0tc2tOMUZtS1JScFJGX05Ua25tVzlWV3ptQzI0U29maDc2TFE0a28zb3pyR3FnS3BRdGhlRjFKdG56UzFRSjZrYlc1Y0pTeHBfb2lKVw?oc=5",
+  "date": "2026-10-07T15:59:00+09:00",
+  "via": "google",
+  "cat": "rate",
   "job": false,
   "econ": true
  },
@@ -1570,6 +2038,18 @@
   "cat": "etc",
   "job": false,
   "econ": true
+ },
+ {
+  "bank": "nh",
+  "title": "[지식재산이야기-341] 농협은행, 내 자산 안심 알림서비스 BM특허 획득",
+  "source": "파이낸셜신문",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTE1qYjNNdjlNSkJ0T3lFcDFPMkkxanJZeDF5ZUZfdGRlQ2VXOVNvTUw3Vk1NbWZEQXUyazliUkppbGJQbjZFR3hHOFVCajU3anAtOGpabjRkbGxaSmhSSnlzcUNSQkVLTHVFalI0?oc=5",
+  "date": "2026-10-07T15:44:55+09:00",
+  "via": "google",
+  "cat": "product",
+  "job": false,
+  "econ": false
  },
  {
   "bank": "hana",
@@ -1772,6 +2252,18 @@
   "date": "2026-10-07T15:33:15+09:00",
   "via": "google",
   "cat": "biz",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "busan",
+  "title": "BNK부산은행, 부산 청년 자산형성 돕는 ‘부산청년 기쁨두배통장’ 출시",
+  "source": "매일일보",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE5ldmNxaEdILVZIRkhfOTFpcHdTdVZfLTNFRWtwSU91M194bXpDWmEweWpya2ZEUGdmZjhSS0JPSzZPMHktbDBCZVlTVTE0c3d0WE5GTWNmbXhyOERtSmQ4cFlPRXU?oc=5",
+  "date": "2026-10-07T15:33:15+09:00",
+  "via": "google",
+  "cat": "product",
   "job": false,
   "econ": false
  },
@@ -1988,6 +2480,18 @@
   "date": "2026-10-07T15:19:19+09:00",
   "via": "google",
   "cat": "issue",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "macro",
+  "title": "한은 부총재보에 최영주 금융시장국장…경제연구원장에 윤경수",
+  "source": "매일경제TV",
+  "topic": "금융시장",
+  "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTE83WG9xYTA2MUlJbkEtTFcwVlIxOVlsbnEwU1JrNnNtdUY0ZlNVcVc1Ql9PRUpLMXdLVDR2V0xWd2NlZkc5OVpqdmFoeG1yalhlYjZvREJIQlFXTW5YbXVhMHZNNjZXU3N3V1k4?oc=5",
+  "date": "2026-10-07T15:19:00+09:00",
+  "via": "google",
+  "cat": "etc",
   "job": false,
   "econ": true
  },
@@ -2556,6 +3060,18 @@
   "econ": true
  },
  {
+  "bank": "macro",
+  "title": "[마켓 언박싱] 금리 두 번 올랐는데…은행 3분기 마진은 왜 꺾일까",
+  "source": "소셜밸류",
+  "topic": "기준금리",
+  "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTFBZUHlIQlpCYThXb2xETXNPeE9PX0dnTFYyam04SndIckxFSGJBR2s0WGVmc1FwbHFIdTJxOHdkYzJQNlNxUzFub0t0MFBQXzNtSlVMdElKSUI4am1wam1nZUprVdIBbEFVX3lxTFBrY2JMb3hOaTBQZkp5QVB2QWU1aDlIWGVHZW5vTXNYaDV1eGpjMjEzSTFjT0ZPUWw0bzhFNmZMUDZFTWZZSTZpN2dZRmVlS05Tb3pfQlN6VkRPZUw2Wlh2a2tOVlRBMlFLTkFnWQ?oc=5",
+  "date": "2026-10-07T14:34:50+09:00",
+  "via": "google",
+  "cat": "biz",
+  "job": false,
+  "econ": true
+ },
+ {
   "bank": "busan",
   "title": "BNK부산은행, 부산시 손잡고 청년 자산 형성 지원 나선다",
   "source": "더페어",
@@ -2888,6 +3404,18 @@
   "date": "2026-10-07T13:58:28+09:00",
   "via": "google",
   "cat": "etc",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "macro",
+  "title": "“규제 조이면 꼼수 대출 뚫린다”… 누더기 부동산 대출 제도의 구조적 헛점과 리스크",
+  "source": "얼리어답터뉴스",
+  "topic": "가계부채",
+  "link": "https://news.google.com/rss/articles/CBMiSkFVX3lxTFBaYmREUk5aSHc3Um93Ti01SmxNdW1DVU1uekh2VG8zVmpIS09HTUxnQi1hWU8yMG45bUtpeXZSak8wbUNjU3VuRFhB?oc=5",
+  "date": "2026-10-07T13:58:13+09:00",
+  "via": "google",
+  "cat": "issue",
   "job": false,
   "econ": true
  },
@@ -3286,6 +3814,18 @@
   "cat": "esg",
   "job": false,
   "econ": false
+ },
+ {
+  "bank": "macro",
+  "title": "제주 9월 소비자물가 2.7% 상승…전월보다 둔화",
+  "source": "제주교통복지신문",
+  "topic": "소비자물가",
+  "link": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE5HM09CcWpwWHlhS05lUXR2VDNrY3JaYzl3ekUwb25DNlBwOUV4VXBxeE5ZY0Z0UE5vSFFpaFdQclZxbVhZdUt3amNnMlVDeHlQa2pSOVdIbFFIVUJhcUZjYg?oc=5",
+  "date": "2026-10-07T13:13:33+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": true
  },
  {
   "bank": "busan",
@@ -4006,6 +4546,18 @@
   "cat": "etc",
   "job": false,
   "econ": false
+ },
+ {
+  "bank": "shinhan",
+  "title": "신한은행, 연세대와 스타트업 지원 '맞손'...금융권·대학 협력 확산",
+  "source": "초이스경제",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE53ZzNrb2c3LWh0QXdDa0J2YXllTVdreGYxM2VCQ1hMQkEwc3F6OUFOWGp1TFV6ZVNsOTY2YTVjdDVYT2dzRFUzTVAxSEFZOE9ZejVCYUdZWUExV2J0MjBCSW8zZk42b284a2NFZFpRdTXSAXNBVV95cUxQaWVYQWZCY3lIR3BtRWhFR0syaGVXT1RETERIRUw5WmhlVENLWTRvdXJHZnFRZXdwN2ozWTlyZldFVnM0X1pUVGh5SzYyNFNlME1GZnhJTUpxYmZfUjhCUC16OEx0M2hVZjE0RExZX19OZm5v?oc=5",
+  "date": "2026-10-07T11:00:18+09:00",
+  "via": "google",
+  "cat": "partner",
+  "job": false,
+  "econ": true
  },
  {
   "bank": "macro",
@@ -4752,6 +5304,18 @@
   "econ": false
  },
  {
+  "bank": "ibk",
+  "title": "‘가짜 기술평가’ 못 걸렀나 … 기업은행 1572억 대출, 47억은 이미 부실",
+  "source": "뉴데일리",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE14YnRzcGotdzVJRWhmeko5VnkwaDVNN28tTVRVUDlUYUxLLWtWa2dMZXZIUm1YdEtpWVR1X3dBMm5NSjF6dmFJWU1LQm1aWWo2UEtOSEZkZkNHajdZa0E3WjB0SDFWQThSSTRQOWZzbW5IeVQ2RUtTVUhuNNIBgAFBVV95cUxPalZpUm9QcUk2N3M0NDBjUXpGRVNta1c2b0lYT2hfS0xwRUh0aE5TYXVyQ3RyV2pyNUlEcnlWNFNMRmQyVDJpc2gzN29NU2JYSzBYRGVqYXJRMHNmc3FlbnBYX0t4VUhhRWk4M3BiX0x2ektLMU0xZEpIVFVlR05yUA?oc=5",
+  "date": "2026-10-07T09:59:43+09:00",
+  "via": "google",
+  "cat": "biz",
+  "job": false,
+  "econ": true
+ },
+ {
   "bank": "toss",
   "title": "케이뱅크, ‘햇살론유스’ 출시…인뱅 중 토스뱅크 이어 두 번째",
   "source": "NSP통신",
@@ -4906,6 +5470,18 @@
   "cat": "biz",
   "job": false,
   "econ": false
+ },
+ {
+  "bank": "macro",
+  "title": "테마와 시스템을 함께 이해하는 코리아보드게임즈 마작 딜럭스",
+  "source": "Calgary Roughnecks",
+  "topic": "기준금리",
+  "link": "https://news.google.com/rss/articles/CBMimgJBVV95cUxOMjdyVGFBUGxtTDdndFZLMlpwWG03WU1YS1NWWTJxNmlEcllpREdtX3dxaXp6eTktSWJad3I2cFhGV1pZTjNSQml3NTNCVFJxZ3NxU0pES09ZdUdEWkdRSTBUOE9NbFdydG5XMWZudlB3Y0FOX3Q0aUtDbmlRb2pfWUgwRm9leTBvZFlJNVV0RnJPRDh3UlVZMXVta1Qxc0lzeDNPWU5XRmZBTFRGNVZWVEp2aVktWktaTUdudC1xdUd6RGJ6XzlBTTQ1cjkwQ3M4dE5Oc3YwNmZBcWRZT1kzRm5yQnM5WDBDODB3RnBNd0JONnZGcndnd0NxMjM4MTlmZVA0Wndna2lQSVpDeDZBaHc2TWNZMkNJZEE?oc=5",
+  "date": "2026-10-07T09:52:55+09:00",
+  "via": "google",
+  "cat": "digital",
+  "job": false,
+  "econ": true
  },
  {
   "bank": "hana",
@@ -5364,6 +5940,18 @@
   "econ": true
  },
  {
+  "bank": "kakao",
+  "title": "딱 두 글자...카카오뱅크 AI 이모지 퀴즈 정답 (10월 7일)",
+  "source": "위키트리",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE1yWWRxRmw4ZG1vYi1rMU1JUlRHNG5ZdkY3Tmljemo4YXF1ZzhNTlJsM3FDQ1hmRUE4UW9RYS1FOGVpQVpCbVQ4RG03WFBXUkVMc0k3U2pB?oc=5",
+  "date": "2026-10-07T09:27:00+09:00",
+  "via": "google",
+  "cat": "digital",
+  "job": false,
+  "econ": false
+ },
+ {
   "bank": "nh",
   "title": "NH농협은행 '내 자산 안심 알림서비스' BM특허 취득",
   "source": "매일경제 마켓",
@@ -5540,6 +6128,18 @@
   "date": "2026-10-07T09:09:36+09:00",
   "via": "google",
   "cat": "digital",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "nh",
+  "title": "NH농협은행, 여러 금융사 자산 변동 알아서 알려준다…‘안심 알림’ 특허 획득",
+  "source": "리드경제",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBDZmFfWVBuX1NERDg2empLRFM3M0VSUm0wMjNlLUFyaUxqM1VxbnE5NEdqcHh2aVhfYWhsaXM4NWRnQXNMQzFNMXJ2ZmVubWFxRzBBQU9UZ1R0NnNvRG1SeHRyN0lsQUlPWjJPV2RJWi0?oc=5",
+  "date": "2026-10-07T09:08:48+09:00",
+  "via": "google",
+  "cat": "etc",
   "job": false,
   "econ": false
  },
@@ -6409,6 +7009,18 @@
  },
  {
   "bank": "macro",
+  "title": "한 판 안에서 일어나는 변화, 바퀴벌레 잡기 게임",
+  "source": "Calgary Roughnecks",
+  "topic": "원달러 환율",
+  "link": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxPYnViN29UTF82N1FadV9zVzR4dVQwOU5HWEZCUVZKdk9OYVpsWXZqdExGU0RLbm04eDI4ZnI3MWZmZUkyNmJFSkJlRXRpTHZxbHA3aFZEaFZBS1o0WURQTmoxcm5YeDh3cXRHUmlSbHZiY1pYZEJnbjZSNFF3NXJBSmZkWG9ZV2lIaXE2SEEwY2hvZFVCYUZnYXloSEI2X21aa2UtczBiVGgtQjVLOTE5eGpMZmJscmt1U1lNeG9IRmh2aDIzZGw1aVV0eFh1VlNMM2hndHprR1FxcFVVenFRLXhMSG9OLUFjVmc?oc=5",
+  "date": "2026-10-06T22:46:19+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "macro",
   "title": "박수영 “환율 1500원 위협에…정부, 삼전닉스 등 11년치 외환자료 요구”",
   "source": "이데일리",
   "topic": "원달러 환율",
@@ -7136,6 +7748,18 @@
   "date": "2026-10-06T17:39:02+09:00",
   "via": "google",
   "cat": "digital",
+  "job": false,
+  "econ": false
+ },
+ {
+  "bank": "kb",
+  "title": "[IT 투데이] 네이버페이-KB국민은행, 소상공인 상생 업무협약 外",
+  "source": "DealSite경제TV",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE4tRVlaY2xLLV9fNGJZOGxIQ2VmMm9UckxhTW5MQWlROFFENWowRjFDendDRUNRTF90NGZLSUI5ZjcwZURiU2NuNEtWNEk0UVJwYmdiSHhB?oc=5",
+  "date": "2026-10-06T17:37:00+09:00",
+  "via": "google",
+  "cat": "partner",
   "job": false,
   "econ": false
  },
@@ -9984,6 +10608,18 @@
   "cat": "etc"
  },
  {
+  "bank": "kakao",
+  "title": "무려 일곱 글자… 카카오뱅크 AI 이모지 퀴즈 6일 12시 정답",
+  "source": "위키트리",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE5maVQ3NGpTWnFEMDMtR0FpUXlubGYzUDUzVXEtUjYtRnJaMjRkalRSZ25yOU96RG83c1JQRF8wN1ppR3NGVUNfeGU4UlR6NGN2NDB1UVN3?oc=5",
+  "date": "2026-10-06T12:03:00+09:00",
+  "via": "google",
+  "cat": "digital",
+  "job": false,
+  "econ": false
+ },
+ {
   "bank": "kb",
   "title": "KB국민은행, 네이버페이·KICC·이지샵과 소상공인 지원 업무협약",
   "source": "한국NGO신문",
@@ -12565,6 +13201,18 @@
   "econ": false
  },
  {
+  "bank": "ibk",
+  "title": "중기중앙회·기업은행, 공제기금 접근성 확대 ‘맞손’",
+  "source": "이투데이",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiVEFVX3lxTFAwVnlRX28yMUQtazU0TmVxdEtsdHU2bExpWEwyUnBWLU82LVVTRTdNVm1xU3VWakx2MlVUckJCTF93NVFNT0JhLVJuY0dCSUxhcHU4dA?oc=5",
+  "date": "2026-10-06T09:05:00+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": false
+ },
+ {
   "bank": "kb",
   "title": "인니 현직 장관 \"KB국민은행 인니, 다시 인수하겠다\" 황당 주장",
   "source": "더구루",
@@ -12949,6 +13597,18 @@
   "cat": "digital"
  },
  {
+  "bank": "kakao",
+  "title": "최저가 아니다… 6일 오전 8시 카카오뱅크 AI 이모지 퀴즈 정답은?",
+  "source": "위키트리",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE1pY3JyOVlaV3lIdGltd0pxSWZiU1A5MzFPck5mS21TdGNBZEExMzhTR2IyTjdMemh1ODI4RnpqRXp1dGhrS1djdXp1UGpxTDkzUFItd1hR?oc=5",
+  "date": "2026-10-06T08:08:00+09:00",
+  "via": "google",
+  "cat": "digital",
+  "job": false,
+  "econ": false
+ },
+ {
   "bank": "kdb",
   "title": "한진칼 지배구조, 산업은행 지분 10.58%가 최대 변수",
   "source": "파이낸셜투데이",
@@ -13007,6 +13667,18 @@
   "job": false,
   "econ": true,
   "cat": "rate"
+ },
+ {
+  "bank": "macro",
+  "title": "10월 이후 돼지고기 가격 안정세 전환 전망",
+  "source": "한돈뉴스",
+  "topic": "소비자물가",
+  "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE80RWM0dVJBQUtEZDF3THp6b0lSRXpNWmhTQWhuN0pBSkhmaU05eTZpbnRQb1RYemh0X1hqdl9GWkthM2FKY05MQ2twMjlNMmpBQ0lIN25pYlM0RVBybkZOSm9GbUJQdW9yeGd2T9IBbEFVX3lxTE80RWM0dVJBQUtEZDF3THp6b0lSRXpNWmhTQWhuN0pBSkhmaU05eTZpbnRQb1RYemh0X1hqdl9GWkthM2FKY05MQ2twMjlNMmpBQ0lIN25pYlM0RVBybkZOSm9GbUJQdW9yeGd2Tw?oc=5",
+  "date": "2026-10-06T07:51:14+09:00",
+  "via": "google",
+  "cat": "biz",
+  "job": false,
+  "econ": true
  },
  {
   "bank": "macro",
@@ -13839,6 +14511,18 @@
   "cat": "biz"
  },
  {
+  "bank": "nh",
+  "title": "사업자 차명계좌 NH농협은행 최다…국세청 관리 부실 지적",
+  "source": "폴리뉴스 Polinews",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTFBvaFltdDBnN1lqbEM0Q2cwWWNBd25lSDM2d0N1SmMxSXJ1ZDhfUF9OeUV1WVlsLXpOMG1DaFhVbVdqRUdjVllReXdlQzNqSzZET2JHRmdHc0ZCeTAzODNzZGpQN2Z3V3VSN1lMMGx3?oc=5",
+  "date": "2026-10-05T19:14:37+09:00",
+  "via": "google",
+  "cat": "issue",
+  "job": false,
+  "econ": false
+ },
+ {
   "bank": "citi",
   "title": "비스트라 에너지 자회사, 씨티은행 등과 원자재 연계 신용공여 계약 만기 연장",
   "source": "데이터투자",
@@ -13904,6 +14588,18 @@
   "cat": "etc",
   "job": false,
   "econ": true
+ },
+ {
+  "bank": "kbank",
+  "title": "케이뱅크, 업비트 계약 1년 연장",
+  "source": "TradingView",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTFB4a0hYZXZUXzM2TGlEelNMQVQ1UHVMVW9nOGRwYVRNMktHTjhZTmx1MENLTk92dGk3T0FkUzBYLXRqU3BYZ2twNUNQaEpzeGItRUlxamhDSmZOWlFobnZBRGtJM1lUZDRrLWc?oc=5",
+  "date": "2026-10-05T18:18:40+09:00",
+  "via": "google",
+  "cat": "rate",
+  "job": false,
+  "econ": false
  },
  {
   "bank": "kyongnam",
@@ -14234,6 +14930,18 @@
   "job": false,
   "econ": true,
   "cat": "biz"
+ },
+ {
+  "bank": "macro",
+  "title": "충북 소비자물가 상승률 5개월 3%대",
+  "source": "충청매일",
+  "topic": "소비자물가",
+  "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTFAwRVBvdFJMSXAtRnRmZnh2Tmg5alRaMS1jYkdLWUc3M3JFLS1yalUzcndIR0Fib21ycGtiaXRTeWlPeDA2N0RqOV9SNjZjUVJueTdEUUZoN0xRMFFYdlAydHMtbml5WmxHd0E?oc=5",
+  "date": "2026-10-05T16:30:00+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": true
  },
  {
   "bank": "macro",
@@ -16163,6 +16871,18 @@
   "econ": false
  },
  {
+  "bank": "kb",
+  "title": "“10초를 잡아라”…노후 준비 ‘골든타임’ 알린 KB국민은행[헤럴드머니페스타2026]",
+  "source": "헤럴드경제",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE5HbFNyeHZKdi1mUkhRbVNtak1KTkR0aXN2LUdPV3ppaE96SHVFVTdTczhkcEYybGlQZkRpMC1RWDFtaG55clFHWEUza09KZ1haZlVnbkJB?oc=5",
+  "date": "2026-10-05T09:00:00+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": false
+ },
+ {
   "bank": "macro",
   "title": "2026년 개천절 대체공휴일, 은행·주식시장·택배·우체국·병원 등 운영 여부는?",
   "source": "한국강사신문",
@@ -17862,6 +18582,18 @@
   "cat": "rate"
  },
  {
+  "bank": "nh",
+  "title": "횡령·부당대출 등…NH농협은행 5년여간 426명 징계",
+  "source": "파이낸셜뉴스",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFBKSGxKLUROb3RCbDFwUzg1R2FGUVlQbElDaktROFJONDBiTHh6LU44LUY0U2NXeF9qS256Y2lxZkcxQ21iajJnUXY2bUFROUhreTlmT3Rpbmhzdw?oc=5",
+  "date": "2026-10-04T05:59:52+09:00",
+  "via": "google",
+  "cat": "issue",
+  "job": false,
+  "econ": true
+ },
+ {
   "bank": "im",
   "title": "iM뱅크·바로저축銀 올해 악성코드 감염…고객정보는 유출 안돼",
   "source": "연합뉴스",
@@ -19377,6 +20109,18 @@
   "job": false,
   "econ": false,
   "cat": "issue"
+ },
+ {
+  "bank": "macro",
+  "title": "민생경제 안정 \"9월 소비자물가 2.9% 상승…농축수산물 2개월 연속 하락\"",
+  "source": "국민뉴스",
+  "topic": "소비자물가",
+  "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE5QTEZYbTMzMHVfQ29nMVk3bkhzbnBrYUpWSWhvektzNFlNSE5rVkZkU2JyRV9UVDNVQjVRc2djdjFYOUxUenQwSw?oc=5",
+  "date": "2026-10-03T00:04:00+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": true
  },
  {
   "bank": "macro",
@@ -21167,6 +21911,18 @@
  },
  {
   "bank": "macro",
+  "title": "9월 물가 다시 2%대…한은 \"10월은 3% 안팎 오를 것\"",
+  "source": "블루밍비트",
+  "topic": "소비자물가",
+  "link": "https://news.google.com/rss/articles/CBMiUEFVX3lxTFB6Q3l0T3QtalNvSUdUbTIxVnl5bzZyN3N5bVNaNkJheDNLcE95S3ZKTUxNSUNYWWtTOVhqWWlfeVA5VFBVY0ZWV1RfZ2wxVFBH?oc=5",
+  "date": "2026-10-02T17:38:04+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "macro",
   "title": "[정인호 객원기자칼럼] 글로벌 ‘금리인상’ 추세…엄격한 재정 관리 필요",
   "source": "주간한국",
   "topic": "기준금리",
@@ -22779,6 +23535,18 @@
   "cat": "issue"
  },
  {
+  "bank": "macro",
+  "title": "9월 소비자물가 2.9% 상승 … \"농산물은 4% 하락\"",
+  "source": "세이프머니",
+  "topic": "소비자물가",
+  "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5FZDU3OVVOUElOaUxUMFBVOHNHWGxUYndyZVQ1ejZsb0JsVlNydDY3WjVRSXZBZmFNMFk5LVcycEtPOU9hMGh2cUJjWHBSdnpKZW52dVBzRFFNajJsSW1GbEx0NXhQNWRGeG1xWWJR?oc=5",
+  "date": "2026-10-02T15:29:30+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": true
+ },
+ {
   "bank": "kb",
   "title": "KB국민은행, 고객 119명 정보 유출",
   "source": "뉴스1",
@@ -23342,6 +24110,18 @@
   "topic": "소비자물가",
   "link": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE9ncjBnak4zdHhSYUlZbDlKY0pYYW1KOVFrVFZTNVE2LUVNOEtRS2ZhdEtWSzc3aDk4Um56TVZOVTI3ek1YeDI3bENYTQ?oc=5",
   "date": "2026-10-02T14:17:19+09:00",
+  "via": "google",
+  "cat": "etc",
+  "job": false,
+  "econ": true
+ },
+ {
+  "bank": "macro",
+  "title": "9월 소비자물가 2.9% 상승…기름값 14.8% 급등",
+  "source": "뉴스1",
+  "topic": "소비자물가",
+  "link": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE9xb2poVEtjUHB2VnBMN3l4bUpneXlPLXhTazd6NGx2NzhwNU1wM1pKRnlGZ2FQRjVULXQ5ZEVHSmlmd1diVVppRk9zVQ?oc=5",
+  "date": "2026-10-02T14:17:07+09:00",
   "via": "google",
   "cat": "etc",
   "job": false,
@@ -45783,6 +46563,18 @@
   "cat": "issue"
  },
  {
+  "bank": "kyongnam",
+  "title": "BNK금융, 부산·경남은행 하반기 신입 행원 채용-‘통합 직군’ 선발",
+  "source": "미디어파인",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5hRjY0S2tRNkpPWElRX293eENTLVFmb2UyeGVtblJZUDZNeHFVVDk2RGhVVTdkcTdSRWNaNXoybFg3VV9EekFaZ05BZ005eXdDQ2RMVEtjWHVIQTlWc3A0RFVPZWcxUy03WWdjWTBB?oc=5",
+  "date": "2026-09-21T16:00:00+09:00",
+  "via": "google",
+  "cat": "job",
+  "job": true,
+  "econ": false
+ },
+ {
   "bank": "busan",
   "title": "BNK금융그룹, 부산은행·경남은행 신입행원 채용…블라인드 전형",
   "source": "뉴스핌",
@@ -50935,6 +51727,18 @@
   "job": false,
   "econ": false,
   "cat": "issue"
+ },
+ {
+  "bank": "kakao",
+  "title": "정답은 2글자, 바로 알아보자...카카오뱅크 AI 퀴즈 ‘정답’ 공개 (9월 16일)",
+  "source": "위키트리",
+  "topic": "",
+  "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE5nS2JTNlRFZUcyd3UzWENYZUpsQ0VGeTlua1hNcXNDU2Zyd0hCSzJCc1hZdXJaWlpYTkdRdkhxZmJEMHlONkpHSXAxdU1DUnVRMzdXa2Zn?oc=5",
+  "date": "2026-09-16T16:00:00+09:00",
+  "via": "google",
+  "cat": "digital",
+  "job": false,
+  "econ": false
  },
  {
   "bank": "busan",

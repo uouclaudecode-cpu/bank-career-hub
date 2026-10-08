@@ -422,6 +422,15 @@
  },
  {
   "bank": "kakao",
+  "title": "마케팅 업무 지원 어시스턴트 (체험형 인턴)",
+  "link": "https://kakaobank.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=268836",
+  "posted": "2026-10-08T00:00:00+09:00",
+  "deadline": "2026-10-30T23:59:00+09:00",
+  "via": "공식 채용사이트",
+  "job_type": "Service & Biz"
+ },
+ {
+  "bank": "kakao",
   "title": "금융업무 지원 담당자 - 국가보훈대상자 전형 (계약직)",
   "link": "https://kakaobank.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=238695",
   "posted": "2026-01-01T00:00:00+09:00",
@@ -485,6 +494,14 @@
   "link": "https://recruit.incruit.com/kbstar/job/2609300002",
   "posted": "2026-09-30T00:00:00+09:00",
   "deadline": "2026-11-28T23:59:00+09:00",
+  "via": "공식 채용사이트"
+ },
+ {
+  "bank": "kb",
+  "title": "[수도권] KB국민은행 PT(영업점 텔러) 긴급채용(송탄)",
+  "link": "https://recruit.incruit.com/kbstar/job/2610080013",
+  "posted": "2026-10-08T00:00:00+09:00",
+  "deadline": "2026-12-06T23:59:00+09:00",
   "via": "공식 채용사이트"
  },
  {
@@ -1136,7 +1153,7 @@
  },
  {
   "bank": "toss",
-  "title": "Asset Specialist",
+  "title": "Asset Specialist (2년 이하)",
   "link": "https://toss.im/career/job-detail?gh_jid=7559116003",
   "posted": null,
   "deadline": null,
@@ -1271,7 +1288,7 @@
  },
  {
   "bank": "toss",
-  "title": "IT Operations Specialist (Call Infra)",
+  "title": "IT Operations Specialist (Call Infra)(2년 이하)",
   "link": "https://toss.im/career/job-detail?gh_jid=7736910003",
   "posted": null,
   "deadline": null,
@@ -1439,6 +1456,15 @@
   "deadline": null,
   "via": "공식 채용사이트",
   "job_type": "정규직"
+ },
+ {
+  "bank": "toss",
+  "title": "Talent Development Specialist",
+  "link": "https://toss.im/career/job-detail?gh_jid=8016620003",
+  "posted": null,
+  "deadline": null,
+  "via": "공식 채용사이트",
+  "job_type": "계약직"
  },
  {
   "bank": "toss",

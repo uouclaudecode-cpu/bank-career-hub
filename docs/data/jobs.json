@@ -255,6 +255,26 @@
   "via": "공식 채용사이트"
  },
  {
+  "bank": "kyongnam",
+  "title": "2026년 하반기 BNK경남은행 특성화고 신입행원 채용",
+  "link": "https://knbank.recruiter.co.kr/career/jobs/128698",
+  "posted": "2026-10-08T14:00:00+09:00",
+  "deadline": "2026-10-18T17:00:00+09:00",
+  "via": "공식 채용사이트",
+  "career": "경력무관",
+  "job_type": "추천채용"
+ },
+ {
+  "bank": "shinhan",
+  "title": "[신한은행] (26-10) 영업점 창구업무 업무지원계약인력 채용",
+  "link": "https://shinhan.recruiter.co.kr/career/jobs/130625",
+  "posted": "2026-10-08T10:00:00+09:00",
+  "deadline": "2026-10-19T22:00:00+09:00",
+  "via": "공식 채용사이트",
+  "career": "경력",
+  "job_type": "수시"
+ },
+ {
   "bank": "busan",
   "title": "BNK부산은행 개인대출센터 사무지원 계약직 대규모 채용",
   "link": "https://busanbank.recruiter.co.kr/career/jobs/130493",
@@ -358,12 +378,30 @@
  },
  {
   "bank": "kakao",
+  "title": "FDS 전기통신금융사기 모니터링 담당자 - 주간 (계약직)",
+  "link": "https://kakaobank.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=247107",
+  "posted": "2026-03-09T00:00:00+09:00",
+  "deadline": "2026-10-27T23:59:00+09:00",
+  "via": "공식 채용사이트",
+  "job_type": "Compliance"
+ },
+ {
+  "bank": "kakao",
   "title": "쿠버네티스(Kubernetes) 엔지니어",
   "link": "https://kakaobank.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=268717",
   "posted": "2026-10-07T00:00:00+09:00",
   "deadline": "2026-10-28T23:59:00+09:00",
   "via": "공식 채용사이트",
   "job_type": "Engineering"
+ },
+ {
+  "bank": "kakao",
+  "title": "수신 상품/서비스 운영 담당자 (계약직)",
+  "link": "https://kakaobank.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=264465",
+  "posted": "2026-08-26T00:00:00+09:00",
+  "deadline": "2026-10-28T23:59:00+09:00",
+  "via": "공식 채용사이트",
+  "job_type": "Service & Biz"
  },
  {
   "bank": "kakao",
@@ -895,6 +933,26 @@
   "via": "공식 채용사이트",
   "career": "경력",
   "job_type": "상시"
+ },
+ {
+  "bank": "nh",
+  "title": "2026년 [금융] 5급 신규직원 채용",
+  "link": "https://nhbank.incruit.com/hire/viewhire.asp?projectid=101",
+  "posted": null,
+  "deadline": null,
+  "via": "공식 채용사이트",
+  "career": "신입",
+  "job_type": "정규직"
+ },
+ {
+  "bank": "nh",
+  "title": "2026년 [전문] 5급 신규직원 채용",
+  "link": "https://nhbank.incruit.com/hire/viewhire.asp?projectid=102",
+  "posted": null,
+  "deadline": null,
+  "via": "공식 채용사이트",
+  "career": "신입",
+  "job_type": "정규직"
  },
  {
   "bank": "toss",

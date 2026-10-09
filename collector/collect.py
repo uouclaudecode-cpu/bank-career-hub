@@ -173,6 +173,15 @@ def google_news(bank: dict, extra: str, query: str | None = None, topic: str = "
 def short_desc(text: str, limit: int = 160) -> str:
     """네이버 검색 결과의 기사 요약문을 정리: 태그·공백 정리 후 limit자 안에서 문장/단어 단위로 자른다"""
     t = re.sub(r"\s+", " ", clean(text)).strip()
+    # 맨 앞 기자 이름표 지우기: [뉴시안= 박성하 기자] / (서울=연합뉴스) 홍길동 기자 = / 【OO일보】 / 홍길동 기자 =
+    for _ in range(3):
+        t2 = re.sub(r"^[\[［(（【<〈][^\]］)）】>〉]{0,40}?(=|기자|뉴스|일보|신문|제공|특파원|사진|편집자|리포트|그래픽|자료|은행)[^\]］)）】>〉]{0,40}[\]］)）】>〉]\s*", "", t)
+        t2 = re.sub(r"^[◇◆■□▶▷▲△●○※★☆·]\s*", "", t2)
+        t2 = re.sub(r"^[가-힣]{2,4}\s?(기자|특파원|객원기자)\s?[=:·]\s*", "", t2)
+        t2 = re.sub(r"^[=\-–]\s*", "", t2)
+        if t2 == t:
+            break
+        t = t2.strip()
     if len(t) <= limit:
         return t
     cut = t[:limit]
@@ -625,6 +634,8 @@ def merge_news(old: list[dict], new: list[dict]) -> list[dict]:
         if k in seen:
             continue
         seen.add(k)
+        if n.get("desc"):
+            n["desc"] = short_desc(n["desc"])  # 예전에 저장된 요약도 같은 규칙으로 다시 정리
         n["cat"] = news_topic(n["title"])
         n["job"] = n["cat"] == "job"
         n["econ"] = n["bank"] == "macro" or is_econ_news(n["title"])

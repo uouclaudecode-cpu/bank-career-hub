@@ -192,8 +192,8 @@ def short_desc(text: str, limit: int = 160) -> str:
     # 이 함수가 단어 단위로 자른 결과는 '…'(한 글자)로 끝나므로, 다음 실행 때 다시 깎이지 않게 그대로 둔다.
     if t.endswith("…") and len(t) <= limit + 1:
         return t
-    truncated = t.endswith("...")
-    t = re.sub(r"\.\.\.$", "", t).strip()
+    truncated = bool(re.search(r"\.{2,}\s*$", t))
+    t = re.sub(r"(\s*\.{2,})+\s*$", "", t).strip()  # 끝의 '...' / '... ...' 를 한 번에 모두 제거
     if len(t) < 15:  # '후속기사가 이어집니다' 같은 의미 없는 문장
         return ""
     if not truncated and len(t) <= limit:

@@ -36,86 +36,260 @@
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+
+<script>
+/* 화면이 그려지기 전에 저장된 테마·강조색·글자 크기를 먼저 적용 (깜빡임 방지) */
+const ACCENTS = {
+  blue:   ["#0b5cff", "#5b8cff", "파랑"],
+  green:  ["#0f9d58", "#3ccf85", "초록"],
+  purple: ["#6b4dff", "#9d8aff", "보라"],
+  orange: ["#e8590c", "#ff9a52", "주황"],
+  pink:   ["#d6336c", "#ff7aa8", "분홍"],
+  teal:   ["#0b8a8a", "#33c3c3", "청록"],
+};
+const DEFAULT_P = {theme: "system", accent: "blue", font: "m", fav: [], homeFav: false,
+                   home: {jobs: true, news: true, econ: true, enews: true}, hidePT: true, start: "home"};
+function loadPrefs(){
+  try {
+    const v = JSON.parse(localStorage.getItem("hbank:prefs") || "null");
+    if (v) return {...DEFAULT_P, ...v, home: {...DEFAULT_P.home, ...(v.home || {})}, fav: Array.isArray(v.fav) ? v.fav : []};
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_P));
+}
+function applyPrefs(P){
+  const r = document.documentElement;
+  if (P.theme === "light" || P.theme === "dark") r.dataset.theme = P.theme; else r.removeAttribute("data-theme");
+  const a = ACCENTS[P.accent] || ACCENTS.blue;
+  r.style.setProperty("--brand-l", a[0]); r.style.setProperty("--brand-d", a[1]);
+  r.dataset.font = ["s", "m", "l"].includes(P.font) ? P.font : "m";
+}
+let P = loadPrefs(); applyPrefs(P);
+</script>
+
 <style>
+/* ================= 색 토큰: 라이트 / 다크 (시스템 설정 또는 사용자가 고른 값) ================= */
 :root{
-  --bg:#f5f6f8; --panel:#fff; --ink:#191f28; --sub:#4e5968; --faint:#8b95a1;
-  --line:#e5e8eb; --line-soft:#f0f2f4; --grid:#eef0f3; --hover:#f7f8fa;
-  --brand:#0b5cff; --brand-soft:#eaf1ff;
-  --up:#e5344a; --down:#2f6fe4;            /* 한국식: 상승 빨강, 하락 파랑 */
-  --warn:#e8590c; --warn-soft:#fff2e8; --calm:#4e5968; --calm-soft:#f2f4f6;
+  --brand-l:#0b5cff; --brand-d:#5b8cff;
+  --bg:#f4f5f7; --panel:#fff; --ink:#191f28; --sub:#4e5968; --faint:#8b95a1;
+  --line:#e5e8eb; --line-soft:#f0f2f4; --grid:#eef0f3; --hover:#f6f7f9; --chip:#f2f4f6;
+  --brand:var(--brand-l);
+  --up:#e5344a; --down:#2f6fe4;             /* 한국식: 상승 빨강, 하락 파랑 */
+  --warn:#e8590c; --warn-soft:#fff2e8;
   --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; /* 차트 계열색 */
-  --radius:16px; --shadow:0 1px 2px rgba(16,24,40,.04);
+  --shadow:0 1px 3px rgba(16,24,40,.05);
+  --radius:18px;
+  color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
-  :root{--bg:#0e1014; --panel:#17191e; --ink:#eceef1; --sub:#b0b8c1; --faint:#7d8590;
-    --line:#2a2e35; --line-soft:#22262c; --grid:#23272d; --hover:#1d2026;
-    --brand:#5b8cff; --brand-soft:#1a2440;
-    --up:#ff6b7d; --down:#6aa1ff;
-    --warn:#ff8f4d; --warn-soft:#3a2416; --calm:#b0b8c1; --calm-soft:#23272d;
-    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --shadow:none;}
+  :root:not([data-theme="light"]){
+    --bg:#0d0f13; --panel:#16191e; --ink:#eceef1; --sub:#b0b8c1; --faint:#7d8590;
+    --line:#272b32; --line-soft:#20242a; --grid:#22262c; --hover:#1c2026; --chip:#22262c;
+    --brand:var(--brand-d);
+    --up:#ff6b7d; --down:#6aa1ff; --warn:#ff8f4d; --warn-soft:#3a2416;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --shadow:none; color-scheme:dark;
+  }
 }
+:root[data-theme="dark"]{
+  --bg:#0d0f13; --panel:#16191e; --ink:#eceef1; --sub:#b0b8c1; --faint:#7d8590;
+  --line:#272b32; --line-soft:#20242a; --grid:#22262c; --hover:#1c2026; --chip:#22262c;
+  --brand:var(--brand-d);
+  --up:#ff6b7d; --down:#6aa1ff; --warn:#ff8f4d; --warn-soft:#3a2416;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --shadow:none; color-scheme:dark;
+}
+:root{--brand-soft:color-mix(in srgb, var(--brand) 12%, var(--panel))}
+
+/* 글자 크기 (설정) */
+html{font-size:15px;-webkit-text-size-adjust:100%}
+html[data-font="s"]{font-size:14px}
+html[data-font="l"]{font-size:16.5px}
+
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:15px;line-height:1.55;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:1rem;line-height:1.55;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;cursor:pointer}
-:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:6px}
-.wrap{max-width:1180px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:8px}
+[hidden]{display:none !important}
 .num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1100px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+.narrow{max-width:760px}
 
-/* ---------- 헤더 ---------- */
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:26px 0 18px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:40px;height:40px;border-radius:12px;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:800;font-size:22px;letter-spacing:-.04em;flex:none}
-.brand h1{margin:0;font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1.2}
-.brand p{margin:1px 0 0;color:var(--faint);font-size:13px}
-.pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--sub);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
-.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:#22b573}
-.top-side{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.install{border:0;background:var(--brand);color:#fff;font-weight:700;font-size:13px;border-radius:999px;padding:6px 14px 6px 11px;display:inline-flex;gap:6px;align-items:center;box-shadow:0 2px 8px rgba(11,92,255,.25)}
+/* ================= 상단 바 ================= */
+.appbar{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 85%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(14px);backdrop-filter:saturate(1.6) blur(14px);border-bottom:1px solid var(--line)}
+.appbar .wrap{display:flex;align-items:center;gap:16px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.2rem;letter-spacing:-.03em;flex:none}
+.brand img{width:32px;height:32px;border-radius:9px}
+.tabs{display:flex;gap:4px;margin-left:12px}
+.tabs button{border:0;background:transparent;padding:8px 14px;border-radius:10px;font-weight:600;color:var(--sub);font-size:.95rem}
+.tabs button:hover{background:var(--hover)}
+.tabs button[aria-current="page"]{color:var(--ink);background:var(--chip)}
+.bar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.icon-btn{width:38px;height:38px;border-radius:12px;border:0;background:transparent;display:grid;place-items:center;color:var(--sub)}
+.icon-btn:hover{background:var(--hover);color:var(--ink)}
+.icon-btn svg{width:21px;height:21px}
+.install{border:0;background:var(--brand);color:#fff;font-weight:700;font-size:.85rem;border-radius:999px;padding:7px 14px 7px 11px;display:inline-flex;gap:6px;align-items:center}
 .install svg{width:15px;height:15px}
-.install[hidden]{display:none}
-.tip-sheet{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));max-width:440px;margin:0 auto;z-index:30;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:18px;box-shadow:0 16px 48px rgba(0,0,0,.22);padding:16px 16px 16px 18px;display:flex;gap:12px;align-items:flex-start}
-.tip-sheet[hidden]{display:none}
-.tip-sheet img{width:44px;height:44px;border-radius:11px;flex:none}
-.tip-sheet b{display:block;font-size:15px;margin-bottom:2px}
-.tip-sheet p{margin:0;font-size:13.5px;color:var(--sub);line-height:1.5}
-.tip-sheet .x{margin-left:auto;border:0;background:var(--calm-soft);border-radius:50%;width:28px;height:28px;flex:none;color:var(--sub);font-size:12px}
 
-/* ---------- 섹션 공통 ---------- */
-.sec-title{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 0 10px;flex-wrap:wrap}
-.sec-title h2{margin:0;font-size:16px;font-weight:700}
-.sec-title small{color:var(--faint);font-size:12px}
-.card,.chart-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
-.card{padding:20px}
-.chart-card{padding:18px 20px;margin-top:12px;position:relative}
-.head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.head h2,.chart-head h3{margin:0;font-size:16px;font-weight:700;display:flex;align-items:baseline;gap:8px}
-.head h2 small,.chart-head h3 small{color:var(--faint);font-weight:500;font-size:13px}
-.chart-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+/* 휴대폰: 아래쪽 탭 바 */
+.bottom-nav{display:none}
+@media (max-width:720px){
+  .tabs{display:none}
+  .appbar .wrap{height:54px}
+  .install{padding:6px 11px 6px 9px}
+  .install span{display:none}
+  .bottom-nav{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:10;background:color-mix(in srgb,var(--panel) 92%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+  .bottom-nav button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.7rem;font-weight:600;color:var(--faint);padding:4px 0}
+  .bottom-nav svg{width:23px;height:23px}
+  .bottom-nav button[aria-current="page"]{color:var(--brand)}
+  main{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+}
+
+/* ================= 공통 카드 ================= */
+main{padding-top:20px;padding-bottom:40px}
+.view-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:4px 0 16px;flex-wrap:wrap}
+.view-head h1{margin:0;font-size:1.55rem;font-weight:800;letter-spacing:-.03em;line-height:1.25}
+.view-head p{margin:4px 0 0;color:var(--faint);font-size:.87rem}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+.card + .card{margin-top:14px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.card-head h2{margin:0;font-size:1.05rem;font-weight:700;display:flex;align-items:baseline;gap:8px}
+.card-head h2 small{color:var(--faint);font-weight:500;font-size:.82rem}
+.more-link{border:0;background:transparent;color:var(--brand);font-weight:600;font-size:.85rem;padding:4px 2px;white-space:nowrap}
+.more-link:hover{text-decoration:underline}
+.empty{color:var(--sub);font-size:.92rem;padding:14px 0}
+.muted{color:var(--faint)}
 
 /* 세그먼트 버튼 */
-.seg{display:inline-flex;background:var(--calm-soft);border-radius:10px;padding:3px;flex:none}
-.seg button{border:0;background:transparent;padding:5px 12px;font-size:13px;border-radius:8px;color:var(--sub);font-weight:500}
-.seg button[aria-pressed=true]{background:var(--panel);color:var(--ink);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.seg{display:inline-flex;background:var(--chip);border-radius:11px;padding:3px;flex:none}
+.seg button{border:0;background:transparent;padding:5px 12px;font-size:.85rem;border-radius:9px;color:var(--sub);font-weight:600}
+.seg button[aria-pressed=true]{background:var(--panel);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
 
-/* ---------- 경제 지표 ---------- */
-.econ{margin-bottom:22px}
+/* 스위치 */
+.sw{position:relative;display:inline-block;width:42px;height:24px;flex:none}
+.sw input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;z-index:1}
+.sw span{position:absolute;inset:0;background:var(--line);border-radius:99px;transition:background .15s}
+.sw span::after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+.sw input:checked + span{background:var(--brand)}
+.sw input:checked + span::after{transform:translateX(18px)}
+.sw input:focus-visible + span{outline:2px solid var(--brand);outline-offset:2px}
+
+/* 은행 칩 줄 */
+.bankbar{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * max(16px,env(safe-area-inset-left))) 14px;padding:2px max(16px,env(safe-area-inset-left))}
+.bankbar::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;font-size:.87rem;font-weight:600;white-space:nowrap;display:flex;align-items:center;gap:6px;color:var(--sub)}
+.chip:hover{border-color:var(--faint)}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.chip .n{color:var(--faint);font-size:.78rem;font-weight:700}
+.chip .star{color:#f5a524;font-size:.8rem}
+.chip[aria-pressed=true]{background:var(--c,var(--ink));color:var(--ct,var(--bg));border-color:var(--c,var(--ink))}
+.chip[aria-pressed=true] .dot{background:var(--ct)}
+.chip[aria-pressed=true] .n,.chip[aria-pressed=true] .star{color:inherit;opacity:.85}
+.chip-sep{flex:none;width:1px;background:var(--line);margin:6px 2px}
+
+/* 필터 줄 */
+.filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.filters .grow{flex:1}
+.toggle-label{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;color:var(--sub);cursor:pointer}
+.toggle-label .muted{font-size:.8rem}
+.search{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:9px 14px;font:inherit;font-size:.92rem;color:var(--ink)}
+.search:focus{outline:none;border-color:var(--brand)}
+.cats{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:10px 0 4px;padding-bottom:2px}
+.cats::-webkit-scrollbar{display:none}
+.cats button{flex:none;border:0;background:var(--chip);border-radius:999px;padding:6px 12px;font-size:.84rem;color:var(--sub);font-weight:600;display:inline-flex;gap:5px;align-items:baseline}
+.cats button i{font-style:normal;font-size:.75rem;color:var(--faint);font-variant-numeric:tabular-nums}
+.cats button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.cats button[aria-pressed=true] i{color:inherit;opacity:.7}
+.cats button:disabled{opacity:.4;cursor:default}
+
+/* ================= 채용공고 한 줄: [D-day] [제목 / 정보] ================= */
+.rec{display:grid;grid-template-columns:54px minmax(0,1fr);gap:14px;align-items:start;padding:13px 10px;margin:0 -10px;border-radius:12px}
+.rec + .rec{border-top:1px solid var(--line-soft)}
+.rec:hover{background:var(--hover)}
+.rec:hover .t{color:var(--brand)}
+.rec .t{font-weight:600;line-height:1.45}
+.badge{display:block;text-align:center;font-size:.82rem;font-weight:800;border-radius:9px;padding:5px 0;background:var(--chip);color:var(--sub);font-variant-numeric:tabular-nums}
+.badge.urgent{background:var(--warn-soft);color:var(--warn)}
+.badge.always{font-weight:600;color:var(--faint)}
+.new{display:inline-block;font-size:.66rem;font-weight:800;color:#fff;background:var(--brand);border-radius:5px;padding:1px 5px;margin-right:6px;vertical-align:2px;letter-spacing:.02em}
+.meta{color:var(--faint);font-size:.82rem;display:flex;gap:3px 8px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.meta .dl{color:var(--sub);font-weight:600}
+.bk{display:inline-flex;align-items:center;gap:5px;font-weight:600;color:var(--sub)}
+.bk::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c)}
+.more{width:100%;margin-top:12px;border:1px solid var(--line);background:transparent;border-radius:12px;padding:10px;font-size:.88rem;color:var(--sub);font-weight:600}
+.more:hover{background:var(--hover)}
+.jump{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:4px 0 6px}
+.jump a{border:1px solid var(--line);border-radius:14px;padding:11px 13px;display:flex;flex-direction:column;gap:1px;font-size:.82rem}
+.jump a b{font-size:.92rem}
+.jump a span{color:var(--faint)}
+.jump a:hover{border-color:var(--brand)}
+.sites{margin-top:14px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:.86rem}
+.sites summary{cursor:pointer;color:var(--sub);font-weight:600;list-style:none;display:flex;align-items:center;gap:6px}
+.sites summary::-webkit-details-marker{display:none}
+.sites summary::after{content:"▾";color:var(--faint);font-size:.7rem}
+.sites[open] summary::after{content:"▴"}
+.sites .set{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.sites .set a{border:1px solid var(--line);border-radius:999px;padding:4px 11px 4px 9px;display:flex;align-items:center;gap:6px}
+.sites .set a .dot{width:7px;height:7px;border-radius:50%;background:var(--c)}
+.sites .set a:hover{border-color:var(--c)}
+.site-one{color:var(--sub);font-weight:600}
+.site-one:hover{color:var(--brand)}
+
+/* ================= 뉴스: 10개씩 옆으로 넘기는 페이지 ================= */
+.pager-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 2px}
+.pager-head h3{margin:0;font-size:.95rem;font-weight:700;display:flex;align-items:baseline;gap:8px}
+.pager-head h3 small{font-size:.78rem;color:var(--faint);font-weight:500}
+.pager-head h3{white-space:nowrap;min-width:0}
+@media (max-width:520px){ .pager-head h3 small{display:none} }
+.pager-ctl{display:flex;align-items:center;gap:6px;flex:none}
+.pager-ctl span{font-size:.82rem;color:var(--sub);font-variant-numeric:tabular-nums;min-width:54px;text-align:center}
+.pager-ctl button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;color:var(--ink);padding:0}
+.pager-ctl button:hover:not(:disabled){border-color:var(--faint)}
+.pager-ctl button:disabled{opacity:.35;cursor:default}
+.pager-ctl svg{width:14px;height:14px}
+.track{display:grid;grid-auto-flow:column;grid-auto-columns:100%;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;align-items:start;outline:none}
+.track::-webkit-scrollbar{display:none}
+.npage{scroll-snap-align:start;min-width:0;list-style:none;margin:0;padding:0}
+.npage .ph{height:420px}
+.ni{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;padding:12px 0}
+.ni + .ni{border-top:1px solid var(--line-soft)}
+.ni .rk{width:22px;text-align:center;font-size:.98rem;font-weight:800;color:var(--faint);font-variant-numeric:tabular-nums;line-height:1.5}
+.top .ni:nth-child(-n+3) .rk{color:var(--brand)}
+.ni a{font-weight:600;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ni a:hover{color:var(--brand)}
+.rel{font-size:.74rem;font-weight:700;color:var(--brand);background:var(--brand-soft);border-radius:6px;padding:0 6px}
+.swipe-hint{font-size:.8rem;color:var(--faint);text-align:center;margin-top:8px}
+
+/* ================= 홈 ================= */
+.home-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+.home-grid .card + .card{margin-top:0}
+.home-grid > .wide{grid-column:1 / -1}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow);text-align:left;width:100%}
+button.stat:hover{border-color:var(--faint)}
+.stat b{display:block;font-size:1.5rem;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat span{font-size:.82rem;color:var(--sub);font-weight:500}
+.stat.hot b{color:var(--warn)}
+@media (max-width:860px){ .home-grid{grid-template-columns:1fr} }
+
+/* ================= 경제 지표 ================= */
 .kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
-.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 14px 10px;text-align:left;display:block;width:100%;box-shadow:var(--shadow);transition:border-color .15s}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 14px 10px;text-align:left;display:block;width:100%;box-shadow:var(--shadow)}
 button.kpi:hover{border-color:var(--faint)}
 .kpi[aria-pressed=true]{border-color:var(--brand);box-shadow:inset 0 0 0 1px var(--brand)}
-.kpi .k{font-size:12.5px;color:var(--sub);font-weight:500}
-.kpi .v{font-size:21px;font-weight:700;letter-spacing:-.03em;margin-top:2px}
-.kpi .v small{font-size:12.5px;font-weight:500;color:var(--faint);margin-left:2px}
-.kpi .d{font-size:12px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi .k{font-size:.82rem;color:var(--sub);font-weight:600}
+.kpi .v{font-size:1.35rem;font-weight:800;letter-spacing:-.03em;margin-top:2px}
+.kpi .v small{font-size:.8rem;font-weight:500;color:var(--faint);margin-left:2px}
+.kpi .d{font-size:.78rem;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .up{color:var(--up)} .down{color:var(--down)}
 .kpi svg{display:block;width:100%;height:28px;margin-top:8px}
 .spark{fill:none;stroke:var(--faint);stroke-width:1.5}
 .kpi[aria-pressed=true] .spark{stroke:var(--brand)}
 .spark-end{fill:var(--ink)}
-
-.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--sub);margin:8px 0 2px}
+.kpis.mini{grid-template-columns:repeat(3,minmax(0,1fr))}
+.kpis.mini .kpi{padding:12px 14px}
+.kpis.mini .kpi svg{display:none}
+.kpis.mini .kpi .v{font-size:1.15rem}
+.chart-card{position:relative;margin-top:14px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem;color:var(--sub);margin:4px 0 2px}
 .legend i{display:inline-block;width:14px;height:2px;border-radius:1px;vertical-align:middle;margin-right:5px}
 #chart{width:100%;height:240px;display:block;touch-action:pan-y}
 #chart text{font-size:11px;fill:var(--faint);font-family:inherit}
@@ -129,208 +303,144 @@ button.kpi:hover{border-color:var(--faint)}
 .tip .row span{color:var(--sub);display:flex;align-items:center;gap:5px}
 .tip .row i{display:inline-block;width:10px;height:2px;border-radius:1px}
 .tip .row b{font-variant-numeric:tabular-nums}
-.econ-empty{background:var(--panel);border:1px dashed var(--line);border-radius:var(--radius);padding:16px;color:var(--sub);font-size:14px}
+.econ-empty{border:1px dashed var(--line);border-radius:var(--radius);padding:16px;color:var(--sub);font-size:.92rem}
+.src-note{font-size:.78rem;color:var(--faint)}
+@media (max-width:1000px){ .kpis{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (max-width:520px){ .kpis,.kpis.mini{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px} }
 
-/* 주요 경제 뉴스 */
-.link-btn{border:0;background:transparent;color:var(--brand);font-size:13px;font-weight:600;padding:4px 2px}
-.link-btn:hover{text-decoration:underline}
-.enews{list-style:none;margin:6px 0 0;padding:0}
-.enews li{display:flex;gap:10px;align-items:baseline;padding:9px 0;border-top:1px solid var(--line-soft);min-width:0}
-.enews li:first-child{border-top:0}
+/* 경제 뉴스 목록 */
+.enews{list-style:none;margin:0;padding:0}
+.enews li{display:flex;gap:10px;align-items:baseline;padding:10px 0;min-width:0}
+.enews li + li{border-top:1px solid var(--line-soft)}
 .enews li a{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
 .enews li a:hover{color:var(--brand)}
-.enews .src,.news-row .src{color:var(--faint);font-size:12px;white-space:nowrap}
-.topic{flex:none;font-size:11.5px;font-weight:600;border-radius:6px;padding:1px 7px;background:var(--brand-soft);color:var(--brand)}
-
-/* ---------- 은행 선택 ---------- */
-.banks{position:sticky;top:0;z-index:5;background:var(--bg);background:color-mix(in srgb,var(--bg) 88%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(12px);backdrop-filter:saturate(1.6) blur(12px);padding:10px 0;border-bottom:1px solid var(--line)}
-.banks .row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:1px 24px 1px 1px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent)}
-.banks .row::-webkit-scrollbar{display:none}
-.chip{flex:none;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px 6px 10px;font-size:13.5px;font-weight:500;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:background .15s,border-color .15s}
-.chip:hover{border-color:var(--faint)}
-.chip[data-b=all]{padding-left:12px}
-.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
-.chip .n{color:var(--faint);font-size:12px;font-weight:600;min-width:1ch}
-.chip[aria-pressed=true]{background:var(--c,var(--ink));color:var(--ct,var(--bg));border-color:var(--c,var(--ink));font-weight:700}
-.chip[aria-pressed=true] .dot{background:var(--ct)}
-.chip[aria-pressed=true] .n{color:inherit;opacity:.8}
-.sep{flex:none;width:1px;background:var(--line);margin:6px 2px}
-
-/* ---------- 본문 ---------- */
-.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:16px;align-items:start;padding:18px 0 40px}
-.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
-.search{flex:1;min-width:140px;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:7px 12px;font:inherit;font-size:14px;color:var(--ink)}
-.search:focus{outline:none;border-color:var(--brand)}
-.chk{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub);margin:0 0 4px;cursor:pointer;width:max-content;max-width:100%}
-.chk input{accent-color:var(--brand);margin:0}
-.chk span{color:var(--faint)}
-
-.tag{display:inline-block;font-size:11.5px;font-weight:600;border-radius:6px;padding:1px 7px;background:var(--c);color:var(--ct);vertical-align:1px;white-space:nowrap}
-.tag.macro{background:var(--calm-soft);color:var(--sub)}
-.bk{display:inline-flex;align-items:center;gap:5px;font-weight:600;color:var(--sub)}
-.bk::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c)}
-
-/* 채용공고 한 줄: [D-day] [제목 / 정보] */
-.rec{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;align-items:start;padding:12px 8px;margin:0 -8px;border-radius:10px;border-top:1px solid var(--line-soft)}
-.rec:first-child{border-top-color:transparent}
-.rec:hover{background:var(--hover)}
-.rec:hover .t{color:var(--brand)}
-.rec .t{font-weight:600;line-height:1.45}
-.badge{display:block;text-align:center;font-size:12.5px;font-weight:700;border-radius:8px;padding:4px 0;background:var(--calm-soft);color:var(--calm);font-variant-numeric:tabular-nums}
-.badge.urgent{background:var(--warn-soft);color:var(--warn)}
-.badge.always{font-weight:600;color:var(--faint)}
-.meta{color:var(--faint);font-size:12.5px;display:flex;gap:4px 8px;flex-wrap:wrap;align-items:center;margin-top:3px}
-.meta .dl{color:var(--sub);font-weight:500}
-.jump{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:4px 0 6px}
-.jump a{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:1px;font-size:12.5px}
-.jump a b{font-size:14px}
-.jump a span{color:var(--faint)}
-.jump a:hover{border-color:var(--brand)}
-.sites{margin-top:12px;padding-top:12px;border-top:1px solid var(--line-soft);font-size:13px}
-.sites summary{cursor:pointer;color:var(--sub);font-weight:500;list-style:none;display:flex;align-items:center;gap:6px}
-.sites summary::-webkit-details-marker{display:none}
-.sites summary::after{content:"▾";color:var(--faint);font-size:11px}
-.sites[open] summary::after{content:"▴"}
-.sites .set{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.sites .set a{border:1px solid var(--line);border-radius:999px;padding:4px 10px 4px 8px;display:flex;align-items:center;gap:6px}
-.sites .set a .dot{width:7px;height:7px;border-radius:50%;background:var(--c)}
-.sites .set a:hover{border-color:var(--c)}
-.site-one{display:inline-flex;align-items:center;gap:6px;color:var(--sub);font-weight:500}
-.site-one:hover{color:var(--brand)}
-
-/* 뉴스 */
-.day{font-size:12px;font-weight:700;color:var(--faint);margin:16px 0 2px}
+.enews .src{color:var(--faint);font-size:.78rem;white-space:nowrap}
+.topic{flex:none;font-size:.74rem;font-weight:700;border-radius:6px;padding:1px 7px;background:var(--brand-soft);color:var(--brand)}
+.day{font-size:.78rem;font-weight:700;color:var(--faint);margin:16px 0 0}
 .day:first-child{margin-top:4px}
-.news-row{display:flex;gap:12px;align-items:baseline;padding:9px 0;border-top:1px solid var(--line-soft)}
-.day + .news-row{border-top:0}
-.cats{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px}
-.cats button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 11px;font-size:13px;color:var(--sub);font-weight:500;display:inline-flex;gap:5px;align-items:baseline}
-.cats button i{font-style:normal;font-size:11.5px;color:var(--faint);font-variant-numeric:tabular-nums}
-.cats button:hover{border-color:var(--faint)}
-.cats button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:700}
-.cats button[aria-pressed=true] i{color:inherit;opacity:.7}
-.cats button:disabled{opacity:.45;cursor:default}
-/* 은행 뉴스: 10개씩 옆으로 넘기는 페이지 */
-.pager-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:6px 0 2px}
-.pager-head h3{margin:0;font-size:14.5px;font-weight:700;display:flex;align-items:baseline;gap:8px}
-.pager-head h3 small{font-size:12px;color:var(--faint);font-weight:500}
-.pager-ctl{display:flex;align-items:center;gap:6px;flex:none}
-.pager-ctl span{font-size:12.5px;color:var(--sub);font-variant-numeric:tabular-nums;min-width:52px;text-align:center}
-.pager-ctl button{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;color:var(--ink);padding:0}
-.pager-ctl button:hover:not(:disabled){border-color:var(--faint)}
-.pager-ctl button:disabled{opacity:.35;cursor:default}
-.pager-ctl svg{width:14px;height:14px}
-.track{display:grid;grid-auto-flow:column;grid-auto-columns:100%;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;align-items:start;outline:none}
-.track::-webkit-scrollbar{display:none}
-.npage{scroll-snap-align:start;min-width:0;list-style:none;margin:0;padding:0}
-.npage .ph{height:420px}
-.ni{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;padding:11px 0;border-top:1px solid var(--line-soft)}
-.ni:first-child{border-top:0}
-.ni .rk{width:22px;text-align:center;font-size:15px;font-weight:800;color:var(--faint);font-variant-numeric:tabular-nums;line-height:1.5}
-.npage.top .ni .rk{color:var(--brand)}
-.npage.top .ni:nth-child(n+4) .rk{color:var(--sub)}
-.ni a{font-weight:600;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.ni a:hover{color:var(--brand)}
-.ni .meta{margin-top:4px}
-.rel{font-size:11.5px;font-weight:700;color:var(--brand);background:var(--brand-soft);border-radius:6px;padding:0 6px}
-.swipe-hint{font-size:12px;color:var(--faint);text-align:center;margin-top:8px}
 @media (max-width:520px){
-  .ni{gap:10px}
-}
-.ncat{font-size:11.5px;color:var(--faint);margin-right:6px;white-space:nowrap}
-.news-row .t{flex:1;min-width:0}
-.news-row a:hover{color:var(--brand)}
-.more{width:100%;margin-top:12px;border:1px solid var(--line);background:transparent;border-radius:10px;padding:9px;font-size:13.5px;color:var(--sub);font-weight:500}
-.more:hover{background:var(--hover)}
-.empty{color:var(--sub);font-size:14px;padding:12px 0}
-.empty code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:13px}
-.via{font-size:11.5px;color:var(--faint)}
-
-/* 모달 */
-.modal{position:fixed;inset:0;z-index:20;background:rgba(10,12,16,.45);display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px}
-.modal[hidden]{display:none}
-.sheet{background:var(--panel);border:1px solid var(--line);border-radius:18px;width:100%;max-width:760px;max-height:88vh;display:flex;flex-direction:column;padding:20px 20px 8px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
-.sheet .x{border:0;background:var(--calm-soft);border-radius:50%;width:32px;height:32px;font-size:14px;color:var(--sub)}
-.mbody{overflow:auto;margin:6px -6px 0;padding:0 6px 12px}
-.topics{display:flex;gap:6px;flex-wrap:wrap}
-.topics button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:3px 10px;font-size:12.5px;color:var(--sub)}
-.topics button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-
-footer{color:var(--faint);font-size:12px;padding:16px 0 36px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap}
-footer b{color:var(--sub)}
-
-@media (max-width:1000px){ .kpis{grid-template-columns:repeat(3,minmax(0,1fr))} }
-@media (max-width:860px){ .grid{grid-template-columns:1fr} }
-@media (max-width:520px){
-  .top{padding:18px 0 14px}
-  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-  .card{padding:16px}
-  .chart-card{padding:16px}
-  .news-row{flex-direction:column;gap:2px}
   .enews li{flex-wrap:wrap;gap:4px 8px}
   .enews li a{white-space:normal;flex-basis:100%;order:2}
   .enews li .src{order:1;margin-left:auto}
-  .rec{grid-template-columns:46px minmax(0,1fr);gap:10px}
+  .card{padding:16px}
+  .rec{grid-template-columns:48px minmax(0,1fr);gap:11px}
+  .stats{gap:8px}
+  .stat{padding:12px 13px}
+  .stat b{font-size:1.3rem}
 }
+
+/* ================= 설정 패널 ================= */
+.sheet-wrap{position:fixed;inset:0;z-index:40;display:flex;justify-content:flex-end}
+.sheet-bg{position:absolute;inset:0;background:rgba(8,10,14,.45)}
+.panel{position:relative;width:min(420px,100%);height:100%;background:var(--bg);overflow:auto;padding:0 0 calc(24px + env(safe-area-inset-bottom));box-shadow:-10px 0 40px rgba(0,0,0,.2);animation:slide .2s ease-out}
+@keyframes slide{from{transform:translateX(30px);opacity:.6}}
+@media (max-width:720px){
+  .sheet-wrap{align-items:flex-end}
+  .panel{width:100%;height:auto;max-height:90vh;border-radius:22px 22px 0 0;animation:rise .2s ease-out}
+  @keyframes rise{from{transform:translateY(30px);opacity:.6}}
+}
+.panel-head{position:sticky;top:0;background:var(--bg);display:flex;align-items:center;justify-content:space-between;padding:18px 20px 10px;z-index:1}
+.panel-head h2{margin:0;font-size:1.2rem;font-weight:800}
+.set-group{margin:10px 16px 0;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:4px 16px}
+.set-title{margin:18px 20px 0;font-size:.8rem;font-weight:700;color:var(--faint)}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;font-size:.93rem}
+.set-row + .set-row{border-top:1px solid var(--line-soft)}
+.set-row small{display:block;color:var(--faint);font-size:.78rem}
+.swatches{display:flex;gap:10px;flex-wrap:wrap}
+.swatches button{width:30px;height:30px;border-radius:50%;border:0;background:var(--sw);box-shadow:0 0 0 2px var(--panel),0 0 0 2px var(--panel);display:grid;place-items:center;color:#fff;font-size:.8rem;font-weight:800}
+.swatches button[aria-pressed=true]{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--sw)}
+.fav-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:10px 0}
+.fav-grid button{border:1px solid var(--line);background:transparent;border-radius:12px;padding:8px 10px;font-size:.86rem;font-weight:600;color:var(--sub);display:flex;align-items:center;gap:7px;text-align:left}
+.fav-grid button .dot{width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
+.fav-grid button .st{margin-left:auto;color:var(--line);font-size:.95rem}
+.fav-grid button[aria-pressed=true]{border-color:var(--brand);color:var(--ink);background:var(--brand-soft)}
+.fav-grid button[aria-pressed=true] .st{color:#f5a524}
+.select{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:6px 10px;font:inherit;font-size:.88rem}
+.reset{display:block;margin:18px auto 0;border:0;background:transparent;color:var(--faint);font-size:.85rem;text-decoration:underline}
+.set-foot{margin:14px 20px 0;font-size:.78rem;color:var(--faint);line-height:1.6}
+
+/* 설치 안내 */
+.tip-sheet{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));max-width:440px;margin:0 auto;z-index:50;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:18px;box-shadow:0 16px 48px rgba(0,0,0,.22);padding:16px;display:flex;gap:12px;align-items:flex-start}
+.tip-sheet img{width:44px;height:44px;border-radius:11px;flex:none}
+.tip-sheet b{display:block;font-size:.95rem;margin-bottom:2px}
+.tip-sheet p{margin:0;font-size:.87rem;color:var(--sub);line-height:1.5}
+.tip-sheet .x,.panel .x{margin-left:auto;border:0;background:var(--chip);border-radius:50%;width:32px;height:32px;flex:none;color:var(--sub);font-size:.85rem;display:grid;place-items:center}
+
+footer{color:var(--faint);font-size:.78rem;padding:28px 0 8px;line-height:1.7}
+footer b{color:var(--sub)}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <div class="brand">
-      <img class="logo" src="icons/icon-192.png" alt="" width="40" height="40">
-      <div><h1>H bank</h1><p>은행 채용공고 · 뉴스 · 경제지표를 한 화면에</p></div>
-    </div>
-    <div class="top-side">
-      <span class="pill" id="updated">불러오는 중…</span>
-      <button class="install" id="installBtn" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>앱 설치</button>
-    </div>
-  </header>
 
-  <section class="econ" id="econ">
-    <div class="sec-title"><h2>국내 경제 지표</h2><small id="econSrc"></small></div>
-    <div class="kpis" id="kpis"></div>
-    <div class="chart-card" id="chartCard">
-      <div class="chart-head">
-        <h3 id="chartTitle">금리 추이</h3>
-        <div class="seg" id="range"><button data-r="365">1년</button><button data-r="1095">3년</button></div>
-      </div>
-      <div class="legend" id="legend"></div>
-      <svg id="chart" role="img" aria-label="경제 지표 추이 차트"></svg>
-      <div class="tip" id="tip"></div>
+<header class="appbar">
+  <div class="wrap">
+    <a class="brand" href="#v=home" data-go="home"><img src="icons/icon-192.png" alt="" width="32" height="32">H bank</a>
+    <nav class="tabs" aria-label="메뉴">
+      <button type="button" data-go="home">홈</button>
+      <button type="button" data-go="jobs">채용공고</button>
+      <button type="button" data-go="news">은행 뉴스</button>
+      <button type="button" data-go="econ">경제</button>
+    </nav>
+    <div class="bar-right">
+      <button class="install" id="installBtn" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg><span>앱 설치</span></button>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="라이트/다크 모드 바꾸기" title="라이트/다크 모드"></button>
+      <button class="icon-btn" id="setBtn" type="button" aria-label="설정" title="설정"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg></button>
     </div>
-    <div class="chart-card enews-card">
-      <div class="chart-head">
-        <h3>주요 경제 뉴스 <small id="enewsSub"></small></h3>
-        <button class="link-btn" id="enewsAll" type="button">전체보기</button>
+  </div>
+</header>
+
+<main>
+  <!-- ============ 홈 ============ -->
+  <section class="wrap" data-view="home">
+    <div class="view-head">
+      <div><h1 id="hello">오늘의 은행 취업 소식</h1><p id="updated">불러오는 중…</p></div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="home-grid">
+      <div class="card" id="homeJobsCard">
+        <div class="card-head"><h2>마감 임박 공고 <small id="homeJobsSub"></small></h2><button class="more-link" type="button" data-go="jobs">전체 보기 →</button></div>
+        <div id="homeJobs"></div>
       </div>
-      <div id="enews"></div>
+      <div class="card" id="homeNewsCard">
+        <div class="card-head"><h2>주요 뉴스 <small id="homeNewsSub"></small></h2><button class="more-link" type="button" data-go="news">더 보기 →</button></div>
+        <ol class="npage top" id="homeNews"></ol>
+      </div>
+      <div class="card" id="homeEconCard">
+        <div class="card-head"><h2>경제 지표 <small id="homeEconSub"></small></h2><button class="more-link" type="button" data-go="econ">그래프 →</button></div>
+        <div class="kpis mini" id="homeKpis"></div>
+      </div>
+      <div class="card" id="homeEnewsCard">
+        <div class="card-head"><h2>경제 뉴스</h2><button class="more-link" type="button" data-go="econ">더 보기 →</button></div>
+        <ul class="enews" id="homeEnews"></ul>
+      </div>
     </div>
   </section>
-</div>
 
-<nav class="banks" aria-label="은행 선택"><div class="wrap"><div class="row" id="bankRow"></div></div></nav>
-
-<main class="wrap">
-  <div class="grid">
-    <section class="card">
-      <div class="head">
-        <h2>채용공고 <small id="jobCount"></small></h2>
+  <!-- ============ 채용공고 ============ -->
+  <section class="wrap narrow" data-view="jobs" hidden>
+    <div class="view-head"><div><h1>채용공고</h1><p>은행 공식 채용사이트 · 잡알리오에서 모은 진행 중 공고</p></div></div>
+    <div class="bankbar" id="bankJobs" role="group" aria-label="은행 선택"></div>
+    <div class="card">
+      <div class="filters">
         <div class="seg" id="jobFilter"><button data-f="all">전체</button><button data-f="soon">마감 임박</button><button data-f="new">신입·공채</button></div>
+        <span class="grow"></span>
+        <label class="toggle-label"><span>시간제 숨기기 <span class="muted" id="ptCount"></span></span><span class="sw"><input type="checkbox" id="hidePT"><span></span></span></label>
       </div>
-      <label class="chk"><input type="checkbox" id="hidePT" checked> 파트타이머·업무지원 공고 숨기기 <span id="ptCount"></span></label>
+      <div class="card-head" style="margin:10px 0 0"><h2 style="font-size:.95rem">진행 중 <small id="jobCount"></small></h2></div>
       <div id="jobs"></div>
       <div id="links"></div>
-    </section>
+    </div>
+  </section>
 
-    <section class="card">
-      <div class="head">
-        <h2>은행 뉴스 <small id="newsCount"></small></h2>
-        <div class="seg" id="period"><button data-p="7">1주</button><button data-p="30">1개월</button><button data-p="183">6개월</button></div>
-      </div>
-      <div class="tools">
-        <input class="search" id="q" type="search" placeholder="제목 검색 (예: 디지털, 실적)">
-      </div>
+  <!-- ============ 은행 뉴스 ============ -->
+  <section class="wrap narrow" data-view="news" hidden>
+    <div class="view-head">
+      <div><h1>은행 뉴스</h1><p>같은 소식은 하나로 묶었어요 · <span id="newsCount"></span></p></div>
+      <div class="seg" id="period"><button data-p="7">1주</button><button data-p="30">1개월</button><button data-p="183">6개월</button></div>
+    </div>
+    <div class="bankbar" id="bankNews" role="group" aria-label="은행 선택"></div>
+    <div class="card">
+      <input class="search" id="q" type="search" placeholder="제목 검색 (예: 디지털, 실적)">
       <div class="cats" id="cat" role="group" aria-label="뉴스 카테고리"></div>
       <div class="pager-head">
         <h3 id="pgTitle">주요 뉴스</h3>
@@ -341,27 +451,86 @@ footer b{color:var(--sub)}
         </div>
       </div>
       <div id="news"></div>
-    </section>
-  </div>
+    </div>
+  </section>
+
+  <!-- ============ 경제 ============ -->
+  <section class="wrap" data-view="econ" hidden>
+    <div class="view-head"><div><h1>경제</h1><p id="econSrc">한국은행 ECOS</p></div></div>
+    <div id="econBody">
+      <div class="kpis" id="kpis"></div>
+      <div class="card chart-card" id="chartCard">
+        <div class="card-head">
+          <h2 id="chartTitle">금리 추이</h2>
+          <div class="seg" id="range"><button data-r="365">1년</button><button data-r="1095">3년</button></div>
+        </div>
+        <div class="legend" id="legend"></div>
+        <svg id="chart" role="img" aria-label="경제 지표 추이 차트"></svg>
+        <div class="tip" id="tip"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <h2>경제 뉴스 <small id="mCount"></small></h2>
+        <div class="seg" id="mPeriod"><button data-p="7">1주</button><button data-p="30">1개월</button></div>
+      </div>
+      <div class="cats" id="mTopics" role="group" aria-label="경제 뉴스 주제"></div>
+      <div id="mList"></div>
+    </div>
+  </section>
+
+  <footer class="wrap">
+    <b>H bank</b> · 뉴스는 제목과 링크만 보여 주며 저작권은 각 언론사에 있어요. 경제지표 출처: 한국은행 ECOS.<br>
+    채용공고는 반드시 공식 홈페이지에서 다시 확인하세요. 은행 색상은 대표색을 참고한 근사치예요.
+  </footer>
 </main>
 
-<div class="modal" id="modal" hidden>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mTitle">
-    <div class="head">
-      <h2 id="mTitle">경제 뉴스 <small id="mCount"></small></h2>
-      <button class="x" id="mClose" type="button" aria-label="닫기">✕</button>
+<!-- 휴대폰 아래 탭 -->
+<nav class="bottom-nav" aria-label="메뉴">
+  <button type="button" data-go="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/></svg>홈</button>
+  <button type="button" data-go="jobs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="12.5" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3.5 12.5h17"/></svg>채용</button>
+  <button type="button" data-go="news"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>뉴스</button>
+  <button type="button" data-go="econ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16M6 15l4-4 3 3 5-6"/></svg>경제</button>
+</nav>
+
+<!-- ============ 설정 ============ -->
+<div class="sheet-wrap" id="settings" hidden>
+  <div class="sheet-bg" data-close></div>
+  <aside class="panel" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+    <div class="panel-head"><h2 id="setTitle">설정</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+
+    <div class="set-title">화면</div>
+    <div class="set-group">
+      <div class="set-row"><span>테마</span><div class="seg" id="prefTheme"><button data-v="system">시스템</button><button data-v="light">라이트</button><button data-v="dark">다크</button></div></div>
+      <div class="set-row"><span>강조 색</span><div class="swatches" id="prefAccent"></div></div>
+      <div class="set-row"><span>글자 크기</span><div class="seg" id="prefFont"><button data-v="s">작게</button><button data-v="m">보통</button><button data-v="l">크게</button></div></div>
+      <div class="set-row"><span>처음 여는 화면</span>
+        <select class="select" id="prefStart"><option value="home">홈</option><option value="jobs">채용공고</option><option value="news">은행 뉴스</option><option value="econ">경제</option></select></div>
     </div>
-    <div class="tools">
-      <div class="seg" id="mPeriod"><button data-p="7">1주</button><button data-p="30">1개월</button></div>
-      <div class="topics" id="mTopics"></div>
+
+    <div class="set-title">관심 은행 <span id="favCount"></span></div>
+    <div class="set-group">
+      <div class="fav-grid" id="prefFav"></div>
+      <div class="set-row"><span>홈에는 관심 은행 소식만<small>공고와 주요 뉴스를 관심 은행으로 좁혀요</small></span><span class="sw"><input type="checkbox" data-pref="homeFav"><span></span></span></div>
     </div>
-    <div class="mbody" id="mList"></div>
-  </div>
+
+    <div class="set-title">홈에 보일 카드</div>
+    <div class="set-group">
+      <div class="set-row"><span>마감 임박 공고</span><span class="sw"><input type="checkbox" data-home="jobs"><span></span></span></div>
+      <div class="set-row"><span>주요 뉴스</span><span class="sw"><input type="checkbox" data-home="news"><span></span></span></div>
+      <div class="set-row"><span>경제 지표</span><span class="sw"><input type="checkbox" data-home="econ"><span></span></span></div>
+      <div class="set-row"><span>경제 뉴스</span><span class="sw"><input type="checkbox" data-home="enews"><span></span></span></div>
+    </div>
+
+    <div class="set-title">채용공고</div>
+    <div class="set-group">
+      <div class="set-row"><span>시간제 공고 숨기기<small>파트타이머·업무지원·재채용 등</small></span><span class="sw"><input type="checkbox" data-pref="hidePT"><span></span></span></div>
+    </div>
+
+    <button class="reset" type="button" id="prefReset">설정 초기화</button>
+    <p class="set-foot">설정은 이 기기의 브라우저에만 저장돼요. 로그인은 필요 없어요.<br><span id="setUpdated"></span></p>
+  </aside>
 </div>
-<div class="wrap"><footer>
-  <span><b>H bank</b> · 뉴스는 제목과 링크만 보여 주며 저작권은 각 언론사에 있어요. 경제지표 출처: 한국은행 ECOS</span>
-  <span>채용공고는 공식 홈페이지에서 다시 확인하세요 · 은행 색상은 근사치예요</span>
-</footer></div>
 
 <div class="tip-sheet" id="installTip" role="dialog" aria-labelledby="tipTitle" hidden>
   <img src="icons/icon-192.png" alt="">
@@ -370,7 +539,7 @@ footer b{color:var(--sub)}
 </div>
 
 <script>
-const S = {bank:"all", period:7, cat:"all", jf:"all", hidePT:true, q:"", shown:40, jobShown:15, chart:"rates", range:365};
+const S = {view:"home", bank:"all", period:7, cat:"all", jf:"all", q:"", jobShown:15, chart:"rates", range:365};
 let META = {banks:[]}, NEWS = [], JOBS = [], ECON = null;
 const $ = id => document.getElementById(id);
 const DAY = 864e5;
@@ -378,6 +547,7 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt
 const ago = days => Date.now() - days * DAY;
 const href = u => /^https?:\/\//i.test(u || "") ? esc(u) : "#";  // http(s) 주소만 링크로 (javascript: 등 차단)
 const BANK = {};
+const VIEWS = ["home", "jobs", "news", "econ"];
 
 /* 배경색 밝기에 맞춰 글자색(검정/흰색) 자동 결정 */
 function textOn(hex){
@@ -386,242 +556,117 @@ function textOn(hex){
   return L > .35 ? "#111" : "#fff";
 }
 const cvars = id => { const b = BANK[id]; return b ? `--c:${b.color};--ct:${textOn(b.color)}` : ""; };
-const tag = id => id === "macro" ? `<span class="tag macro">경제</span>` : `<span class="tag" style="${cvars(id)}">${esc(BANK[id]?.name || id)}</span>`;
+const relTime = ts => { const h = Math.floor((Date.now() - ts) / 36e5); return h < 1 ? "방금" : h < 24 ? `${h}시간 전` : `${Math.floor(h / 24)}일 전`; };
 
+/* ================= 설정 저장·적용 ================= */
+const savePrefs = () => { try { localStorage.setItem("hbank:prefs", JSON.stringify(P)); } catch (e) {} };
+const isDark = () => P.theme === "dark" || (P.theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+const ICON_SUN = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>`;
+const ICON_MOON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>`;
+function syncThemeUI(){
+  $("themeBtn").innerHTML = isDark() ? ICON_SUN : ICON_MOON;
+  // 휴대폰 상단 색: 사용자가 테마를 고정했으면 그 색으로
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m => {
+    m.dataset.orig ||= m.content;
+    m.content = P.theme === "system" ? m.dataset.orig : (isDark() ? "#0d0f13" : "#f4f5f7");
+  });
+}
+function setPref(k, v){
+  P[k] = v; savePrefs(); applyPrefs(P); syncThemeUI(); renderSettings();
+  if (k === "fav" || k === "homeFav" || k === "hidePT") { NCACHE.key = ""; HCACHE.key = ""; }
+  if (k === "font" || k === "theme" || k === "accent") requestAnimationFrame(() => S.view === "econ" && ECON?.series && drawChart());
+  render();
+}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { syncThemeUI(); if (S.view === "econ" && ECON?.series) drawChart(); });
+
+function renderSettings(){
+  const press = (id, v) => $(id).querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
+  press("prefTheme", P.theme); press("prefFont", P.font);
+  $("prefAccent").innerHTML = Object.entries(ACCENTS).map(([k, [l, d, name]]) =>
+    `<button type="button" data-v="${k}" style="--sw:${isDark() ? d : l}" aria-pressed="${P.accent === k}" aria-label="${name}" title="${name}">${P.accent === k ? "✓" : ""}</button>`).join("");
+  $("prefStart").value = P.start;
+  $("prefFav").innerHTML = META.banks.map(b => `<button type="button" data-fav="${esc(b.id)}" style="${cvars(b.id)}" aria-pressed="${P.fav.includes(b.id)}"><span class="dot"></span>${esc(b.name)}<span class="st">★</span></button>`).join("");
+  $("favCount").textContent = P.fav.length ? `· ${P.fav.length}곳` : "";
+  document.querySelectorAll("[data-pref]").forEach(i => { i.checked = !!P[i.dataset.pref]; });
+  document.querySelectorAll("[data-home]").forEach(i => { i.checked = !!P.home[i.dataset.home]; });
+}
+function openSettings(){ renderSettings(); $("settings").hidden = false; document.body.style.overflow = "hidden"; $("settings").querySelector(".x").focus(); }
+function closeSettings(){ $("settings").hidden = true; document.body.style.overflow = ""; $("setBtn").focus(); }
+
+/* ================= 화면(탭) 전환 · 주소 ================= */
 function readHash(){
   const h = new URLSearchParams(location.hash.slice(1));
+  if (VIEWS.includes(h.get("v"))) S.view = h.get("v");
+  else if (h.get("bank")) S.view = "jobs";             // 예전 공유 링크(#bank=…)는 채용공고로
   if (h.get("bank")) S.bank = h.get("bank");
   if ([7,30,183].includes(+h.get("p"))) S.period = +h.get("p");
   if (/^[a-z]+$/.test(h.get("c") || "")) S.cat = h.get("c");
 }
-const writeHash = () => history.replaceState(null, "", `#bank=${S.bank}&p=${S.period}&c=${S.cat}`);
+const writeHash = () => history.replaceState(null, "", S.view === "home" ? "#v=home" : `#v=${S.view}&bank=${S.bank}` + (S.view === "news" ? `&p=${S.period}&c=${S.cat}` : ""));
+function go(v){
+  if (!VIEWS.includes(v)) return;
+  const changed = S.view !== v;
+  S.view = v; render();
+  if (changed) scrollTo({top: 0});
+}
 
+/* ================= 데이터 불러오기 ================= */
 async function load(){
   const get = f => fetch(`data/${f}?v=${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
   [META, NEWS, JOBS, ECON] = await Promise.all([get("meta.json"), get("news.json"), get("jobs.json"), get("econ.json")]);
   META ||= {banks:[]}; NEWS ||= []; JOBS ||= [];
   META.banks.forEach(b => BANK[b.id] = b);
+  P.fav = P.fav.filter(id => BANK[id]);
   NEWS.forEach(n => n.ts = Date.parse(n.date));
   if (META.updated){
-    const u = new Date(META.updated);
-    $("updated").textContent = `${u.getMonth() + 1}.${u.getDate()} ${String(u.getHours()).padStart(2,"0")}:${String(u.getMinutes()).padStart(2,"0")} 업데이트 · 6시간마다 자동 갱신`;
-    $("updated").title = `마지막 업데이트 ${u.toLocaleString("ko-KR")}`;
+    const u = new Date(META.updated), txt = `${u.getMonth() + 1}월 ${u.getDate()}일 ${String(u.getHours()).padStart(2,"0")}:${String(u.getMinutes()).padStart(2,"0")} 업데이트 · 6시간마다 자동 갱신`;
+    $("updated").textContent = txt; $("setUpdated").textContent = "데이터: " + txt;
   } else $("updated").textContent = "아직 수집된 데이터가 없어요";
-  readHash(); renderEcon(); renderEnews(); render();
+  S.view = P.start; readHash();
+  render();
 }
 
-/* ================= 경제 지표 ================= */
-const FMT = {
-  "%":  v => v.toFixed(2), "원": v => v.toLocaleString("ko-KR",{maximumFractionDigits:1}), "pt": v => v.toLocaleString("ko-KR",{maximumFractionDigits:2}),
-};
-const fmt = (v, u) => (FMT[u] || (x => x))(v);
-const CHARTS = {
-  rates: {title:"금리 추이", ids:["base","ktb3","cd91"], colors:["var(--s1)","var(--s2)","var(--s3)"], step:{base:true}, unit:"%"},
-  usdkrw:{title:"원/달러 환율", ids:["usdkrw"], colors:["var(--s1)"], unit:"원"},
-  kospi: {title:"코스피", ids:["kospi"], colors:["var(--s1)"], unit:"pt"},
-  cpi:   {title:"소비자물가 상승률 (전년동월비)", ids:["cpi"], colors:["var(--s1)"], unit:"%"},
-};
-const KPI_CHART = {base:"rates", ktb3:"rates", cd91:"rates", usdkrw:"usdkrw", kospi:"kospi", cpi:"cpi"};
+/* ================= 공통: 은행 필터 ================= */
+const inBank = x => S.bank === "all" || (S.bank === "fav" ? P.fav.includes(x.bank) : x.bank === S.bank);
+const PT_RE = /파트\s?타이머|피크\s?타이머|PT\s?\(|\(P\)|아르바이트|업무지원|인재\s?Pool|재채용|퇴직직원|기동인력/i;
+const NEW_RE = /신입|신규직원|공채|공개채용|인턴|채용형|하반기|상반기|행원/;
+const visibleJobs = () => P.hidePT ? JOBS.filter(j => !PT_RE.test(j.title)) : JOBS;
 
-function valueAt(points, t){ // t 시점(또는 그 이전) 값
-  let v = null;
-  for (const [d, x] of points){ if (Date.parse(d) <= t) v = x; else break; }
-  return v;
-}
-
-function renderEcon(){
-  const ser = ECON?.series || {};
-  const order = (ECON?.order || Object.keys(ser)).filter(id => ser[id]?.points?.length);
-  if (!order.length){
-    $("kpis").innerHTML = ""; $("chartCard").style.display = "none";
-    $("kpis").outerHTML = `<div class="econ-empty">경제지표가 아직 없어요. 한국은행 ECOS 오픈API 키를 <code>ECOS_API_KEY</code>로 등록하면 기준금리·국고채·CD·환율·코스피·물가가 표시됩니다. (README 참고)</div>`;
-    return;
-  }
-  const last = Math.max(...order.map(id => Date.parse(ser[id].points.at(-1)[0])));
-  $("econSrc").textContent = `한국은행 ECOS · ${new Date(last).toLocaleDateString("ko-KR")} 기준`;
-  $("kpis").innerHTML = order.map(id => {
-    const s = ser[id], pts = s.points, [d, v] = pts.at(-1);
-    const monthly = s.freq === "M";
-    const prev = monthly ? pts.at(-2)?.[1] : valueAt(pts, Date.parse(d) - 30 * DAY);
-    const diff = prev == null ? null : v - prev;
-    const unitDiff = s.unit === "%" ? "%p" : s.unit;
-    const cls = !diff ? "" : diff > 0 ? "up" : "down";
-    const arrow = !diff ? "–" : diff > 0 ? "▲" : "▼";
-    const dTxt = diff == null ? "" : Math.abs(diff) < 1e-9 ? `변동 없음 · ${monthly ? "전월 대비" : "1개월 전 대비"}` : `<span class="${cls}">${arrow} ${fmt(Math.abs(diff), s.unit)}${unitDiff}</span> ${monthly ? "전월 대비" : "1개월 전 대비"}`;
-    return `<button class="kpi" data-id="${id}" aria-pressed="${KPI_CHART[id] === S.chart}">
-      <div class="k">${esc(s.name)}</div>
-      <div class="v num">${fmt(v, s.unit)}<small>${s.unit}</small></div>
-      <div class="d num">${dTxt}</div>${sparkline(pts, monthly ? 24 : 365)}</button>`;
-  }).join("");
-  drawChart();
+function bankBar(el, withCounts){
+  const jc = {}; if (withCounts) visibleJobs().forEach(j => { jc[j.bank] = (jc[j.bank] || 0) + 1; });
+  const chip = (id, label, extra = "") => `<button class="chip" type="button" data-b="${esc(id)}" ${extra} aria-pressed="${S.bank === id}">${label}</button>`;
+  let html = chip("all", "전체");
+  if (P.fav.length) html += chip("fav", `<span class="star">★</span>관심 은행`);
+  const favs = META.banks.filter(b => P.fav.includes(b.id)), rest = META.banks.filter(b => !P.fav.includes(b.id));
+  const one = b => chip(b.id, `<span class="dot"></span>${esc(b.name)}${withCounts && jc[b.id] ? `<span class="n">${jc[b.id]}</span>` : ""}`, `style="${cvars(b.id)}"`);
+  if (favs.length) html += `<span class="chip-sep"></span>` + favs.map(one).join("");
+  let g = null;
+  rest.forEach(b => { if (b.group !== g){ html += `<span class="chip-sep" title="${esc(b.group)}"></span>`; g = b.group; } html += one(b); });
+  const x0 = el.scrollLeft; el.innerHTML = html; el.scrollLeft = x0;
+  const sel = el.querySelector("[aria-pressed=true]");
+  if (sel && S.bank !== "all"){ const r = el.getBoundingClientRect(), c = sel.getBoundingClientRect(); if (c.left < r.left || c.right > r.right) el.scrollLeft += (c.left + c.width / 2) - (r.left + r.width / 2); }
 }
 
-function sparkline(pts, n){
-  const cut = pts[0] && pts.at(-1) ? Date.parse(pts.at(-1)[0]) - (n > 30 ? 365 : 730) * DAY : 0;
-  const p = pts.filter(([d]) => Date.parse(d) >= cut);
-  if (p.length < 2) return "";
-  const W = 120, H = 30, ys = p.map(x => x[1]), lo = Math.min(...ys), hi = Math.max(...ys), r = hi - lo || 1;
-  const xy = p.map(([, y], i) => [i / (p.length - 1) * (W - 4) + 1, H - 3 - (y - lo) / r * (H - 6)]);
-  const [ex, ey] = xy.at(-1);
-  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><polyline class="spark" vector-effect="non-scaling-stroke" points="${xy.map(a => a.map(v => v.toFixed(1)).join(",")).join(" ")}"/><circle class="spark-end" cx="${ex}" cy="${ey}" r="2"/></svg>`;
-}
-
-function niceTicks(lo, hi, n = 4){
-  const span = hi - lo || 1, raw = span / n, mag = 10 ** Math.floor(Math.log10(raw));
-  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw);
-  const t = []; for (let v = Math.floor(lo / step) * step; v <= hi + step * .001; v += step) t.push(+v.toFixed(6));
-  return t;
-}
-
-let CH = null; // 현재 차트 상태 (툴팁용)
-function drawChart(){
-  const cfg = CHARTS[S.chart], ser = ECON.series;
-  const ids = cfg.ids.filter(id => ser[id]);
-  document.querySelectorAll("#range button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.r === S.range));
-  $("chartTitle").textContent = cfg.title;
-  $("legend").innerHTML = ids.length > 1 ? ids.map((id, i) => `<span><i style="background:${cfg.colors[i]}"></i>${esc(ser[id].name)}</span>`).join("") : "";
-  const svg = $("chart"), W = svg.clientWidth || 800, H = 240, wide = W > 560, m = {l:46, r:ids.length > 1 && wide ? 104 : 12, t:10, b:24};
-  const end = Math.max(...ids.map(id => Date.parse(ser[id].points.at(-1)[0]))), start = end - S.range * DAY;
-  const data = ids.map(id => ser[id].points.map(([d, v]) => [Date.parse(d), v]).filter(([t]) => t >= start));
-  const all = data.flat().map(p => p[1]);
-  if (!all.length){ svg.innerHTML = ""; return; }
-  let lo = Math.min(...all), hi = Math.max(...all); const pad = (hi - lo) * .12 || Math.abs(hi) * .05 || 1; lo -= pad; hi += pad;
-  const ticks = niceTicks(lo, hi); lo = Math.min(lo, ticks[0]); hi = Math.max(hi, ticks.at(-1));
-  const X = t => m.l + (t - start) / (end - start) * (W - m.l - m.r);
-  const Y = v => m.t + (1 - (v - lo) / (hi - lo)) * (H - m.t - m.b);
-  let g = "";
-  ticks.forEach(v => { if (v < lo || v > hi) return; g += `<line class="gl" x1="${m.l}" x2="${W - m.r}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${m.l - 6}" y="${Y(v) + 4}" text-anchor="end">${fmt(v, cfg.unit)}</text>`; });
-  // x축: 월 단위 눈금
-  const months = (S.range > 400 ? 6 : 2) * (wide ? 1 : 2), d0 = new Date(start); d0.setDate(1); d0.setMonth(d0.getMonth() + 1);
-  for (let d = new Date(d0); d.getTime() <= end; d.setMonth(d.getMonth() + months)){
-    const x = X(d.getTime()); if (x < m.l + 10 || x > W - m.r - 10) continue;
-    g += `<text x="${x}" y="${H - 6}" text-anchor="middle">${d.getMonth() === 0 || S.range > 400 ? String(d.getFullYear()).slice(2) + "." : ""}${d.getMonth() + 1}월</text>`;
-  }
-  const labels = [];
-  data.forEach((pts, i) => {
-    if (!pts.length) return;
-    let dpath = "";
-    pts.forEach(([t, v], k) => {
-      if (!k){ dpath += `M${X(t).toFixed(1)},${Y(v).toFixed(1)}`; return; }
-      if (cfg.step?.[ids[i]]) dpath += `H${X(t).toFixed(1)}`;
-      dpath += `L${X(t).toFixed(1)},${Y(v).toFixed(1)}`;
-    });
-    if (cfg.step?.[ids[i]]) dpath += `H${X(end).toFixed(1)}`;
-    g += `<path class="ln" d="${dpath}" stroke="${cfg.colors[i]}"/>`;
-    const [lt, lv] = pts.at(-1);
-    labels.push({y:Y(lv), x:X(lt), txt:ids.length > 1 ? `${ser[ids[i]].name.replace(" ", "")} ${fmt(lv, cfg.unit)}` : "", color:cfg.colors[i]});
-  });
-  // 끝 라벨 겹침 방지
-  labels.sort((a, b) => a.y - b.y).forEach((l, k, arr) => { if (k && l.y - arr[k - 1].y < 14) l.y = arr[k - 1].y + 14; });
-  labels.forEach(l => { if (l.txt && wide) g += `<text class="lbl" x="${W - m.r + 6}" y="${l.y + 4}" style="fill:${l.color}">${esc(l.txt)}</text>`; });
-  g += `<line class="xh" id="xh" y1="${m.t}" y2="${H - m.b}" style="display:none"/><g id="dots"></g>`;
-  g += `<rect x="${m.l}" y="0" width="${W - m.l - m.r}" height="${H}" fill="transparent" id="hit"/>`;
-  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-  svg.innerHTML = g;
-  CH = {cfg, ids, data, X, Y, start, end, m, W, H};
-}
-
-function chartHover(e){
-  if (!CH) return;
-  const svg = $("chart"), r = svg.getBoundingClientRect(), px = e.clientX - r.left;
-  const {cfg, ids, data, X, Y, start, end, m, W} = CH;
-  if (px < m.l || px > W - m.r){ hideTip(); return; }
-  const t = start + (px - m.l) / (W - m.l - m.r) * (end - start);
-  // 가장 가까운 실제 데이터 날짜로 스냅 (첫 계열 기준)
-  const base = data.find(p => p.length) || [];
-  let snap = base[0]?.[0]; for (const [tt] of base){ if (Math.abs(tt - t) < Math.abs(snap - t)) snap = tt; }
-  const x = X(snap), xh = $("xh");
-  xh.setAttribute("x1", x); xh.setAttribute("x2", x); xh.style.display = "";
-  const tip = $("tip"); tip.replaceChildren();
-  const dt = document.createElement("div"); dt.className = "dt"; dt.textContent = new Date(snap).toLocaleDateString("ko-KR"); tip.append(dt);
-  let dots = "";
-  ids.forEach((id, i) => {
-    const v = valueAt(data[i].map(([tt, vv]) => [new Date(tt).toISOString(), vv]), snap + 1);
-    if (v == null) return;
-    dots += `<circle cx="${x}" cy="${Y(v)}" r="4" fill="${cfg.colors[i]}" stroke="var(--panel)" stroke-width="2"/>`;
-    const row = document.createElement("div"); row.className = "row";
-    const name = document.createElement("span"), key = document.createElement("i"); key.style.background = cfg.colors[i];
-    name.append(key, ECON.series[id].name);
-    const val = document.createElement("b"); val.textContent = fmt(v, cfg.unit) + cfg.unit;
-    row.append(name, val); tip.append(row);
-  });
-  $("dots").innerHTML = dots;
-  tip.style.display = "block";
-  const card = $("chartCard").getBoundingClientRect(), tw = tip.offsetWidth;
-  let left = r.left - card.left + x + 12; if (left + tw > card.width - 8) left = r.left - card.left + x - tw - 12;
-  tip.style.left = left + "px"; tip.style.top = (r.top - card.top + 8) + "px";
-}
-function hideTip(){ $("tip").style.display = "none"; const xh = $("xh"); if (xh) xh.style.display = "none"; const d = $("dots"); if (d) d.innerHTML = ""; }
-
-/* ================= 주요 경제 뉴스 ================= */
-const M = {period:7, topic:"all"};
-const MACRO = () => NEWS.filter(x => x.bank === "macro");
-function renderEnews(){
-  // 주제별로 돌아가며 최신 기사 1개씩 → 같은 주제가 몰리지 않게 5개 선별
-  const recent = MACRO().filter(x => x.ts >= ago(3));
-  const pool = recent.length >= 5 ? recent : MACRO().filter(x => x.ts >= ago(14));
-  const byTopic = {};
-  pool.forEach(x => (byTopic[x.topic || "경제"] ||= []).push(x));
-  const queues = Object.values(byTopic).sort((a, b) => b[0].ts - a[0].ts), pick = [];
-  for (let i = 0; pick.length < 5 && queues.some(q => q.length > i); i++) queues.forEach(q => { if (q[i] && pick.length < 5) pick.push(q[i]); });
-  pick.sort((a, b) => b.ts - a.ts);
-  $("enewsSub").textContent = pick.length ? `최근 기사 ${MACRO().filter(x => x.ts >= ago(7)).length}건 중` : "";
-  $("enews").innerHTML = pick.length
-    ? `<ul class="enews">${pick.map(x => `<li><span class="topic">${esc(x.topic || "경제")}</span><a href="${href(x.link)}" target="_blank" rel="noopener" title="${esc(x.title)}">${esc(x.title)}</a><span class="src">${esc(x.source)} · ${relTime(x.ts)}</span></li>`).join("")}</ul>`
-    : `<div class="empty">아직 수집된 경제 뉴스가 없어요.</div>`;
-}
-function relTime(ts){
-  const h = Math.floor((Date.now() - ts) / 36e5);
-  return h < 1 ? "방금" : h < 24 ? `${h}시간 전` : `${Math.floor(h / 24)}일 전`;
-}
-function renderModal(){
-  const all = MACRO().filter(x => x.ts >= ago(M.period));
-  const topics = [...new Set(all.map(x => x.topic || "경제"))];
-  if (M.topic !== "all" && !topics.includes(M.topic)) M.topic = "all";
-  document.querySelectorAll("#mPeriod button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.p === M.period));
-  $("mTopics").innerHTML = [`<button data-t="all" aria-pressed="${M.topic === "all"}">전체</button>`]
-    .concat(topics.map(t => `<button data-t="${esc(t)}" aria-pressed="${M.topic === t}">${esc(t)}</button>`)).join("");
-  const list = all.filter(x => M.topic === "all" || (x.topic || "경제") === M.topic);
-  $("mCount").textContent = `${list.length.toLocaleString()}건`;
-  $("mList").innerHTML = list.length ? grouped(list, true) : `<div class="empty">기사가 없어요.</div>`;
-}
-function openModal(){ $("modal").hidden = false; document.body.style.overflow = "hidden"; renderModal(); $("mClose").focus(); }
-function closeModal(){ $("modal").hidden = true; document.body.style.overflow = ""; $("enewsAll").focus(); }
-
-/* ================= 은행·채용공고·뉴스 ================= */
-const inBank = x => S.bank === "all" || x.bank === S.bank;
+/* ================= 채용공고 ================= */
 const dday = iso => {
   if (!iso) return null;
   const d = new Date(iso), t = new Date(); t.setHours(0,0,0,0); d.setHours(0,0,0,0);
   return Math.round((d - t) / DAY);
 };
-const PT_RE = /파트\s?타이머|피크\s?타이머|PT\s?\(|\(P\)|아르바이트|업무지원|인재\s?Pool|재채용|퇴직직원|기동인력/i;
-const NEW_RE = /신입|신규직원|공채|공개채용|인턴|채용형|하반기|상반기|행원/;
-
-function renderBanks(){
-  const week = ago(7), cnt = {};
-  NEWS.forEach(n => { if (n.ts >= week) cnt[n.bank] = (cnt[n.bank]||0) + 1; });
-  const jc = {}; JOBS.forEach(j => { if (!(S.hidePT && PT_RE.test(j.title))) jc[j.bank] = (jc[j.bank]||0) + 1; });
-  let html = `<button class="chip" data-b="all" aria-pressed="${S.bank==="all"}">전체</button>`, g = null;
-  META.banks.forEach(b => {
-    if (b.group !== g){ html += `<span class="sep" title="${esc(b.group)}"></span>`; g = b.group; }
-    html += `<button class="chip" data-b="${b.id}" style="${cvars(b.id)}" aria-pressed="${S.bank===b.id}" title="1주 뉴스 ${cnt[b.id]||0}건 · 진행 중 공고 ${jc[b.id]||0}건"><span class="dot"></span>${esc(b.name)}${jc[b.id] ? `<span class="n">${jc[b.id]}</span>` : ""}</button>`;
-  });
-  const row = $("bankRow"), x0 = row.scrollLeft;
-  row.innerHTML = html;
-  row.scrollLeft = x0;
-  // 선택한 은행 버튼을 가로로만 가운데 맞춤 (scrollIntoView는 페이지 전체를 세로로 움직여서 쓰지 않는다)
-  const sel = row.querySelector("[aria-pressed=true]");
-  if (sel){
-    const r = row.getBoundingClientRect(), c = sel.getBoundingClientRect();
-    row.scrollLeft += (c.left + c.width / 2) - (r.left + r.width / 2);
-  }
-}
-
 const fmtDeadline = iso => {
   const d = new Date(iso);
   return `~${d.getMonth() + 1}.${d.getDate()}(${"일월화수목금토"[d.getDay()]})` + (d.getHours() === 23 && d.getMinutes() === 59 ? "" : ` ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`);
 };
+function jobRow(x, showBank){
+  const d = dday(x.deadline);
+  const badge = d === null ? `<span class="badge always">상시</span>` : `<span class="badge ${d <= 3 ? "urgent" : ""}">${d === 0 ? "D-day" : "D-" + d}</span>`;
+  const isNew = x.posted && Date.now() - Date.parse(x.posted) < 3 * DAY;
+  const info = [x.career, x.job_type, x.location].filter(Boolean).map(esc);
+  const bank = showBank ? `<span class="bk" style="${cvars(x.bank)}">${esc(BANK[x.bank]?.name || x.bank)}</span>` : "";
+  return `<a class="rec" href="${href(x.link)}" target="_blank" rel="noopener">${badge}<div>
+    <div class="t">${isNew ? `<span class="new">NEW</span>` : ""}${esc(x.title)}</div>
+    <div class="meta">${bank}${x.deadline ? `<span class="dl">${fmtDeadline(x.deadline)}</span>` : ""}${info.length ? `<span>${info.join(" · ")}</span>` : ""}<span>${esc(x.via || "")}</span></div></div></a>`;
+}
 function jumpLinks(b){
   const kw = encodeURIComponent(b ? b.saramin : "은행");
   return `<a href="https://www.saramin.co.kr/zf_user/search/recruit?searchword=${kw}" target="_blank" rel="noopener"><b>사람인</b><span>공고 검색 ↗</span></a>
@@ -629,54 +674,38 @@ function jumpLinks(b){
     <a href="https://job.alio.go.kr/recruit.do" target="_blank" rel="noopener"><b>잡알리오</b><span>공공기관 공고 ↗</span></a>`;
 }
 function renderJobs(){
+  bankBar($("bankJobs"), true);
+  document.querySelectorAll("#jobFilter button").forEach(b => b.setAttribute("aria-pressed", b.dataset.f === S.jf));
+  $("hidePT").checked = P.hidePT;
   const base = JOBS.filter(inBank);
   const pt = base.filter(j => PT_RE.test(j.title)).length;
-  let list = S.hidePT ? base.filter(j => !PT_RE.test(j.title)) : base;
+  let list = P.hidePT ? base.filter(j => !PT_RE.test(j.title)) : base;
   if (S.jf === "soon") list = list.filter(j => { const d = dday(j.deadline); return d !== null && d <= 7; });
   if (S.jf === "new") list = list.filter(j => NEW_RE.test(j.title) || j.career === "신입");
   $("jobCount").textContent = `${list.length}건`;
-  $("ptCount").textContent = pt ? `(${pt}건)` : "";
+  $("ptCount").textContent = pt ? `(${pt})` : "";
   const b = BANK[S.bank];
   if (!list.length){
     const auto = !b || (b.jobs || []).length || META.sources?.saramin;
-    $("jobs").innerHTML = `<div class="empty">${auto ? (S.jf === "all" ? "지금 진행 중인 공고가 없어요." : "조건에 맞는 공고가 없어요.") + (S.hidePT && pt ? ` (숨긴 파트타이머·업무지원 공고 ${pt}건은 체크를 풀면 보여요.)` : "") : `${esc(b.name)}은(는) 공고 자동 수집을 지원하지 않아요.`} 아래 사이트에서도 확인해 보세요.</div><div class="jump">${b ? `<a style="${cvars(b.id)}" href="${href(b.recruit)}" target="_blank" rel="noopener"><b>공식 채용사이트</b><span>${esc(b.name)} ↗</span></a>` : ""}${jumpLinks(b)}</div>`;
+    $("jobs").innerHTML = `<div class="empty">${auto ? (S.jf === "all" ? "지금 진행 중인 공고가 없어요." : "조건에 맞는 공고가 없어요.") + (P.hidePT && pt ? ` 숨긴 시간제 공고 ${pt}건은 ‘시간제 숨기기’를 끄면 보여요.` : "") : `${esc(b.name)}은(는) 공고 자동 수집을 지원하지 않아요.`} 아래 사이트에서도 확인해 보세요.</div><div class="jump">${b ? `<a style="${cvars(b.id)}" href="${href(b.recruit)}" target="_blank" rel="noopener"><b>공식 채용사이트</b><span>${esc(b.name)} ↗</span></a>` : ""}${jumpLinks(b)}</div>`;
   } else {
-    $("jobs").innerHTML = list.slice(0, S.jobShown).map(x => {
-      const d = dday(x.deadline);
-      const badge = d === null ? `<span class="badge always">상시</span>` : `<span class="badge ${d <= 3 ? "urgent" : ""}">${d === 0 ? "D-day" : "D-" + d}</span>`;
-      const info = [x.career, x.job_type, x.location].filter(Boolean).map(esc);
-      const bank = S.bank === "all" ? `<span class="bk" style="${cvars(x.bank)}">${esc(BANK[x.bank]?.name || x.bank)}</span>` : "";
-      return `<a class="rec" href="${href(x.link)}" target="_blank" rel="noopener">${badge}<div>
-        <div class="t">${esc(x.title)}</div>
-        <div class="meta">${bank}${x.deadline ? `<span class="dl">${fmtDeadline(x.deadline)}</span>` : ""}${info.length ? `<span>${info.join(" · ")}</span>` : ""}<span class="via">${esc(x.via || "")}</span></div></div></a>`;
-    }).join("") + (list.length > S.jobShown ? `<button class="more" id="jobMore">공고 더 보기 (${list.length - S.jobShown}건)</button>` : "");
+    $("jobs").innerHTML = list.slice(0, S.jobShown).map(x => jobRow(x, !b)).join("")
+      + (list.length > S.jobShown ? `<button class="more" id="jobMore" type="button">공고 더 보기 (${list.length - S.jobShown}건)</button>` : "");
   }
-  // 공식 채용사이트: 은행을 골랐으면 그 은행 하나만, 전체일 때는 접어 둔다
+  // 공식 채용사이트: 은행을 골랐으면 그 은행 하나만, 아니면 접어 둔다
+  const set = S.bank === "fav" ? META.banks.filter(x => P.fav.includes(x.id)) : META.banks;
   $("links").innerHTML = b
     ? `<div class="sites"><a class="site-one" href="${href(b.recruit)}" target="_blank" rel="noopener">${esc(b.name)} 공식 채용사이트 ↗</a></div>`
-    : `<details class="sites"><summary>은행별 공식 채용사이트 ${META.banks.length}곳</summary><div class="set">${META.banks.map(x => `<a style="${cvars(x.id)}" href="${href(x.recruit)}" target="_blank" rel="noopener"><span class="dot"></span>${esc(x.name)}</a>`).join("")}</div></details>`;
+    : `<details class="sites"><summary>은행별 공식 채용사이트 ${set.length}곳</summary><div class="set">${set.map(x => `<a style="${cvars(x.id)}" href="${href(x.recruit)}" target="_blank" rel="noopener"><span class="dot"></span>${esc(x.name)}</a>`).join("")}</div></details>`;
 }
 
-function grouped(list, showTag){
-  let html = "", last = "";
-  list.forEach(x => {
-    const t = new Date(x.ts);
-    const d = t.toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"short"});
-    if (d !== last){ html += `<div class="day">${d}</div>`; last = d; }
-    const lead = x.bank === "macro" ? `<span class="topic">${esc(x.topic || "경제")}</span> ` : (showTag ? tag(x.bank) + " " : "") + (S.cat === "all" ? `<span class="ncat">${esc(catName(catOf(x)))}</span>` : "");
-    html += `<div class="news-row"><div class="t">${lead}<a href="${href(x.link)}" target="_blank" rel="noopener">${esc(x.title)}</a></div>
-      <span class="src">${esc(x.source)} · ${String(t.getHours()).padStart(2,"0")}:${String(t.getMinutes()).padStart(2,"0")}</span></div>`;
-  });
-  return html;
-}
-
-/* 은행 뉴스 내용 카테고리 (수집기가 topics.json 규칙으로 분류해 n.cat에 넣는다) */
+/* ================= 은행 뉴스: 같은 소식 묶기 + 주요 뉴스 순위 ================= */
 const DEFAULT_TOPICS = [["job","채용"],["issue","사건·사고"],["biz","실적·경영"],["rate","금리·대출"],["digital","디지털"],["product","상품·서비스"],["partner","제휴·협약"],["esg","사회공헌"],["etc","기타"]].map(([id, name]) => ({id, name}));
 const topics = () => META.topics?.length ? META.topics : DEFAULT_TOPICS;
 const catOf = x => x.cat || (x.job ? "job" : "etc");
 const catName = id => topics().find(t => t.id === id)?.name || "";
 
-/* 같은 사건을 다룬 기사 묶기: 제목에서 은행 이름·말머리를 빼고 두 글자 조각이 절반 이상 겹치면 같은 소식.
+/* 제목에서 은행 이름·말머리를 빼고 두 글자 조각이 절반 이상 겹치면 같은 소식.
    후보는 4일 안에 나온 기사 중 흔하지 않은 단어를 공유하는 묶음만 비교한다 (6개월치도 2초 안). */
 const NEWS_PAGE = 10;
 const STOPW = /단독|속보|종합|포토|영상|인터뷰|기자|금융家|금융단신|더밸류 브리핑|게시판/g;
@@ -687,7 +716,7 @@ const normTitle = t => {
   return s.replace(/[^가-힣a-zA-Z0-9]+/g, "");
 };
 const bigrams = s => { const g = new Set(); for (let i = 0; i < s.length - 1; i++) g.add(s.slice(i, i + 2)); return g; };
-function clusterNews(items){   // items: 최신순
+function clusterNews(items, periodDays){   // items: 최신순
   BANK_NAMES ||= META.banks.flatMap(b => [b.name, ...(b.aliases || [])]).sort((a, b) => b.length - a.length);
   const nameSet = new Set(BANK_NAMES), WIN = 4 * DAY, df = new Map(), groups = [], index = new Map();
   for (const x of items){
@@ -711,7 +740,7 @@ function clusterNews(items){   // items: 최신순
     if (bs >= .5) groups[best].items.push(x);
     else { const i = groups.push({head: x, items: [x]}) - 1; ws.forEach(w => { if (!index.has(w)) index.set(w, []); index.get(w).push(i); }); }
   }
-  const half = S.period * 24 / 3;   // 기간의 1/3마다 최근성 점수 절반
+  const half = periodDays * 24 / 3;   // 기간의 1/3마다 최근성 점수 절반
   for (const g of groups){
     g.src = new Set(g.items.map(x => x.source)).size;
     g.cat = catOf(g.head);
@@ -719,18 +748,34 @@ function clusterNews(items){   // items: 최신순
   }
   return groups;
 }
-let NCACHE = {key: "", groups: []};
+const byScore = groups => [...groups].sort((a, b) => b.score - a.score);
+let NCACHE = {key: "", groups: []}, HCACHE = {key: "", groups: []};
 const newsGroups = () => {
-  const key = S.bank + "|" + S.period;
+  const key = S.bank + "|" + S.period + "|" + P.fav.join(",");
   if (NCACHE.key !== key){
     const items = NEWS.filter(x => x.bank !== "macro" && inBank(x) && x.ts >= ago(S.period)).sort((a, b) => b.ts - a.ts);
-    NCACHE = {key, groups: clusterNews(items)};
+    NCACHE = {key, groups: clusterNews(items, S.period)};
   }
   return NCACHE.groups;
 };
 
+function newsItem(g, rank, showBank = S.bank !== "all" ? BANK[S.bank] == null : true, showCat = S.cat === "all"){
+  const x = g.head, t = new Date(x.ts);
+  const when = Date.now() - x.ts < DAY ? relTime(x.ts) : `${t.getMonth() + 1}.${t.getDate()}`;
+  const sources = [...new Set(g.items.map(y => y.source))];
+  const bits = [
+    showBank ? `<span class="bk" style="${cvars(x.bank)}">${esc(BANK[x.bank]?.name || x.bank)}</span>` : "",
+    showCat ? `<span>${esc(catName(g.cat))}</span>` : "",
+    `<span>${esc(x.source)} · ${when}</span>`,
+    g.items.length > 1 ? `<span class="rel" title="${esc(sources.slice(0, 12).join(", "))}">관련 기사 ${g.items.length}</span>` : "",
+  ].filter(Boolean).join("");
+  return `<li class="ni"><span class="rk">${rank}</span><div><a href="${href(x.link)}" target="_blank" rel="noopener" title="${esc(x.title)}">${esc(x.title)}</a><div class="meta">${bits}</div></div></li>`;
+}
+
 let PAGES = [], PG = 0;
 function renderNews(){
+  bankBar($("bankNews"), false);
+  document.querySelectorAll("#period button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.p === S.period));
   const q = S.q.trim().toLowerCase();
   let groups = newsGroups();
   if (q) groups = groups.filter(g => g.items.some(x => x.title.toLowerCase().includes(q)));
@@ -742,34 +787,19 @@ function renderNews(){
   }).join("");
   const list = S.cat === "all" ? groups : groups.filter(g => g.cat === S.cat);
   const articles = list.reduce((s, g) => s + g.items.length, 0);
-  $("newsCount").textContent = `소식 ${list.length.toLocaleString()}개`;
-  $("newsCount").title = `기사 ${articles.toLocaleString()}건을 같은 소식끼리 묶었어요`;
+  $("newsCount").textContent = `소식 ${list.length.toLocaleString()}개 (기사 ${articles.toLocaleString()}건)`;
 
   // 1쪽: 많은 언론사가 다룬 최근 소식 10개 / 2쪽부터: 나머지를 최신순으로 10개씩
-  const top = [...list].sort((a, b) => b.score - a.score).slice(0, NEWS_PAGE);
+  const top = byScore(list).slice(0, NEWS_PAGE);
   const topSet = new Set(top), rest = list.filter(g => !topSet.has(g));
-  PAGES = [top];
+  PAGES = list.length ? [top] : [];
   for (let i = 0; i < rest.length; i += NEWS_PAGE) PAGES.push(rest.slice(i, i + NEWS_PAGE));
-  if (!list.length){ PAGES = []; }
   PG = 0;
   $("news").innerHTML = PAGES.length
-    ? `<div class="track" id="track" tabindex="0" aria-label="은행 뉴스 목록, 옆으로 넘겨 더 보기">${PAGES.map((_, i) => `<ol class="npage${i ? "" : " top"}" data-pg="${i}" start="${i * NEWS_PAGE + 1}"><li class="ph"></li></ol>`).join("")}</div>`
+    ? `<div class="track" id="track" tabindex="0" aria-label="은행 뉴스 목록, 옆으로 넘겨 더 보기">${PAGES.map((_, i) => `<ol class="npage${i ? "" : " top"}" data-pg="${i}"><li class="ph"></li></ol>`).join("")}</div>`
       + (PAGES.length > 1 ? `<div class="swipe-hint" id="swipeHint">옆으로 넘기면 최신 뉴스가 10개씩 이어져요 →</div>` : "")
     : `<div class="empty">조건에 맞는 기사가 없어요.</div>`;
   fillPages(0); updatePager();
-}
-
-function newsItem(g, rank){
-  const x = g.head, t = new Date(x.ts);
-  const when = Date.now() - x.ts < DAY ? relTime(x.ts) : `${t.getMonth() + 1}.${t.getDate()}`;
-  const sources = [...new Set(g.items.map(y => y.source))];
-  const bits = [
-    S.bank === "all" ? `<span class="bk" style="${cvars(x.bank)}">${esc(BANK[x.bank]?.name || x.bank)}</span>` : "",
-    S.cat === "all" ? `<span>${esc(catName(g.cat))}</span>` : "",
-    `<span>${esc(x.source)} · ${when}</span>`,
-    g.items.length > 1 ? `<span class="rel" title="${esc(sources.slice(0, 12).join(", "))}">관련 기사 ${g.items.length}</span>` : "",
-  ].filter(Boolean).join("");
-  return `<li class="ni"><span class="rk">${rank}</span><div><a href="${href(x.link)}" target="_blank" rel="noopener" title="${esc(x.title)}">${esc(x.title)}</a><div class="meta">${bits}</div></div></li>`;
 }
 // 화면에 보이는 쪽과 양옆 쪽만 그린다 (6개월치 수천 개를 한 번에 그리지 않도록)
 function fillPages(c){
@@ -782,12 +812,12 @@ function fillPages(c){
   });
 }
 function updatePager(){
-  const n = PAGES.length;
+  const n = PAGES.length, total = PAGES.reduce((s, p) => s + p.length, 0);
   $("pgNum").textContent = n ? `${PG + 1} / ${n}` : "0 / 0";
   $("pgPrev").disabled = PG <= 0; $("pgNext").disabled = PG >= n - 1;
   $("pgTitle").innerHTML = PG === 0
     ? `주요 뉴스 <small>여러 언론이 다룬 최근 소식</small>`
-    : `최신 뉴스 <small>${(PG - 1) * NEWS_PAGE + NEWS_PAGE + 1}–${Math.min(PG * NEWS_PAGE + NEWS_PAGE, PAGES.reduce((s, p) => s + p.length, 0))}번째</small>`;
+    : `최신 뉴스 <small>${PG * NEWS_PAGE + 1}–${Math.min(PG * NEWS_PAGE + NEWS_PAGE, total)}번째</small>`;
 }
 function goPage(i){
   const tr = $("track"); if (!tr) return;
@@ -797,44 +827,286 @@ function goPage(i){
   tr.scrollTo({left: tr.children[i].offsetLeft - tr.children[0].offsetLeft, behavior: smooth ? "smooth" : "auto"});
 }
 
-function render(){
-  const press = (sel, attr, val) => document.querySelectorAll(sel).forEach(b => b.setAttribute("aria-pressed", String(b.dataset[attr]) === String(val)));
-  press("#period button", "p", S.period); press("#cat button", "c", S.cat); press("#jobFilter button", "f", S.jf);
-  renderBanks(); renderJobs(); renderNews(); writeHash();
+/* ================= 경제 지표 ================= */
+const FMT = {"%": v => v.toFixed(2), "원": v => v.toLocaleString("ko-KR",{maximumFractionDigits:1}), "pt": v => v.toLocaleString("ko-KR",{maximumFractionDigits:2})};
+const fmt = (v, u) => (FMT[u] || (x => x))(v);
+const CHARTS = {
+  rates: {title:"금리 추이", ids:["base","ktb3","cd91"], colors:["var(--s1)","var(--s2)","var(--s3)"], step:{base:true}, unit:"%"},
+  usdkrw:{title:"원/달러 환율", ids:["usdkrw"], colors:["var(--s1)"], unit:"원"},
+  kospi: {title:"코스피", ids:["kospi"], colors:["var(--s1)"], unit:"pt"},
+  cpi:   {title:"소비자물가 상승률 (전년동월비)", ids:["cpi"], colors:["var(--s1)"], unit:"%"},
+};
+const KPI_CHART = {base:"rates", ktb3:"rates", cd91:"rates", usdkrw:"usdkrw", kospi:"kospi", cpi:"cpi"};
+function valueAt(points, t){ let v = null; for (const [d, x] of points){ if (Date.parse(d) <= t) v = x; else break; } return v; }
+const econOrder = () => { const ser = ECON?.series || {}; return (ECON?.order || Object.keys(ser)).filter(id => ser[id]?.points?.length); };
+
+function kpiTiles(spark){
+  const ser = ECON.series;
+  return econOrder().map(id => {
+    const s = ser[id], pts = s.points, [d, v] = pts.at(-1);
+    const monthly = s.freq === "M";
+    const prev = monthly ? pts.at(-2)?.[1] : valueAt(pts, Date.parse(d) - 30 * DAY);
+    const diff = prev == null ? null : v - prev;
+    const unitDiff = s.unit === "%" ? "%p" : s.unit, when = monthly ? "전월 대비" : "1개월 전 대비";
+    const cls = !diff ? "" : diff > 0 ? "up" : "down", arrow = !diff ? "–" : diff > 0 ? "▲" : "▼";
+    const dTxt = diff == null ? "" : Math.abs(diff) < 1e-9 ? `변동 없음 · ${when}` : `<span class="${cls}">${arrow} ${fmt(Math.abs(diff), s.unit)}${unitDiff}</span> ${when}`;
+    return `<button class="kpi" type="button" data-id="${id}" aria-pressed="${spark && KPI_CHART[id] === S.chart}">
+      <div class="k">${esc(s.name)}</div>
+      <div class="v num">${fmt(v, s.unit)}<small>${s.unit}</small></div>
+      <div class="d num">${dTxt}</div>${spark ? sparkline(pts, monthly ? 24 : 365) : ""}</button>`;
+  }).join("");
+}
+function econDate(){
+  const ser = ECON.series, last = Math.max(...econOrder().map(id => Date.parse(ser[id].points.at(-1)[0])));
+  return `${new Date(last).toLocaleDateString("ko-KR")} 기준`;
+}
+function renderEcon(){
+  if (!econOrder().length){
+    $("econBody").innerHTML = `<div class="econ-empty">경제지표가 아직 없어요. 한국은행 ECOS 오픈API 키를 ECOS_API_KEY로 등록하면 기준금리·국고채·CD·환율·코스피·물가가 표시돼요.</div>`;
+  } else {
+    $("econSrc").textContent = `한국은행 ECOS · ${econDate()} · 카드를 누르면 그래프가 바뀌어요`;
+    $("kpis").innerHTML = kpiTiles(true);
+    drawChart();
+  }
+  renderMacro();
+}
+function sparkline(pts, n){
+  const cut = pts[0] && pts.at(-1) ? Date.parse(pts.at(-1)[0]) - (n > 30 ? 365 : 730) * DAY : 0;
+  const p = pts.filter(([d]) => Date.parse(d) >= cut);
+  if (p.length < 2) return "";
+  const W = 120, H = 30, ys = p.map(x => x[1]), lo = Math.min(...ys), hi = Math.max(...ys), r = hi - lo || 1;
+  const xy = p.map(([, y], i) => [i / (p.length - 1) * (W - 4) + 1, H - 3 - (y - lo) / r * (H - 6)]);
+  const [ex, ey] = xy.at(-1);
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><polyline class="spark" vector-effect="non-scaling-stroke" points="${xy.map(a => a.map(v => v.toFixed(1)).join(",")).join(" ")}"/><circle class="spark-end" cx="${ex}" cy="${ey}" r="2"/></svg>`;
+}
+function niceTicks(lo, hi, n = 4){
+  const span = hi - lo || 1, raw = span / n, mag = 10 ** Math.floor(Math.log10(raw));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw);
+  const t = []; for (let v = Math.floor(lo / step) * step; v <= hi + step * .001; v += step) t.push(+v.toFixed(6));
+  return t;
+}
+let CH = null; // 현재 차트 상태 (툴팁용)
+function drawChart(){
+  const cfg = CHARTS[S.chart], ser = ECON.series;
+  const ids = cfg.ids.filter(id => ser[id]);
+  document.querySelectorAll("#range button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.r === S.range));
+  $("chartTitle").textContent = cfg.title;
+  $("legend").innerHTML = ids.length > 1 ? ids.map((id, i) => `<span><i style="background:${cfg.colors[i]}"></i>${esc(ser[id].name)}</span>`).join("") : "";
+  const svg = $("chart"), W = svg.clientWidth || 800, H = 240, wide = W > 560, m = {l:46, r:ids.length > 1 && wide ? 104 : 12, t:10, b:24};
+  const end = Math.max(...ids.map(id => Date.parse(ser[id].points.at(-1)[0]))), start = end - S.range * DAY;
+  const data = ids.map(id => ser[id].points.map(([d, v]) => [Date.parse(d), v]).filter(([t]) => t >= start));
+  const all = data.flat().map(p => p[1]);
+  if (!all.length){ svg.innerHTML = ""; return; }
+  let lo = Math.min(...all), hi = Math.max(...all); const pad = (hi - lo) * .12 || Math.abs(hi) * .05 || 1; lo -= pad; hi += pad;
+  const ticks = niceTicks(lo, hi); lo = Math.min(lo, ticks[0]); hi = Math.max(hi, ticks.at(-1));
+  const X = t => m.l + (t - start) / (end - start) * (W - m.l - m.r);
+  const Y = v => m.t + (1 - (v - lo) / (hi - lo)) * (H - m.t - m.b);
+  let g = "";
+  ticks.forEach(v => { if (v < lo || v > hi) return; g += `<line class="gl" x1="${m.l}" x2="${W - m.r}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${m.l - 6}" y="${Y(v) + 4}" text-anchor="end">${fmt(v, cfg.unit)}</text>`; });
+  const months = (S.range > 400 ? 6 : 2) * (wide ? 1 : 2), d0 = new Date(start); d0.setDate(1); d0.setMonth(d0.getMonth() + 1);
+  for (let d = new Date(d0); d.getTime() <= end; d.setMonth(d.getMonth() + months)){
+    const x = X(d.getTime()); if (x < m.l + 10 || x > W - m.r - 10) continue;
+    g += `<text x="${x}" y="${H - 6}" text-anchor="middle">${d.getMonth() === 0 || S.range > 400 ? String(d.getFullYear()).slice(2) + "." : ""}${d.getMonth() + 1}월</text>`;
+  }
+  const labels = [];
+  data.forEach((pts, i) => {
+    if (!pts.length) return;
+    let dpath = "";
+    pts.forEach(([t, v], k) => {
+      if (!k){ dpath += `M${X(t).toFixed(1)},${Y(v).toFixed(1)}`; return; }
+      if (cfg.step?.[ids[i]]) dpath += `H${X(t).toFixed(1)}`;
+      dpath += `L${X(t).toFixed(1)},${Y(v).toFixed(1)}`;
+    });
+    if (cfg.step?.[ids[i]]) dpath += `H${X(end).toFixed(1)}`;
+    g += `<path class="ln" d="${dpath}" style="stroke:${cfg.colors[i]}"/>`;
+    const [lt, lv] = pts.at(-1);
+    labels.push({y:Y(lv), x:X(lt), txt:ids.length > 1 ? `${ser[ids[i]].name.replace(" ", "")} ${fmt(lv, cfg.unit)}` : "", color:cfg.colors[i]});
+  });
+  labels.sort((a, b) => a.y - b.y).forEach((l, k, arr) => { if (k && l.y - arr[k - 1].y < 14) l.y = arr[k - 1].y + 14; });
+  labels.forEach(l => { if (l.txt && wide) g += `<text class="lbl" x="${W - m.r + 6}" y="${l.y + 4}" style="fill:${l.color}">${esc(l.txt)}</text>`; });
+  g += `<line class="xh" id="xh" y1="${m.t}" y2="${H - m.b}" style="display:none"/><g id="dots"></g>`;
+  g += `<rect x="${m.l}" y="0" width="${W - m.l - m.r}" height="${H}" fill="transparent" id="hit"/>`;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = g;
+  CH = {cfg, ids, data, X, Y, start, end, m, W, H};
+}
+function chartHover(e){
+  if (!CH) return;
+  const svg = $("chart"), r = svg.getBoundingClientRect(), px = e.clientX - r.left;
+  const {cfg, ids, data, X, Y, start, end, m, W} = CH;
+  if (px < m.l || px > W - m.r){ hideTip(); return; }
+  const t = start + (px - m.l) / (W - m.l - m.r) * (end - start);
+  const base = data.find(p => p.length) || [];
+  let snap = base[0]?.[0]; for (const [tt] of base){ if (Math.abs(tt - t) < Math.abs(snap - t)) snap = tt; }
+  const x = X(snap), xh = $("xh");
+  xh.setAttribute("x1", x); xh.setAttribute("x2", x); xh.style.display = "";
+  const tip = $("tip"); tip.replaceChildren();
+  const dt = document.createElement("div"); dt.className = "dt"; dt.textContent = new Date(snap).toLocaleDateString("ko-KR"); tip.append(dt);
+  let dots = "";
+  ids.forEach((id, i) => {
+    const v = valueAt(data[i].map(([tt, vv]) => [new Date(tt).toISOString(), vv]), snap + 1);
+    if (v == null) return;
+    dots += `<circle cx="${x}" cy="${Y(v)}" r="4" style="fill:${cfg.colors[i]}" stroke="var(--panel)" stroke-width="2"/>`;
+    const row = document.createElement("div"); row.className = "row";
+    const name = document.createElement("span"), key = document.createElement("i"); key.style.background = cfg.colors[i];
+    name.append(key, ECON.series[id].name);
+    const val = document.createElement("b"); val.textContent = fmt(v, cfg.unit) + cfg.unit;
+    row.append(name, val); tip.append(row);
+  });
+  $("dots").innerHTML = dots;
+  tip.style.display = "block";
+  const card = $("chartCard").getBoundingClientRect(), tw = tip.offsetWidth;
+  let left = r.left - card.left + x + 12; if (left + tw > card.width - 8) left = r.left - card.left + x - tw - 12;
+  tip.style.left = left + "px"; tip.style.top = (r.top - card.top + 8) + "px";
+}
+function hideTip(){ $("tip").style.display = "none"; const xh = $("xh"); if (xh) xh.style.display = "none"; const d = $("dots"); if (d) d.innerHTML = ""; }
+
+/* 경제(거시) 뉴스 */
+const M = {period:7, topic:"all"};
+const MACRO = () => NEWS.filter(x => x.bank === "macro");
+function pickMacro(n){   // 주제별로 돌아가며 최신 1개씩 → 같은 주제가 몰리지 않게
+  const recent = MACRO().filter(x => x.ts >= ago(3));
+  const pool = (recent.length >= n ? recent : MACRO().filter(x => x.ts >= ago(14))).sort((a, b) => b.ts - a.ts);
+  const byTopic = {}; pool.forEach(x => (byTopic[x.topic || "경제"] ||= []).push(x));
+  const queues = Object.values(byTopic).sort((a, b) => b[0].ts - a[0].ts), pick = [];
+  for (let i = 0; pick.length < n && queues.some(q => q.length > i); i++) queues.forEach(q => { if (q[i] && pick.length < n) pick.push(q[i]); });
+  return pick.sort((a, b) => b.ts - a.ts);
+}
+const macroLi = x => `<li><span class="topic">${esc(x.topic || "경제")}</span><a href="${href(x.link)}" target="_blank" rel="noopener" title="${esc(x.title)}">${esc(x.title)}</a><span class="src">${esc(x.source)} · ${relTime(x.ts)}</span></li>`;
+function renderMacro(){
+  const all = MACRO().filter(x => x.ts >= ago(M.period)).sort((a, b) => b.ts - a.ts);
+  const tps = [...new Set(all.map(x => x.topic || "경제"))];
+  if (M.topic !== "all" && !tps.includes(M.topic)) M.topic = "all";
+  document.querySelectorAll("#mPeriod button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.p === M.period));
+  $("mTopics").innerHTML = [`<button type="button" data-t="all" aria-pressed="${M.topic === "all"}">전체</button>`]
+    .concat(tps.map(t => `<button type="button" data-t="${esc(t)}" aria-pressed="${M.topic === t}">${esc(t)}</button>`)).join("");
+  const list = all.filter(x => M.topic === "all" || (x.topic || "경제") === M.topic);
+  $("mCount").textContent = `${list.length.toLocaleString()}건`;
+  if (!list.length){ $("mList").innerHTML = `<div class="empty">기사가 없어요.</div>`; return; }
+  let html = "", last = "";
+  list.slice(0, M.shown || 40).forEach(x => {
+    const d = new Date(x.ts).toLocaleDateString("ko-KR", {month:"long", day:"numeric", weekday:"short"});
+    if (d !== last){ html += (last ? "</ul>" : "") + `<div class="day">${d}</div><ul class="enews">`; last = d; }
+    html += macroLi(x);
+  });
+  html += "</ul>";
+  if (list.length > (M.shown || 40)) html += `<button class="more" id="mMore" type="button">더 보기 (${list.length - (M.shown || 40)}건)</button>`;
+  $("mList").innerHTML = html;
 }
 
-$("bankRow").addEventListener("click", e => { const b = e.target.closest("[data-b]"); if (b){ S.bank = b.dataset.b; S.shown = 40; S.jobShown = 15; render(); } });
+/* ================= 홈 ================= */
+function renderHome(){
+  const favOnly = P.homeFav && P.fav.length;
+  const inHome = x => !favOnly || P.fav.includes(x.bank);
+  const jobs = visibleJobs().filter(inHome);
+  const soon = jobs.filter(j => { const d = dday(j.deadline); return d !== null && d <= 7; });
+  const fresh = jobs.filter(j => j.posted && Date.now() - Date.parse(j.posted) < 3 * DAY);
+  const h = new Date().getHours();
+  $("hello").textContent = (h < 6 ? "늦은 밤에도 준비 중이네요" : h < 12 ? "좋은 아침이에요" : h < 18 ? "오늘도 한 걸음 더" : "오늘 하루도 수고했어요") + (favOnly ? " · 관심 은행" : "");
+
+  // 요약 숫자 3개 (누르면 해당 화면으로)
+  const key = (favOnly ? P.fav.join(",") : "all");
+  if (HCACHE.key !== key){
+    const items = NEWS.filter(x => x.bank !== "macro" && inHome(x) && x.ts >= ago(7)).sort((a, b) => b.ts - a.ts);
+    HCACHE = {key, groups: clusterNews(items, 7)};
+  }
+  const todayNews = HCACHE.groups.filter(g => g.head.ts >= ago(1)).length;
+  $("stats").innerHTML = `
+    <button class="stat hot" type="button" data-go="jobs" data-jf="soon"><b>${soon.length}</b><span>7일 안에 마감</span></button>
+    <button class="stat" type="button" data-go="jobs" data-jf="all"><b>${fresh.length}</b><span>새로 올라온 공고</span></button>
+    <button class="stat" type="button" data-go="news"><b>${todayNews}</b><span>오늘 은행 소식</span></button>`;
+
+  $("homeJobsCard").hidden = !P.home.jobs;
+  $("homeNewsCard").hidden = !P.home.news;
+  $("homeEconCard").hidden = !P.home.econ || !ECON?.series;
+  $("homeEnewsCard").hidden = !P.home.enews;
+
+  const soonSorted = [...soon].sort((a, b) => (a.deadline || "").localeCompare(b.deadline || ""));
+  const showJobs = (soonSorted.length ? soonSorted : jobs).slice(0, 5);
+  $("homeJobsSub").textContent = soonSorted.length ? `${soonSorted.length}건 중 5건` : "";
+  $("homeJobs").innerHTML = showJobs.length ? showJobs.map(x => jobRow(x, true)).join("") : `<div class="empty">진행 중인 공고가 없어요.</div>`;
+
+  const top = byScore(HCACHE.groups).slice(0, 5);
+  $("homeNewsSub").textContent = "최근 1주";
+  $("homeNews").innerHTML = top.length ? top.map((g, i) => newsItem(g, i + 1, true, true)).join("") : `<li class="empty">기사가 없어요.</li>`;
+
+  if (ECON?.series && econOrder().length){ $("homeKpis").innerHTML = kpiTiles(false); $("homeEconSub").textContent = econDate(); }
+  $("homeEnews").innerHTML = pickMacro(4).map(macroLi).join("") || `<li class="empty">아직 수집된 경제 뉴스가 없어요.</li>`;
+}
+
+/* ================= 그리기 ================= */
+function render(){
+  document.querySelectorAll("[data-view]").forEach(s => { s.hidden = s.dataset.view !== S.view; });
+  document.querySelectorAll(".tabs [data-go], .bottom-nav [data-go]").forEach(b => b.toggleAttribute("aria-current", false));
+  document.querySelectorAll(`.tabs [data-go="${S.view}"], .bottom-nav [data-go="${S.view}"]`).forEach(b => b.setAttribute("aria-current", "page"));
+  if (S.bank === "fav" && !P.fav.length) S.bank = "all";
+  if (S.bank !== "all" && S.bank !== "fav" && META.banks.length && !BANK[S.bank]) S.bank = "all";
+  if (S.view === "home") renderHome();
+  if (S.view === "jobs") renderJobs();
+  if (S.view === "news") renderNews();
+  if (S.view === "econ") renderEcon();
+  writeHash();
+}
+
+/* ================= 이벤트 ================= */
+document.addEventListener("click", e => {
+  const g = e.target.closest("[data-go]");
+  if (g){ e.preventDefault(); if (g.dataset.jf) { S.jf = g.dataset.jf; S.jobShown = 15; } go(g.dataset.go); return; }
+  const b = e.target.closest(".bankbar [data-b]");
+  if (b){ S.bank = b.dataset.b; S.jobShown = 15; render(); return; }
+  if (e.target.closest("[data-close]")) closeSettings();
+});
 $("jobFilter").addEventListener("click", e => { const b = e.target.closest("[data-f]"); if (b){ S.jf = b.dataset.f; S.jobShown = 15; render(); } });
-$("hidePT").addEventListener("change", e => { S.hidePT = e.target.checked; render(); });
+$("hidePT").addEventListener("change", e => setPref("hidePT", e.target.checked));
 $("jobs").addEventListener("click", e => { if (e.target.id === "jobMore"){ S.jobShown += 30; renderJobs(); } });
-$("period").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if (b){ S.period = +b.dataset.p; S.shown = 40; render(); } });
-$("cat").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (b){ S.cat = b.dataset.c; S.shown = 40; render(); } });
-$("q").addEventListener("input", e => { S.q = e.target.value; S.shown = 40; renderNews(); });
+$("period").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if (b){ S.period = +b.dataset.p; render(); } });
+$("cat").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (b){ S.cat = b.dataset.c; render(); } });
+$("q").addEventListener("input", e => { S.q = e.target.value; renderNews(); });
 $("pgPrev").addEventListener("click", () => goPage(PG - 1));
 $("pgNext").addEventListener("click", () => goPage(PG + 1));
 $("news").addEventListener("scroll", e => {
   const tr = e.target; if (tr.id !== "track") return;
   const w = tr.children[1] ? tr.children[1].offsetLeft - tr.children[0].offsetLeft : tr.clientWidth;
   const i = Math.round(tr.scrollLeft / w);
-  if (i !== PG){ PG = i; fillPages(i); updatePager(); const hint = $("swipeHint"); if (hint) hint.remove(); }
+  if (i !== PG){ PG = i; fillPages(i); updatePager(); $("swipeHint")?.remove(); }
 }, true);
 $("news").addEventListener("keydown", e => {
   if (e.target.id !== "track") return;
   if (e.key === "ArrowRight"){ e.preventDefault(); goPage(PG + 1); }
   if (e.key === "ArrowLeft"){ e.preventDefault(); goPage(PG - 1); }
 });
-$("enewsAll").addEventListener("click", openModal);
-$("mClose").addEventListener("click", closeModal);
-$("modal").addEventListener("click", e => { if (e.target.id === "modal") closeModal(); });
-addEventListener("keydown", e => { if (e.key === "Escape" && !$("modal").hidden) closeModal(); });
-$("mPeriod").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if (b){ M.period = +b.dataset.p; renderModal(); } });
-$("mTopics").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (b){ M.topic = b.dataset.t; renderModal(); } });
-$("kpis").addEventListener("click", e => { const k = e.target.closest("[data-id]"); if (k){ S.chart = KPI_CHART[k.dataset.id]; renderEcon(); } });
+document.addEventListener("click", e => {
+  const k = e.target.closest(".kpi[data-id]"); if (!k) return;
+  S.chart = KPI_CHART[k.dataset.id];
+  if (S.view !== "econ") go("econ"); else renderEcon();
+});
 $("range").addEventListener("click", e => { const b = e.target.closest("[data-r]"); if (b){ S.range = +b.dataset.r; drawChart(); } });
 $("chart").addEventListener("pointermove", chartHover);
 $("chart").addEventListener("pointerleave", hideTip);
-addEventListener("hashchange", () => { readHash(); S.shown = 40; S.jobShown = 15; render(); });  // 공유받은 #bank=… 링크를 열었을 때
-let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => ECON?.series && CH && drawChart(), 150); });
+$("mPeriod").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if (b){ M.period = +b.dataset.p; M.shown = 40; renderMacro(); } });
+$("mTopics").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (b){ M.topic = b.dataset.t; M.shown = 40; renderMacro(); } });
+$("mList").addEventListener("click", e => { if (e.target.id === "mMore"){ M.shown = (M.shown || 40) + 40; renderMacro(); } });
+let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => S.view === "econ" && ECON?.series && CH && drawChart(), 150); });
+addEventListener("hashchange", () => { readHash(); S.jobShown = 15; render(); });
+
+/* 테마 버튼: 지금 보이는 것과 반대로 고정 */
+$("themeBtn").addEventListener("click", () => setPref("theme", isDark() ? "light" : "dark"));
+/* 설정 패널 */
+$("setBtn").addEventListener("click", openSettings);
+addEventListener("keydown", e => { if (e.key === "Escape" && !$("settings").hidden) closeSettings(); });
+$("prefTheme").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) setPref("theme", b.dataset.v); });
+$("prefFont").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) setPref("font", b.dataset.v); });
+$("prefAccent").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) setPref("accent", b.dataset.v); });
+$("prefStart").addEventListener("change", e => setPref("start", e.target.value));
+$("prefFav").addEventListener("click", e => {
+  const b = e.target.closest("[data-fav]"); if (!b) return;
+  const id = b.dataset.fav;
+  setPref("fav", P.fav.includes(id) ? P.fav.filter(x => x !== id) : [...P.fav, id]);
+});
+document.querySelectorAll("[data-pref]").forEach(i => i.addEventListener("change", () => setPref(i.dataset.pref, i.checked)));
+document.querySelectorAll("[data-home]").forEach(i => i.addEventListener("change", () => setPref("home", {...P.home, [i.dataset.home]: i.checked})));
+$("prefReset").addEventListener("click", () => { if (!confirm("설정을 처음 상태로 되돌릴까요?")) return; P = JSON.parse(JSON.stringify(DEFAULT_P)); setPref("theme", "system"); });
+
 /* ================= 앱 설치 (PWA) ================= */
 const UA = navigator.userAgent;
 const isStandalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
@@ -853,6 +1125,7 @@ $("installBtn").addEventListener("click", async () => {
 $("tipClose").addEventListener("click", () => { $("installTip").hidden = true; });
 if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 
+syncThemeUI();
 load();
 </script>
 </body>

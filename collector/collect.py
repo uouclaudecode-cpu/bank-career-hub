@@ -200,7 +200,8 @@ def short_desc(text: str, limit: int = 160) -> str:
     if not truncated and len(t) <= limit:
         return t
     cut = t[:limit]
-    ends = [m.end() for m in re.finditer(r"(다|요|음|함|됨|임|까)[.!?]|[!?](?=\s|$)|\.(?=\s|$)", cut)]
+    # 문장 끝: '~다.' 등, 또는 공백 앞의 마침표 하나 (문장 중간의 '...'는 문장 끝이 아니다)
+    ends = [m.end() for m in re.finditer(r"(다|요|음|함|됨|임|까)[.!?](?!\.)|[!?](?=\s|$)|(?<!\.)\.(?=\s|$)", cut)]
     if ends and ends[-1] >= 20:
         return cut[: ends[-1]].strip()
     return (cut[: cut.rfind(" ")] if " " in cut else cut).strip() + "…"

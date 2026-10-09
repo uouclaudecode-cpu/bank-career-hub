@@ -5,7 +5,7 @@
   python collector/collect.py --backfill   # 최초 1회: 최근 6개월 뉴스를 주 단위로 채움
 
 환경변수 (모두 선택. 없으면 해당 소스만 건너뜀)
-  NAVER_CLIENT_ID / NAVER_CLIENT_SECRET   네이버 검색 API (뉴스)
+  NAVER_CLIENT_ID / NAVER_CLIENT_SECRET   네이버 검색 API (뉴스 + 기사 앞부분 요약문 desc. 처음 등록 후 첫 실행은 지난 기사까지 깊게 수집)
   SARAMIN_ACCESS_KEY                      사람인 오픈API (채용공고)
   ECOS_API_KEY                            한국은행 ECOS 오픈API (경제지표)
   DATA_GO_KR_KEY                          공공데이터포털 '공공기관 채용정보' API (잡알리오: 기업·산업·수출입은행)

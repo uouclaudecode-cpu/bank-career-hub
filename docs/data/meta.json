@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-09T22:28:08.090885+09:00",
+ "updated": "2026-10-09T22:37:44.850968+09:00",
  "sources": {
   "google_news": true,
   "naver": true,
@@ -8,10 +8,23 @@
   "alio": true
  },
  "naver_status": {
-  "requests": 30,
-  "items": 0,
-  "kept": 0,
-  "error": "HTTP 401 024 NID AUTH Result Invalid (1000) : Authentication failed. (인증에 실패했습니다.)"
+  "requests": 265,
+  "items": 26500,
+  "kept": 8169,
+  "error": "",
+  "mode": "hub",
+  "fields": [
+   "display",
+   "items",
+   "lastBuildDate",
+   "start",
+   "total",
+   "description",
+   "link",
+   "originallink",
+   "pubDate",
+   "title"
+  ]
  },
  "banks": [
   {

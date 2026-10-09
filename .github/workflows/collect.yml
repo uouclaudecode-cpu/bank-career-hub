@@ -30,6 +30,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main   # 기다리는 사이 다른 수집이 데이터를 올렸을 수 있으니, 실행 시점의 최신 main에서 시작
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -50,5 +52,6 @@ jobs:
           git diff --cached --quiet && exit 0
           git commit -m "data: $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M') 수집"
           # 수집하는 동안 main에 다른 커밋이 올라왔으면 그 위에 얹어서 올린다
-          git pull --rebase origin main
+          # 그래도 겹치면 방금 수집한 데이터(내 커밋)를 우선한다. 리베이스에서 -X theirs = 다시 얹는 내 커밋 쪽
+          git pull --rebase -X theirs origin main
           git push

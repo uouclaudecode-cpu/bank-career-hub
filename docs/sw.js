@@ -2,7 +2,7 @@
    - 화면(index.html)과 데이터(data/*.json): 네트워크 먼저, 실패하면 저장해 둔 것
    - 아이콘 등 나머지 같은 사이트 파일: 저장해 둔 것 먼저
    화면 구조를 바꿔 배포할 때 VERSION을 올리면 예전 저장본이 지워진다. */
-const VERSION = "hbank-v2";
+const VERSION = "hbank-v3";
 const SHELL = ["./", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png"];
 
 self.addEventListener("install", e => {

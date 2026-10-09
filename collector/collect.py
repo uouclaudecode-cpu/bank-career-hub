@@ -10,7 +10,7 @@
   ECOS_API_KEY                            한국은행 ECOS 오픈API (경제지표)
   DATA_GO_KR_KEY                          공공데이터포털 '공공기관 채용정보' API (잡알리오: 기업·산업·수출입은행)
 
-결과물: docs/data/news.json, jobs.json, econ.json, meta.json
+결과물: docs/data/news-recent.json(최근 8일), news-archive.json(그 이전), jobs.json, econ.json, meta.json
 뉴스는 매번 기존 파일에 누적 저장되고, 183일이 지난 기사는 자동 삭제된다.
 """
 from __future__ import annotations
@@ -94,6 +94,17 @@ def load_json(path: Path, default):
 def save_json(path: Path, obj):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(obj, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
+def save_rows(path: Path, rows: list[dict]):
+    """뉴스처럼 큰 목록: 한 줄에 기사 하나씩, 공백 없이 저장 (파일 크기↓, git 변경 내역은 기사 단위로 보임)"""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    body = ",\n".join(json.dumps(r, ensure_ascii=False, separators=(",", ":")) for r in rows)
+    path.write_text("[\n" + body + "\n]\n", encoding="utf-8")
+
+
+# 사이트가 처음 열릴 때 받는 '최근' 뉴스 범위(일). 나머지는 news-archive.json으로 나눠서 나중에 받는다.
+RECENT_DAYS = 8
 
 
 def clean(text: str) -> str:
@@ -553,8 +564,10 @@ def main():
     args = ap.parse_args()
 
     banks = json.loads((ROOT / "banks.json").read_text(encoding="utf-8"))
-    news_path, jobs_path = DATA / "news.json", DATA / "jobs.json"
-    old_news = load_json(news_path, [])
+    jobs_path = DATA / "jobs.json"
+    recent_path, archive_path, legacy_path = DATA / "news-recent.json", DATA / "news-archive.json", DATA / "news.json"
+    # 예전 한 파일(news.json)도 읽어서 옮겨 담는다 (처음 한 번)
+    old_news = load_json(recent_path, []) + load_json(archive_path, []) + load_json(legacy_path, [])
     old_jobs = load_json(jobs_path, [])
 
     fresh: list[dict] = []
@@ -586,7 +599,16 @@ def main():
     fresh += naver_news(MACRO, pages=1)
 
     news = merge_news(old_news, fresh)
-    save_json(news_path, news)
+    split = (NOW - timedelta(days=RECENT_DAYS)).isoformat()
+    recent = [n for n in news if n["date"] >= split]
+    archive = [n for n in news if n["date"] < split]
+    for n in news:
+        n.pop("econ", None)  # 사이트에서 쓰지 않는 값이라 저장하지 않음
+    save_rows(recent_path, recent)
+    save_rows(archive_path, archive)
+    if legacy_path.exists():
+        legacy_path.unlink()
+    log(f"  뉴스 파일: 최근 {RECENT_DAYS}일 {len(recent)}건 / 나머지 {len(archive)}건")
 
     # 채용공고: 마감되지 않은 것만. 사람인 키가 없으면 기존 파일 유지
     # 채용공고: 마감 전(또는 상시) 공고만, 링크 기준 중복 제거, 마감 임박 순

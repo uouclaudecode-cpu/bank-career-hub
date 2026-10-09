@@ -190,6 +190,7 @@ def short_desc(text: str, limit: int = 160) -> str:
 
     # 네이버 요약은 정해진 길이에서 잘려 '...'(점 세 개)로 끝난다 → 마지막으로 끝난 문장까지만 남긴다.
     # 이 함수가 단어 단위로 자른 결과는 '…'(한 글자)로 끝나므로, 다음 실행 때 다시 깎이지 않게 그대로 둔다.
+    t = re.sub(r"\.{2,}\s*…$", "...", t)  # 예전 규칙으로 저장된 '...…' 꼴은 네이버가 자른 것으로 본다
     if t.endswith("…") and len(t) <= limit + 1:
         return t
     truncated = bool(re.search(r"\.{2,}\s*$", t))

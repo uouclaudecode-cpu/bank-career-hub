@@ -617,6 +617,10 @@ def merge_news(old: list[dict], new: list[dict]) -> list[dict]:
             continue
         if SPAM_RE.search(n["title"]):  # 은행 이름을 끼워 넣은 도박 광고 글
             continue
+        # 거시경제 뉴스는 제목에 검색어 단어(환율·금리·물가 등)가 있는 것만 (본문에만 나온 엉뚱한 기사 제외)
+        topic_words = [w for w in (n.get("topic") or "").split() if len(w) >= 2]
+        if n["bank"] == "macro" and topic_words and not any(w in n["title"] for w in topic_words):
+            continue
         k = (n["bank"], norm_key(n["title"]))
         if k in seen:
             continue

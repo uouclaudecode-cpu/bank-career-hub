@@ -48,7 +48,7 @@ const ACCENTS = {
   teal:   ["#0b8a8a", "#33c3c3", "청록"],
 };
 const DEFAULT_P = {theme: "system", accent: "blue", font: "m", fav: [], homeFav: false,
-                   homeKpis: ["base", "ktb3", "bankb", "usdkrw", "kospi", "gold"], econHide: [],
+                   homeKpis: ["base", "ktb3", "bankb", "usdkrw", "kospi", "gold"], econHide: [], showDesc: true,
                    home: {jobs: true, news: true, econ: true, enews: true}, hidePT: true, start: "home"};
 function loadPrefs(){
   try {
@@ -256,6 +256,11 @@ main{padding-top:20px;padding-bottom:40px}
 .top .ni:nth-child(-n+3) .rk{color:var(--brand)}
 .ni a{font-weight:600;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .ni a:hover{color:var(--brand)}
+.ni .desc{margin:4px 0 0;color:var(--sub);font-size:.86rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.st-what{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 15px}
+.st-what b{display:block;font-size:.8rem;color:var(--faint);margin-bottom:4px}
+.st-what p{margin:0;line-height:1.6}
+.st-what small{display:block;margin-top:6px;color:var(--faint);font-size:.74rem}
 .rel{font-size:.74rem;font-weight:700;color:var(--brand);background:var(--brand-soft);border-radius:6px;padding:0 6px}
 .swipe-hint{font-size:.8rem;color:var(--faint);text-align:center;margin-top:8px}
 
@@ -544,6 +549,11 @@ footer b{color:var(--sub)}
     <div class="set-group">
       <div class="fav-grid" id="prefFav"></div>
       <div class="set-row"><span>홈에는 관심 은행 소식만<small>공고와 주요 뉴스를 관심 은행으로 좁혀요</small></span><span class="sw"><input type="checkbox" data-pref="homeFav"><span></span></span></div>
+    </div>
+
+    <div class="set-title">뉴스</div>
+    <div class="set-group">
+      <div class="set-row"><span>뉴스 요약 보기<small>제목 아래에 기사 앞부분 요약(네이버 뉴스 제공)을 보여 줘요</small></span><span class="sw"><input type="checkbox" data-pref="showDesc"><span></span></span></div>
     </div>
 
     <div class="set-title">홈에 보일 카드</div>
@@ -841,11 +851,16 @@ function newsItem(g, rank, showBank = S.bank !== "all" ? BANK[S.bank] == null : 
     `<span>${esc(x.source)} · ${when}</span>`,
     g.items.length > 1 ? `<span class="rel" title="${esc(sources.slice(0, 12).join(", "))}">관련 기사 ${g.items.length}</span>` : "",
   ].filter(Boolean).join("");
-  return `<li class="ni"><span class="rk">${rank}</span><div><a href="${href(x.link)}" target="_blank" rel="noopener" data-story="${storyId(g)}">${esc(x.title)}</a><div class="meta">${bits}</div></div></li>`;
+  return `<li class="ni"><span class="rk">${rank}</span><div><a href="${href(x.link)}" target="_blank" rel="noopener" data-story="${storyId(g)}">${esc(x.title)}</a>${P.showDesc && storyDesc(g) ? `<p class="desc">${esc(storyDesc(g).text)}</p>` : ""}<div class="meta">${bits}</div></div></li>`;
 }
 
 /* ================= 소식 카드: 같은 소식의 여러 언론 제목·핵심 키워드 (본문은 가져오지 않음) ================= */
 const STORIES = []; const STORY_ID = new WeakMap();
+function storyDesc(g){
+  if (g._desc !== undefined) return g._desc;
+  const x = g.head.desc ? g.head : g.items.find(y => y.desc);
+  return (g._desc = x ? {text: x.desc, source: x.source, link: x.link} : null);
+}
 const storyId = g => { if (!STORY_ID.has(g)){ STORY_ID.set(g, STORIES.length); STORIES.push(g); } return STORY_ID.get(g); };
 function keywords(g){
   const cnt = new Map();
@@ -868,6 +883,7 @@ function openStory(id){
     <div class="st-meta">${b ? `<span class="bk" style="${cvars(b.id)}">${esc(b.name)}</span>` : ""}<span>${esc(catName(g.cat))}</span>${g.items.length > 1 ? `<span class="rel">${sources.length}개 언론 보도</span>` : ""}</div>
     <h3 class="st-title" id="stTitle">${esc(x.title)}</h3>
     <div class="st-when">${esc(x.source)} · ${fullTime(x.ts)}${g.items.length > 1 && first < x.ts - 36e5 ? ` · 처음 보도 ${fullTime(first)}` : ""}</div>
+    ${storyDesc(g) ? `<div class="st-what"><b>📌 무슨 일?</b><p>${esc(storyDesc(g).text)}</p><small>${esc(storyDesc(g).source)} 기사 앞부분 · 네이버 뉴스 제공</small></div>` : ""}
     ${kw.length ? `<div class="st-sec"><h3>핵심 키워드</h3><div class="kw">${kw.map(w => `<span>${esc(w)}</span>`).join("")}</div></div>` : ""}
     ${others.length ? `<div class="st-sec"><h3>다른 언론은 이렇게 썼어요</h3><ul class="heads">${others.map(y => `<li><a href="${href(y.link)}" target="_blank" rel="noopener"><b>${esc(y.title)}</b><small>${esc(y.source)} · ${relTime(y.ts)} ↗</small></a></li>`).join("")}</ul></div>` : ""}
     ${sources.length > 1 ? `<div class="st-sec"><h3>보도한 곳 ${sources.length}곳</h3><div class="srcs">${sources.slice(0, 20).map(esc).join(" · ")}${sources.length > 20 ? ` 외 ${sources.length - 20}곳` : ""}</div></div>` : ""}

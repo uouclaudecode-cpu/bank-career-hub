@@ -170,6 +170,18 @@ def google_news(bank: dict, extra: str, query: str | None = None, topic: str = "
 
 
 # ---------------------------------------------------------------- 뉴스: 네이버 검색 API (선택)
+def short_desc(text: str, limit: int = 160) -> str:
+    """네이버 검색 결과의 기사 요약문을 정리: 태그·공백 정리 후 limit자 안에서 문장/단어 단위로 자른다"""
+    t = re.sub(r"\s+", " ", clean(text)).strip()
+    if len(t) <= limit:
+        return t
+    cut = t[:limit]
+    end = max(cut.rfind(". "), cut.rfind("다. "), cut.rfind("요. "))
+    if end >= limit * 0.6:
+        return cut[: end + 1].strip()
+    return cut[: cut.rfind(" ")].strip() + "…" if " " in cut else cut + "…"
+
+
 def naver_news(bank: dict, pages: int = 3) -> list[dict]:
     cid, sec = os.getenv("NAVER_CLIENT_ID"), os.getenv("NAVER_CLIENT_SECRET")
     if not (cid and sec):
@@ -189,13 +201,19 @@ def naver_news(bank: dict, pages: int = 3) -> list[dict]:
                 break
             for it in items:
                 title = clean(it["title"])
-                if not mentions(bank, title + clean(it.get("description", ""))):
+                if not mentions(bank, title):  # 구글 뉴스와 같이, 제목에 은행명이 있는 기사만
                     continue
                 dt = email.utils.parsedate_to_datetime(it["pubDate"]).astimezone(KST)
                 link = it.get("originallink") or it["link"]
                 host = urllib.parse.urlparse(link).netloc.replace("www.", "")
-                out.append({"bank": bank["id"], "title": title, "source": host,
-                            "link": link, "date": dt.isoformat(), "via": "naver"})
+                row = {"bank": bank["id"], "title": title, "source": host,
+                       "link": link, "date": dt.isoformat(), "via": "naver"}
+                desc = short_desc(it.get("description", ""))
+                if desc:
+                    row["desc"] = desc  # 네이버가 주는 기사 앞부분 요약 (사이트에서 '무슨 일?'로 보여 줌)
+                if not bank["aliases"]:
+                    row["topic"] = alias  # 거시경제 뉴스는 검색어가 주제
+                out.append(row)
             if len(items) < 100:
                 break
             time.sleep(0.1)
@@ -579,6 +597,10 @@ def main():
     # 예전 한 파일(news.json)도 읽어서 옮겨 담는다 (처음 한 번)
     old_news = load_json(recent_path, []) + load_json(archive_path, []) + load_json(legacy_path, [])
     old_jobs = load_json(jobs_path, [])
+    # 네이버 키를 처음 등록한 뒤 첫 실행이면 지난 기사(요약문 포함)까지 깊게 받는다 (검색어당 최대 1,000건)
+    naver_deep = args.backfill or not any(n.get("via") == "naver" for n in old_news)
+    if naver_deep and os.getenv("NAVER_CLIENT_ID"):
+        log("· 네이버: 처음 실행이라 지난 기사까지 받습니다")
 
     fresh: list[dict] = []
     jobs: list[dict] = []
@@ -594,7 +616,7 @@ def main():
         else:
             fresh += google_news(b, "when:7d")
             fresh += google_news(b, "채용 when:30d")  # 채용 기사는 따로 한 번 더
-        fresh += naver_news(b, pages=10 if args.backfill else 2)
+        fresh += naver_news(b, pages=10 if naver_deep else 2)
         got, ok = bank_jobs(b)
         if not ok:  # 수집 실패한 은행은 이전 공고를 유지
             got += [j for j in old_jobs if j["bank"] == b["id"]]
@@ -606,7 +628,7 @@ def main():
     for q in MACRO["queries"]:
         fresh += google_news(MACRO, "when:30d" if args.backfill else "when:7d", query=f'"{q}"', topic=q)
         time.sleep(0.3)
-    fresh += naver_news(MACRO, pages=1)
+    fresh += naver_news(MACRO, pages=5 if naver_deep else 1)
 
     news = merge_news(old_news, fresh)
     split = (NOW - timedelta(days=RECENT_DAYS)).isoformat()

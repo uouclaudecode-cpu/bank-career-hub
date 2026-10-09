@@ -1,11 +1,17 @@
 {
- "updated": "2026-10-09T22:25:27.694831+09:00",
+ "updated": "2026-10-09T22:28:08.090885+09:00",
  "sources": {
   "google_news": true,
   "naver": true,
   "saramin": false,
   "ecos": true,
   "alio": true
+ },
+ "naver_status": {
+  "requests": 30,
+  "items": 0,
+  "kept": 0,
+  "error": "HTTP 401 024 NID AUTH Result Invalid (1000) : Authentication failed. (인증에 실패했습니다.)"
  },
  "banks": [
   {

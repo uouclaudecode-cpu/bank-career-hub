@@ -48,11 +48,12 @@ const ACCENTS = {
   teal:   ["#0b8a8a", "#33c3c3", "청록"],
 };
 const DEFAULT_P = {theme: "system", accent: "blue", font: "m", fav: [], homeFav: false,
+                   homeKpis: ["base", "ktb3", "bankb", "usdkrw", "kospi", "gold"],
                    home: {jobs: true, news: true, econ: true, enews: true}, hidePT: true, start: "home"};
 function loadPrefs(){
   try {
     const v = JSON.parse(localStorage.getItem("hbank:prefs") || "null");
-    if (v) return {...DEFAULT_P, ...v, home: {...DEFAULT_P.home, ...(v.home || {})}, fav: Array.isArray(v.fav) ? v.fav : []};
+    if (v) return {...DEFAULT_P, ...v, home: {...DEFAULT_P.home, ...(v.home || {})}, fav: Array.isArray(v.fav) ? v.fav : [], homeKpis: Array.isArray(v.homeKpis) ? v.homeKpis : DEFAULT_P.homeKpis};
   } catch (e) {}
   return JSON.parse(JSON.stringify(DEFAULT_P));
 }
@@ -75,7 +76,7 @@ let P = loadPrefs(); applyPrefs(P);
   --brand:var(--brand-l);
   --up:#e5344a; --down:#2f6fe4;             /* 한국식: 상승 빨강, 하락 파랑 */
   --warn:#e8590c; --warn-soft:#fff2e8;
-  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; /* 차트 계열색 */
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#8a5cd6; /* 차트 계열색 */
   --shadow:0 1px 3px rgba(16,24,40,.05);
   --radius:18px;
   color-scheme:light;
@@ -86,7 +87,7 @@ let P = loadPrefs(); applyPrefs(P);
     --line:#272b32; --line-soft:#20242a; --grid:#22262c; --hover:#1c2026; --chip:#22262c;
     --brand:var(--brand-d);
     --up:#ff6b7d; --down:#6aa1ff; --warn:#ff8f4d; --warn-soft:#3a2416;
-    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --shadow:none; color-scheme:dark;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#a283e8; --shadow:none; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
@@ -94,7 +95,7 @@ let P = loadPrefs(); applyPrefs(P);
   --line:#272b32; --line-soft:#20242a; --grid:#22262c; --hover:#1c2026; --chip:#22262c;
   --brand:var(--brand-d);
   --up:#ff6b7d; --down:#6aa1ff; --warn:#ff8f4d; --warn-soft:#3a2416;
-  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --shadow:none; color-scheme:dark;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#a283e8; --shadow:none; color-scheme:dark;
 }
 :root{--brand-soft:color-mix(in srgb, var(--brand) 12%, var(--panel))}
 
@@ -284,10 +285,14 @@ button.kpi:hover{border-color:var(--faint)}
 .spark{fill:none;stroke:var(--faint);stroke-width:1.5}
 .kpi[aria-pressed=true] .spark{stroke:var(--brand)}
 .spark-end{fill:var(--ink)}
-.kpis.mini{grid-template-columns:repeat(3,minmax(0,1fr))}
-.kpis.mini .kpi{padding:12px 14px}
-.kpis.mini .kpi svg{display:none}
-.kpis.mini .kpi .v{font-size:1.15rem}
+/* 홈 맨 위 지표 줄: PC는 한 줄 격자, 휴대폰은 옆으로 넘기기 */
+.kpis.strip{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:14px}
+.kgroup{margin:18px 0 8px;font-size:.85rem;font-weight:700;color:var(--faint);display:flex;align-items:baseline;gap:8px}
+.kgroup:first-child{margin-top:0}
+.kgroup small{font-weight:500}
+.kpi-pick{display:flex;flex-wrap:wrap;gap:6px;padding:12px 0}
+.kpi-pick button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:5px 11px;font-size:.84rem;font-weight:600;color:var(--sub)}
+.kpi-pick button[aria-pressed=true]{border-color:var(--brand);background:var(--brand-soft);color:var(--ink)}
 .chart-card{position:relative;margin-top:14px}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem;color:var(--sub);margin:4px 0 2px}
 .legend i{display:inline-block;width:14px;height:2px;border-radius:1px;vertical-align:middle;margin-right:5px}
@@ -306,7 +311,12 @@ button.kpi:hover{border-color:var(--faint)}
 .econ-empty{border:1px dashed var(--line);border-radius:var(--radius);padding:16px;color:var(--sub);font-size:.92rem}
 .src-note{font-size:.78rem;color:var(--faint)}
 @media (max-width:1000px){ .kpis{grid-template-columns:repeat(3,minmax(0,1fr))} }
-@media (max-width:520px){ .kpis,.kpis.mini{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px} }
+@media (max-width:520px){
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .kpis.strip{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-left:-16px;margin-right:-16px;padding:2px 16px}
+  .kpis.strip::-webkit-scrollbar{display:none}
+  .kpis.strip .kpi{flex:0 0 46%;scroll-snap-align:start}
+}
 
 /* 경제 뉴스 목록 */
 .enews{list-style:none;margin:0;padding:0}
@@ -420,6 +430,7 @@ footer b{color:var(--sub)}
     <div class="view-head">
       <div><h1 id="hello">오늘의 은행 취업 소식</h1><p id="updated">불러오는 중…</p></div>
     </div>
+    <div class="kpis strip" id="homeKpis" aria-label="주요 경제 지표"></div>
     <div class="stats" id="stats"></div>
     <div class="home-grid">
       <div class="card" id="homeJobsCard">
@@ -429,10 +440,6 @@ footer b{color:var(--sub)}
       <div class="card" id="homeNewsCard">
         <div class="card-head"><h2>주요 뉴스 <small id="homeNewsSub"></small></h2><button class="more-link" type="button" data-go="news">더 보기 →</button></div>
         <ol class="npage top" id="homeNews"><li class="empty">불러오는 중…</li></ol>
-      </div>
-      <div class="card" id="homeEconCard">
-        <div class="card-head"><h2>경제 지표 <small id="homeEconSub"></small></h2><button class="more-link" type="button" data-go="econ">그래프 →</button></div>
-        <div class="kpis mini" id="homeKpis"></div>
       </div>
       <div class="card" id="homeEnewsCard">
         <div class="card-head"><h2>경제 뉴스</h2><button class="more-link" type="button" data-go="econ">더 보기 →</button></div>
@@ -483,7 +490,7 @@ footer b{color:var(--sub)}
   <section class="wrap" data-view="econ" hidden>
     <div class="view-head"><div><h1>경제</h1><p id="econSrc">한국은행 ECOS</p></div></div>
     <div id="econBody">
-      <div class="kpis" id="kpis"></div>
+      <div id="kpis"></div>
       <div class="card chart-card" id="chartCard">
         <div class="card-head">
           <h2 id="chartTitle">금리 추이</h2>
@@ -543,9 +550,12 @@ footer b{color:var(--sub)}
     <div class="set-group">
       <div class="set-row"><span>마감 임박 공고</span><span class="sw"><input type="checkbox" data-home="jobs"><span></span></span></div>
       <div class="set-row"><span>주요 뉴스</span><span class="sw"><input type="checkbox" data-home="news"><span></span></span></div>
-      <div class="set-row"><span>경제 지표</span><span class="sw"><input type="checkbox" data-home="econ"><span></span></span></div>
+      <div class="set-row"><span>경제 지표 (맨 위)</span><span class="sw"><input type="checkbox" data-home="econ"><span></span></span></div>
       <div class="set-row"><span>경제 뉴스</span><span class="sw"><input type="checkbox" data-home="enews"><span></span></span></div>
     </div>
+
+    <div class="set-title">홈 맨 위에 보일 지표 <span id="kpiCount"></span></div>
+    <div class="set-group"><div class="kpi-pick" id="prefKpis"></div></div>
 
     <div class="set-title">채용공고</div>
     <div class="set-group">
@@ -621,6 +631,10 @@ function renderSettings(){
   $("prefStart").value = P.start;
   $("prefFav").innerHTML = META.banks.map(b => `<button type="button" data-fav="${esc(b.id)}" style="${cvars(b.id)}" aria-pressed="${P.fav.includes(b.id)}"><span class="dot"></span>${esc(b.name)}<span class="st">★</span></button>`).join("");
   $("favCount").textContent = P.fav.length ? `· ${P.fav.length}곳` : "";
+  const ser = ECON?.series || {};
+  $("prefKpis").innerHTML = ECON_GROUPS.flatMap(g => g.ids).filter(id => ser[id]).map(id =>
+    `<button type="button" data-kpi="${id}" aria-pressed="${P.homeKpis.includes(id)}">${esc(ser[id].name)}</button>`).join("") || `<span class="muted">경제지표를 불러오면 고를 수 있어요</span>`;
+  $("kpiCount").textContent = `· ${P.homeKpis.filter(id => ser[id]).length}개`;
   document.querySelectorAll("[data-pref]").forEach(i => { i.checked = !!P[i.dataset.pref]; });
   document.querySelectorAll("[data-home]").forEach(i => { i.checked = !!P.home[i.dataset.home]; });
 }
@@ -929,21 +943,33 @@ function goPage(i){
 }
 
 /* ================= 경제 지표 ================= */
-const FMT = {"%": v => v.toFixed(2), "원": v => v.toLocaleString("ko-KR",{maximumFractionDigits:1}), "pt": v => v.toLocaleString("ko-KR",{maximumFractionDigits:2})};
-const fmt = (v, u) => (FMT[u] || (x => x))(v);
+const FMT = {"%": v => v.toFixed(2), "원": v => v.toLocaleString("ko-KR",{maximumFractionDigits:1}), "pt": v => v.toLocaleString("ko-KR",{maximumFractionDigits:2}),
+             "$/oz": v => v.toLocaleString("ko-KR",{maximumFractionDigits:1}), "$/배럴": v => v.toFixed(2)};
+const fmt = (v, u) => (FMT[u] || (x => x.toLocaleString("ko-KR",{maximumFractionDigits:2})))(v);
+const C4 = ["var(--s1)","var(--s2)","var(--s3)","var(--s4)"];
 const CHARTS = {
-  rates: {title:"금리 추이", ids:["base","ktb3","cd91"], colors:["var(--s1)","var(--s2)","var(--s3)"], step:{base:true}, unit:"%"},
-  usdkrw:{title:"원/달러 환율", ids:["usdkrw"], colors:["var(--s1)"], unit:"원"},
-  kospi: {title:"코스피", ids:["kospi"], colors:["var(--s1)"], unit:"pt"},
-  cpi:   {title:"소비자물가 상승률 (전년동월비)", ids:["cpi"], colors:["var(--s1)"], unit:"%"},
+  rates: {title:"기준금리·단기금리", ids:["base","cd91"], colors:C4, step:{base:true}, unit:"%"},
+  bonds: {title:"채권 금리 (국고채·은행채·회사채)", ids:["ktb3","ktb10","bankb","corp3"], colors:C4, unit:"%"},
+  fx:    {title:"환율", ids:["usdkrw","jpykrw"], colors:C4, unit:"원"},
+  kospi: {title:"코스피", ids:["kospi"], colors:C4, unit:"pt"},
+  kosdaq:{title:"코스닥", ids:["kosdaq"], colors:C4, unit:"pt"},
+  gold:  {title:"금 국제가격 (월평균, 달러/트로이온스)", ids:["gold"], colors:C4, unit:"$/oz"},
+  wti:   {title:"국제유가 WTI (월평균, 달러/배럴)", ids:["wti"], colors:C4, unit:"$/배럴"},
+  cpi:   {title:"소비자물가 상승률 (전년동월비)", ids:["cpi"], colors:C4, unit:"%"},
 };
-const KPI_CHART = {base:"rates", ktb3:"rates", cd91:"rates", usdkrw:"usdkrw", kospi:"kospi", cpi:"cpi"};
+const KPI_CHART = {base:"rates", cd91:"rates", ktb3:"bonds", ktb10:"bonds", bankb:"bonds", corp3:"bonds",
+                   usdkrw:"fx", jpykrw:"fx", kospi:"kospi", kosdaq:"kosdaq", gold:"gold", wti:"wti", cpi:"cpi"};
+const ECON_GROUPS = [
+  {name:"금리", ids:["base","ktb3","ktb10","bankb","corp3","cd91"]},
+  {name:"환율·주식", ids:["usdkrw","jpykrw","kospi","kosdaq"]},
+  {name:"원자재·물가", note:"금·유가는 월평균", ids:["gold","wti","cpi"]},
+];
 function valueAt(points, t){ let v = null; for (const [d, x] of points){ if (Date.parse(d) <= t) v = x; else break; } return v; }
 const econOrder = () => { const ser = ECON?.series || {}; return (ECON?.order || Object.keys(ser)).filter(id => ser[id]?.points?.length); };
 
-function kpiTiles(spark){
+function kpiTiles(ids, pressable){
   const ser = ECON.series;
-  return econOrder().map(id => {
+  return ids.filter(id => ser[id]?.points?.length).map(id => {
     const s = ser[id], pts = s.points, [d, v] = pts.at(-1);
     const monthly = s.freq === "M";
     const prev = monthly ? pts.at(-2)?.[1] : valueAt(pts, Date.parse(d) - 30 * DAY);
@@ -951,10 +977,10 @@ function kpiTiles(spark){
     const unitDiff = s.unit === "%" ? "%p" : s.unit, when = monthly ? "전월 대비" : "1개월 전 대비";
     const cls = !diff ? "" : diff > 0 ? "up" : "down", arrow = !diff ? "–" : diff > 0 ? "▲" : "▼";
     const dTxt = diff == null ? "" : Math.abs(diff) < 1e-9 ? `변동 없음 · ${when}` : `<span class="${cls}">${arrow} ${fmt(Math.abs(diff), s.unit)}${unitDiff}</span> ${when}`;
-    return `<button class="kpi" type="button" data-id="${id}" aria-pressed="${spark && KPI_CHART[id] === S.chart}">
+    return `<button class="kpi" type="button" data-id="${id}" aria-pressed="${pressable && KPI_CHART[id] === S.chart}">
       <div class="k">${esc(s.name)}</div>
       <div class="v num">${fmt(v, s.unit)}<small>${s.unit}</small></div>
-      <div class="d num">${dTxt}</div>${spark ? sparkline(pts, monthly ? 24 : 365) : ""}</button>`;
+      <div class="d num">${dTxt}</div>${sparkline(pts, monthly ? 24 : 365)}</button>`;
   }).join("");
 }
 function econDate(){
@@ -966,7 +992,10 @@ function renderEcon(){
     $("econBody").innerHTML = `<div class="econ-empty">경제지표가 아직 없어요. 한국은행 ECOS 오픈API 키를 ECOS_API_KEY로 등록하면 기준금리·국고채·CD·환율·코스피·물가가 표시돼요.</div>`;
   } else {
     $("econSrc").textContent = `한국은행 ECOS · ${econDate()} · 카드를 누르면 그래프가 바뀌어요`;
-    $("kpis").innerHTML = kpiTiles(true);
+    const ser = ECON.series;
+    $("kpis").innerHTML = ECON_GROUPS.filter(g => g.ids.some(id => ser[id])).map(g =>
+      `<div class="kgroup">${g.name}${g.note ? ` <small>${g.note}</small>` : ""}</div><div class="kpis">${kpiTiles(g.ids, true)}</div>`).join("");
+    if (!CHARTS[S.chart].ids.some(id => ser[id])) S.chart = "rates";
     drawChart();
   }
   renderMacro();
@@ -1120,7 +1149,7 @@ function renderHome(){
 
   $("homeJobsCard").hidden = !P.home.jobs;
   $("homeNewsCard").hidden = !P.home.news;
-  $("homeEconCard").hidden = !P.home.econ || !ECON?.series;
+  $("homeKpis").hidden = !P.home.econ || !ECON?.series || !P.homeKpis.some(id => ECON.series[id]);
   $("homeEnewsCard").hidden = !P.home.enews;
 
   const soonSorted = [...soon].sort((a, b) => (a.deadline || "").localeCompare(b.deadline || ""));
@@ -1132,7 +1161,7 @@ function renderHome(){
   $("homeNewsSub").textContent = "최근 1주";
   $("homeNews").innerHTML = top.length ? top.map((g, i) => newsItem(g, i + 1, true, true)).join("") : `<li class="empty">기사가 없어요.</li>`;
 
-  if (ECON?.series && econOrder().length){ $("homeKpis").innerHTML = kpiTiles(false); $("homeEconSub").textContent = econDate(); }
+  if (ECON?.series && econOrder().length) $("homeKpis").innerHTML = kpiTiles(P.homeKpis, false);
   $("homeEnews").innerHTML = pickMacro(4).map(macroLi).join("") || `<li class="empty">아직 수집된 경제 뉴스가 없어요.</li>`;
 }
 
@@ -1208,6 +1237,12 @@ $("prefTheme").addEventListener("click", e => { const b = e.target.closest("[dat
 $("prefFont").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) setPref("font", b.dataset.v); });
 $("prefAccent").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) setPref("accent", b.dataset.v); });
 $("prefStart").addEventListener("change", e => setPref("start", e.target.value));
+$("prefKpis").addEventListener("click", e => {
+  const b = e.target.closest("[data-kpi]"); if (!b) return;
+  const id = b.dataset.kpi, order = ECON_GROUPS.flatMap(g => g.ids);
+  const next = P.homeKpis.includes(id) ? P.homeKpis.filter(x => x !== id) : [...P.homeKpis, id];
+  setPref("homeKpis", next.sort((a, b) => order.indexOf(a) - order.indexOf(b)));   // 경제 탭과 같은 순서로
+});
 $("prefFav").addEventListener("click", e => {
   const b = e.target.closest("[data-fav]"); if (!b) return;
   const id = b.dataset.fav;

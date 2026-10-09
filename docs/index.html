@@ -48,12 +48,12 @@ const ACCENTS = {
   teal:   ["#0b8a8a", "#33c3c3", "청록"],
 };
 const DEFAULT_P = {theme: "system", accent: "blue", font: "m", fav: [], homeFav: false,
-                   homeKpis: ["base", "ktb3", "bankb", "usdkrw", "kospi", "gold"],
+                   homeKpis: ["base", "ktb3", "bankb", "usdkrw", "kospi", "gold"], econHide: [],
                    home: {jobs: true, news: true, econ: true, enews: true}, hidePT: true, start: "home"};
 function loadPrefs(){
   try {
     const v = JSON.parse(localStorage.getItem("hbank:prefs") || "null");
-    if (v) return {...DEFAULT_P, ...v, home: {...DEFAULT_P.home, ...(v.home || {})}, fav: Array.isArray(v.fav) ? v.fav : [], homeKpis: Array.isArray(v.homeKpis) ? v.homeKpis : DEFAULT_P.homeKpis};
+    if (v) return {...DEFAULT_P, ...v, home: {...DEFAULT_P.home, ...(v.home || {})}, fav: Array.isArray(v.fav) ? v.fav : [], homeKpis: Array.isArray(v.homeKpis) ? v.homeKpis : DEFAULT_P.homeKpis, econHide: Array.isArray(v.econHide) ? v.econHide : []};
   } catch (e) {}
   return JSON.parse(JSON.stringify(DEFAULT_P));
 }
@@ -557,6 +557,9 @@ footer b{color:var(--sub)}
     <div class="set-title">홈 맨 위에 보일 지표 <span id="kpiCount"></span></div>
     <div class="set-group"><div class="kpi-pick" id="prefKpis"></div></div>
 
+    <div class="set-title">경제 탭에 보일 지표 <span id="econCount"></span></div>
+    <div class="set-group"><div class="kpi-pick" id="prefEcon"></div></div>
+
     <div class="set-title">채용공고</div>
     <div class="set-group">
       <div class="set-row"><span>시간제 공고 숨기기<small>파트타이머·업무지원·재채용 등</small></span><span class="sw"><input type="checkbox" data-pref="hidePT"><span></span></span></div>
@@ -635,6 +638,10 @@ function renderSettings(){
   $("prefKpis").innerHTML = ECON_GROUPS.flatMap(g => g.ids).filter(id => ser[id]).map(id =>
     `<button type="button" data-kpi="${id}" aria-pressed="${P.homeKpis.includes(id)}">${esc(ser[id].name)}</button>`).join("") || `<span class="muted">경제지표를 불러오면 고를 수 있어요</span>`;
   $("kpiCount").textContent = `· ${P.homeKpis.filter(id => ser[id]).length}개`;
+  const allIds = ECON_GROUPS.flatMap(g => g.ids).filter(id => ser[id]);
+  $("prefEcon").innerHTML = allIds.map(id =>
+    `<button type="button" data-econ="${id}" aria-pressed="${!P.econHide.includes(id)}">${esc(ser[id].name)}</button>`).join("") || `<span class="muted">경제지표를 불러오면 고를 수 있어요</span>`;
+  $("econCount").textContent = allIds.length ? `· ${allIds.filter(id => !P.econHide.includes(id)).length}/${allIds.length}개` : "";
   document.querySelectorAll("[data-pref]").forEach(i => { i.checked = !!P[i.dataset.pref]; });
   document.querySelectorAll("[data-home]").forEach(i => { i.checked = !!P.home[i.dataset.home]; });
 }
@@ -992,11 +999,15 @@ function renderEcon(){
     $("econBody").innerHTML = `<div class="econ-empty">경제지표가 아직 없어요. 한국은행 ECOS 오픈API 키를 ECOS_API_KEY로 등록하면 기준금리·국고채·CD·환율·코스피·물가가 표시돼요.</div>`;
   } else {
     $("econSrc").textContent = `한국은행 ECOS · ${econDate()} · 카드를 누르면 그래프가 바뀌어요`;
-    const ser = ECON.series;
-    $("kpis").innerHTML = ECON_GROUPS.filter(g => g.ids.some(id => ser[id])).map(g =>
-      `<div class="kgroup">${g.name}${g.note ? ` <small>${g.note}</small>` : ""}</div><div class="kpis">${kpiTiles(g.ids, true)}</div>`).join("");
-    if (!CHARTS[S.chart].ids.some(id => ser[id])) S.chart = "rates";
-    drawChart();
+    const ser = ECON.series, shown = id => ser[id] && !P.econHide.includes(id);
+    const groups = ECON_GROUPS.map(g => ({...g, ids: g.ids.filter(shown)})).filter(g => g.ids.length);
+    $("kpis").innerHTML = groups.map(g =>
+      `<div class="kgroup">${g.name}${g.note ? ` <small>${g.note}</small>` : ""}</div><div class="kpis">${kpiTiles(g.ids, true)}</div>`).join("")
+      || `<div class="econ-empty">보이는 지표가 없어요. ⚙ 설정 → ‘경제 탭에 보일 지표’에서 켜 주세요.</div>`;
+    // 지금 그래프의 지표를 모두 숨겼으면, 보이는 첫 지표의 그래프로 바꾼다
+    if (!CHARTS[S.chart].ids.some(shown)){ const first = groups[0]?.ids[0]; if (first) S.chart = KPI_CHART[first]; }
+    $("chartCard").hidden = !groups.length;
+    if (groups.length) drawChart();
   }
   renderMacro();
 }
@@ -1018,7 +1029,8 @@ function niceTicks(lo, hi, n = 4){
 let CH = null; // 현재 차트 상태 (툴팁용)
 function drawChart(){
   const cfg = CHARTS[S.chart], ser = ECON.series;
-  const ids = cfg.ids.filter(id => ser[id]);
+  const ids = cfg.ids.filter(id => ser[id] && !P.econHide.includes(id));
+  if (!ids.length) return;
   document.querySelectorAll("#range button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.r === S.range));
   $("chartTitle").textContent = cfg.title;
   $("legend").innerHTML = ids.length > 1 ? ids.map((id, i) => `<span><i style="background:${cfg.colors[i]}"></i>${esc(ser[id].name)}</span>`).join("") : "";
@@ -1237,6 +1249,11 @@ $("prefTheme").addEventListener("click", e => { const b = e.target.closest("[dat
 $("prefFont").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) setPref("font", b.dataset.v); });
 $("prefAccent").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) setPref("accent", b.dataset.v); });
 $("prefStart").addEventListener("change", e => setPref("start", e.target.value));
+$("prefEcon").addEventListener("click", e => {
+  const b = e.target.closest("[data-econ]"); if (!b) return;
+  const id = b.dataset.econ;
+  setPref("econHide", P.econHide.includes(id) ? P.econHide.filter(x => x !== id) : [...P.econHide, id]);
+});
 $("prefKpis").addEventListener("click", e => {
   const b = e.target.closest("[data-kpi]"); if (!b) return;
   const id = b.dataset.kpi, order = ECON_GROUPS.flatMap(g => g.ids);

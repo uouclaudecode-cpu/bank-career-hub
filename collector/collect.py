@@ -182,22 +182,39 @@ def short_desc(text: str, limit: int = 160) -> str:
     return cut[: cut.rfind(" ")].strip() + "…" if " " in cut else cut + "…"
 
 
+NAVER_STATUS = {"requests": 0, "items": 0, "kept": 0, "error": ""}  # meta.json에 남겨 사이트 데이터로 확인 (키 값은 넣지 않음)
+
+
 def naver_news(bank: dict, pages: int = 3) -> list[dict]:
-    cid, sec = os.getenv("NAVER_CLIENT_ID"), os.getenv("NAVER_CLIENT_SECRET")
+    # 복사할 때 딸려 들어간 공백·줄바꿈 제거 (헤더에 줄바꿈이 있으면 요청이 아예 실패한다)
+    cid, sec = (os.getenv("NAVER_CLIENT_ID") or "").strip(), (os.getenv("NAVER_CLIENT_SECRET") or "").strip()
     if not (cid and sec):
         return []
     out = []
     for alias in bank["aliases"] or bank.get("queries", []):
         for p in range(pages):
             try:
+                NAVER_STATUS["requests"] += 1
                 r = session.get("https://openapi.naver.com/v1/search/news.json",
                                 headers={"X-Naver-Client-Id": cid, "X-Naver-Client-Secret": sec},
                                 params={"query": alias, "display": 100, "start": 1 + p * 100, "sort": "date"},
                                 timeout=20)
-                r.raise_for_status()
+                if r.status_code != 200:
+                    # 네이버 오류 응답: {"errorMessage": "...", "errorCode": "..."} — 키는 들어 있지 않다
+                    try:
+                        body = r.json()
+                        detail = f'{body.get("errorCode", "")} {body.get("errorMessage", "")}'.strip()
+                    except ValueError:
+                        detail = r.text[:120]
+                    raise RuntimeError(f"HTTP {r.status_code} {detail}")
                 items = r.json().get("items", [])
+                NAVER_STATUS["items"] += len(items)
             except Exception as e:  # noqa: BLE001
-                log(f"  [naver] {alias} 실패: {e}")
+                msg = str(e)
+                for s in (cid, sec):
+                    msg = msg.replace(s, "***")
+                NAVER_STATUS["error"] = NAVER_STATUS["error"] or msg[:200]
+                log(f"  [naver] {alias} 실패: {msg}")
                 break
             for it in items:
                 title = clean(it["title"])
@@ -214,6 +231,7 @@ def naver_news(bank: dict, pages: int = 3) -> list[dict]:
                 if not bank["aliases"]:
                     row["topic"] = alias  # 거시경제 뉴스는 검색어가 주제
                 out.append(row)
+                NAVER_STATUS["kept"] += 1
             if len(items) < 100:
                 break
             time.sleep(0.1)
@@ -662,6 +680,7 @@ def main():
             "ecos": bool(os.getenv("ECOS_API_KEY")),
             "alio": bool(os.getenv("DATA_GO_KR_KEY")),
         },
+        "naver_status": NAVER_STATUS,  # 요청 수·받은 건수·남긴 건수·첫 오류 (키 값 없음)
         "banks": banks,
         "topics": [{"id": t["id"], "name": t["name"]} for t in TOPICS] + [{"id": "etc", "name": "기타"}],
     }

@@ -182,7 +182,32 @@ def short_desc(text: str, limit: int = 160) -> str:
     return cut[: cut.rfind(" ")].strip() + "…" if " " in cut else cut + "…"
 
 
-NAVER_STATUS = {"requests": 0, "items": 0, "kept": 0, "error": ""}  # meta.json에 남겨 사이트 데이터로 확인 (키 값은 넣지 않음)
+NAVER_STATUS = {"requests": 0, "items": 0, "kept": 0, "error": "", "mode": ""}  # meta.json에 남겨 확인 (키 값은 넣지 않음)
+
+# 네이버 검색 API는 두 곳에서 발급된다. 같은 키 이름(NAVER_CLIENT_ID/SECRET)으로 둘 다 지원하고,
+# 처음 성공한 방식을 기억해서 계속 쓴다.
+NAVER_MODES = {
+    # 네이버 클라우드 NAVER API HUB (console.ncloud.com) — 'Application > 인증 정보'의 Client ID / Secret
+    "hub": ("https://naverapihub.apigw.ntruss.com/search/v1/news", "X-NCP-APIGW-API-KEY-ID", "X-NCP-APIGW-API-KEY"),
+    # 네이버 개발자센터 (developers.naver.com) — 내 애플리케이션의 Client ID / Secret
+    "open": ("https://openapi.naver.com/v1/search/news.json", "X-Naver-Client-Id", "X-Naver-Client-Secret"),
+}
+
+
+def naver_get(cid: str, sec: str, params: dict):
+    """정해진 방식이 없으면 HUB → 개발자센터 순으로 시도한다. 인증 실패(401/403)일 때만 다음 방식으로 넘어간다."""
+    modes = [NAVER_STATUS["mode"]] if NAVER_STATUS["mode"] else ["hub", "open"]
+    last = None
+    for mode in modes:
+        url, h_id, h_sec = NAVER_MODES[mode]
+        r = session.get(url, headers={h_id: cid, h_sec: sec}, params=params, timeout=20)
+        if r.status_code in (401, 403) and not NAVER_STATUS["mode"]:
+            last = r
+            continue
+        if r.status_code == 200:
+            NAVER_STATUS["mode"] = mode
+        return r
+    return last
 
 
 def naver_news(bank: dict, pages: int = 3) -> list[dict]:
@@ -195,10 +220,7 @@ def naver_news(bank: dict, pages: int = 3) -> list[dict]:
         for p in range(pages):
             try:
                 NAVER_STATUS["requests"] += 1
-                r = session.get("https://openapi.naver.com/v1/search/news.json",
-                                headers={"X-Naver-Client-Id": cid, "X-Naver-Client-Secret": sec},
-                                params={"query": alias, "display": 100, "start": 1 + p * 100, "sort": "date"},
-                                timeout=20)
+                r = naver_get(cid, sec, {"query": alias, "display": 100, "start": 1 + p * 100, "sort": "date"})
                 if r.status_code != 200:
                     # 네이버 오류 응답: {"errorMessage": "...", "errorCode": "..."} — 키는 들어 있지 않다
                     try:
@@ -207,8 +229,11 @@ def naver_news(bank: dict, pages: int = 3) -> list[dict]:
                     except ValueError:
                         detail = r.text[:120]
                     raise RuntimeError(f"HTTP {r.status_code} {detail}")
-                items = r.json().get("items", [])
+                body = r.json()
+                items = body.get("items", [])
                 NAVER_STATUS["items"] += len(items)
+                if "fields" not in NAVER_STATUS:  # 응답 형식 확인용 (첫 응답의 항목 이름만)
+                    NAVER_STATUS["fields"] = sorted(body.keys()) + (sorted(items[0].keys()) if items else [])
             except Exception as e:  # noqa: BLE001
                 msg = str(e)
                 for s in (cid, sec):

@@ -182,13 +182,27 @@ def short_desc(text: str, limit: int = 160) -> str:
         if t2 == t:
             break
         t = t2.strip()
-    if len(t) <= limit:
+    # 문장 중간의 기자 이름표·사진 설명·이메일 지우기: [서울타임즈뉴스 = 최남주 기자] / 아주경제=이서영 기자 / abc@news.com
+    t = re.sub(r"[\[［(（【][^\]］)）】]{0,30}?(=|기자|사진|제공)[^\]］)）】]{0,30}[\]］)）】]", " ", t)
+    t = re.sub(r"\S{1,15}\s?=\s?[가-힣]{2,4}\s?(기자|특파원)", " ", t)
+    t = re.sub(r"[\w.+-]+@[\w-]+\.[\w.]+", " ", t)
+    t = re.sub(r"\s+", " ", t).strip()
+
+    # 네이버 요약은 정해진 길이에서 잘려 '...'(점 세 개)로 끝난다 → 마지막으로 끝난 문장까지만 남긴다.
+    # 이 함수가 단어 단위로 자른 결과는 '…'(한 글자)로 끝나므로, 다음 실행 때 다시 깎이지 않게 그대로 둔다.
+    if t.endswith("…") and len(t) <= limit + 1:
+        return t
+    truncated = t.endswith("...")
+    t = re.sub(r"\.\.\.$", "", t).strip()
+    if len(t) < 15:  # '후속기사가 이어집니다' 같은 의미 없는 문장
+        return ""
+    if not truncated and len(t) <= limit:
         return t
     cut = t[:limit]
-    end = max(cut.rfind(". "), cut.rfind("다. "), cut.rfind("요. "))
-    if end >= limit * 0.6:
-        return cut[: end + 1].strip()
-    return cut[: cut.rfind(" ")].strip() + "…" if " " in cut else cut + "…"
+    ends = [m.end() for m in re.finditer(r"(다|요|음|함|됨|임|까)[.!?]|[!?](?=\s|$)|\.(?=\s|$)", cut)]
+    if ends and ends[-1] >= 20:
+        return cut[: ends[-1]].strip()
+    return (cut[: cut.rfind(" ")] if " " in cut else cut).strip() + "…"
 
 
 NAVER_STATUS = {"requests": 0, "items": 0, "kept": 0, "error": "", "mode": ""}  # meta.json에 남겨 확인 (키 값은 넣지 않음)
